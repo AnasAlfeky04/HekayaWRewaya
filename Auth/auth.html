@@ -1,0 +1,446 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#176b55">
+  <title>تسجيل الدخول | حكاية ورواية</title>
+  <link rel="icon" type="image/png" href="TabLogo.png">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    body.auth-page {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 10% 10%, #e5eee3 0, transparent 32%),
+        var(--paper);
+    }
+
+    .auth-navbar {
+      max-width: 1200px;
+      margin: auto;
+      padding: 22px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .auth-navbar .logo {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.auth-navbar .logo img {
+  display: block;
+  width: 200px;
+  height: 90px;
+  object-fit: contain;
+  object-position: center;
+}
+
+footer .logo {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+footer .logo img {
+  display: block;
+  width: 200px;
+  height: 90px;
+  object-fit: contain;
+  object-position: center;
+}
+
+    .auth-layout {
+      width: min(1050px, calc(100% - 36px));
+      min-height: 610px;
+      margin: 25px auto 55px;
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      overflow: hidden;
+      border: 1px solid #e9e9df;
+      border-radius: 26px;
+      background: white;
+      box-shadow: 0 25px 75px #234b3510;
+    }
+
+    .auth-art {
+      padding: 45px;
+      background: linear-gradient(145deg, #176b55, #103f35);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-art::before,
+    .auth-art::after {
+      content: "";
+      position: absolute;
+      border: 1px solid #ffffff20;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .auth-art::before {
+      width: 350px;
+      height: 350px;
+      top: 90px;
+      right: -110px;
+    }
+
+    .auth-art::after {
+      width: 250px;
+      height: 250px;
+      bottom: -90px;
+      left: -70px;
+    }
+
+    .art-content,
+    .art-footer {
+      position: relative;
+      z-index: 1;
+    }
+
+    .art-label {
+      color: #d6e8d8;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .auth-art h1 {
+      font-size: clamp(28px, 3vw, 40px);
+      line-height: 1.7;
+      margin: 20px 0 12px;
+    }
+
+    .auth-art h1 span {
+      color: #e5b777;
+    }
+
+    .auth-art p {
+      color: #d5e5d9;
+      font-size: 13px;
+      line-height: 2.2;
+    }
+
+    .art-books {
+      height: 230px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      margin: 15px 0;
+    }
+
+    .art-book {
+      width: 125px;
+      height: 185px;
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 15px;
+      border-radius: 5px 12px 12px 5px;
+      box-shadow: 8px 15px 25px #0003;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .art-book-one {
+      background: #c28c61;
+      transform: translateX(-48px) rotate(12deg);
+    }
+
+    .art-book-two {
+      background: #e8e1cb;
+      color: #174e3d;
+      transform: translateX(42px) rotate(-9deg);
+    }
+
+    .art-book small {
+      font-size: 9px;
+      margin-bottom: 10px;
+    }
+
+    .art-footer {
+      color: #d5e5d9;
+      font-size: 11px;
+    }
+
+    .auth-panel {
+      padding: 48px clamp(25px, 5vw, 65px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .auth-mobile-logo {
+      display: none;
+      margin-bottom: 25px;
+    }
+
+    .auth-heading {
+      margin-bottom: 24px;
+    }
+
+    .auth-heading .tag {
+      font-size: 11px;
+    }
+
+    .auth-heading h2 {
+      font-size: 29px;
+      margin: 9px 0;
+    }
+
+    .auth-heading p {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 2;
+      margin: 0;
+    }
+
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px;
+      padding: 5px;
+      margin-bottom: 22px;
+      border-radius: 12px;
+      background: #f2f3ed;
+    }
+
+    .auth-tab {
+      padding: 11px;
+      border: 0;
+      border-radius: 9px;
+      background: transparent;
+      color: #66716a;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .auth-tab.active {
+      background: white;
+      color: var(--green);
+      box-shadow: 0 2px 8px #203c300d;
+    }
+
+    .auth-form {
+      display: grid;
+      gap: 15px;
+    }
+
+    .auth-field label {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .auth-field input,
+    .auth-field select {
+      width: 100%;
+      min-height: 46px;
+      padding: 11px 13px;
+      border: 1px solid #e2e5dd;
+      border-radius: 10px;
+      outline: none;
+      background: #fff;
+      color: var(--ink);
+      font: inherit;
+      font-size: 12px;
+    }
+
+    .auth-field input:focus,
+    .auth-field select:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px #176b5515;
+    }
+
+    .auth-submit {
+      width: 100%;
+      min-height: 48px;
+      margin-top: 5px;
+      font-size: 13px;
+    }
+
+    .auth-status {
+      margin: 0;
+      padding: 11px;
+      border-radius: 9px;
+      font-size: 12px;
+      line-height: 1.9;
+      overflow-wrap: anywhere;
+    }
+
+    .auth-status:empty {
+      display: none;
+    }
+
+    .auth-status.error {
+      background: #fff0ed;
+      color: #a62c21;
+    }
+
+    .auth-status.success {
+      background: #eaf5ed;
+      color: #176b55;
+    }
+
+    .auth-back {
+      display: block;
+      margin-top: 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .auth-back:hover {
+      color: var(--green);
+    }
+
+    @media (max-width: 760px) {
+      .auth-navbar {
+        padding: 18px;
+      }
+
+      .auth-layout {
+        grid-template-columns: 1fr;
+        margin-top: 5px;
+        min-height: auto;
+      }
+
+      .auth-art {
+        display: none;
+      }
+
+      .auth-panel {
+        padding: 30px 23px;
+      }
+
+      .auth-mobile-logo {
+        display: block;
+      }
+
+      .auth-heading h2 {
+        font-size: 25px;
+      }
+    }
+  </style>
+</head>
+
+<body class="auth-page">
+  <header class="auth-navbar">
+    <a href="#" class="logo">
+      <img src="logo.png" alt="حكاية ورواية">
+    </a>
+    <a href="/index.html" class="btn btn-outline">العودة للرئيسية</a>
+  </header>
+
+  <main class="auth-layout">
+    <aside class="auth-art">
+      <div class="art-content">
+        <span class="art-label">مساحتك بين آلاف الحكايات</span>
+        <h1>كل كتاب جديد،<br>هو <span>عالم جديد.</span></h1>
+        <p>
+          انضم إلى مجتمع حكاية ورواية، واكتشف كتبًا تستحق وقتك،
+          أو شارك كلماتك وقصصك مع القراء.
+        </p>
+      </div>
+
+      <div class="art-books" aria-hidden="true">
+        <div class="art-book art-book-one">
+          <small>حكاية ورواية</small>
+          حكايات<br>تستحق أن تُروى
+        </div>
+        <div class="art-book art-book-two">
+          <small>اكتشف عالمك</small>
+          ابدأ<br>من هنا
+        </div>
+      </div>
+
+      <div class="art-footer">
+        اقرأ بشغف. اكتب بحرية. واكتشف المزيد.
+      </div>
+    </aside>
+
+    <section class="auth-panel">
+      <a href="/index.html" class="logo auth-mobile-logo">حكاية ورواية<span>.</span></a>
+
+      <div class="auth-heading">
+        <span class="tag">أهلًا بيك في حكاية ورواية</span>
+        <h2 id="authTitle">سعيدين بعودتك!</h2>
+        <p id="authSubtitle">سجّل دخولك وكمل رحلتك في عالم الكتب.</p>
+      </div>
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="loginTab" type="button">
+          تسجيل الدخول
+        </button>
+        <button class="auth-tab" id="signupTab" type="button">
+          حساب جديد
+        </button>
+      </div>
+
+      <form class="auth-form" id="authForm" novalidate>
+        <div class="auth-field" id="nameField" hidden>
+          <label for="displayName">الاسم</label>
+          <input id="displayName" name="displayName"
+                 type="text" autocomplete="name"
+                 placeholder="اكتب اسمك">
+        </div>
+
+        <div class="auth-field">
+          <label for="email">البريد الإلكتروني</label>
+          <input id="email" name="email" type="email"
+                 autocomplete="email" required
+                 placeholder="name@example.com">
+        </div>
+
+        <div class="auth-field">
+          <label for="password">كلمة المرور</label>
+          <input id="password" name="password" type="password"
+                 autocomplete="current-password" required
+                 minlength="8" placeholder="8 أحرف على الأقل">
+        </div>
+
+        <div class="auth-field" id="accountTypeField" hidden>
+          <label for="accountType">نوع مستخدم موقع حكاية ورواية</label>
+          <select id="accountType" name="accountType">
+            <option value="reader">قارئ — أكتشف وأقرأ الكتب</option>
+            <option value="author">كاتب — أشارك كتبي</option>
+          </select>
+        </div>
+
+        <p id="authStatus" class="auth-status" role="status" aria-live="polite"></p>
+
+        <button type="submit" class="btn btn-primary auth-submit" id="authSubmit">
+          تسجيل الدخول
+        </button>
+      </form>
+
+      <a href="/index.html" class="auth-back">← ارجع لاستكشاف المكتبة</a>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="auth.js"></script>
+
+  <div id="global-scrollbar" aria-label="شريط تمرير الصفحة">
+    <div class="scrollbar-track">
+      <div class="scrollbar-thumb"></div>
+    </div>
+  </div>
+  
+  <link rel="stylesheet" href="/Scrollbar/global-scrollbar.css">
+  <script src="/Scrollbar/global-scrollbar.js"></script>
+
+</body>
+</html>

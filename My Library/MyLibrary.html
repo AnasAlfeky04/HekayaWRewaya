@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#123d32">
+
+  <title>مكتبتي | حكاية ورواية</title>
+  <link rel="icon" type="image/png" href="TabLogo.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="MyLibrary.css">
+</head>
+
+<body class="my-library-page">
+
+  <header class="my-library-header">
+    <a href="/index.html" class="logo">
+        <img src="logo.png" alt="حكاية ورواية">
+    </a>
+
+    <nav class="my-library-nav" aria-label="التنقل الرئيسي">
+      <a href="/index.html">الرئيسية</a>
+      <a href="/Library/library.html">مكتبة الروايات</a>
+      <a href="/Profile/profile.html" id="myLibraryProfileLink">حسابي</a>
+    </nav>
+  </header>
+
+  <main class="my-library-main">
+
+    <section class="my-library-hero">
+      <div class="my-library-hero-content">
+        <span class="my-library-eyebrow">مساحتك الخاصة</span>
+
+        <h1>مكتبتي <span>الذهبية</span></h1>
+
+        <p>
+          كل حكاية اخترتها أصبحت أقرب إليك.
+          اكتشف رواياتك وتابع رحلتك بين صفحاتها.
+        </p>
+
+        <div class="my-library-stats">
+          <div class="my-library-stat">
+            <span id="myLibraryBookCount">—</span>
+            <small>رواية في مكتبتك</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="my-library-hero-decoration" aria-hidden="true">
+        <span class="my-library-decoration-line"></span>
+        <span class="my-library-decoration-book">ح</span>
+        <span class="my-library-decoration-star">✦</span>
+      </div>
+    </section>
+
+    <section class="my-library-content">
+
+      <div class="my-library-section-heading">
+        <div>
+          <span class="my-library-section-eyebrow">مجموعتك الأدبية</span>
+          <h2>رواياتي</h2>
+          <p>رواياتك المضافة متاحة هنا في أي وقت.</p>
+        </div>
+
+        <a href="/Library/library.html" class="my-library-browse-link">
+          اكتشف روايات أخرى
+          <span aria-hidden="true">←</span>
+        </a>
+      </div>
+
+      <div class="my-library-toolbar">
+        <label class="my-library-search">
+          <span aria-hidden="true">⌕</span>
+          <input
+            id="myLibrarySearch"
+            type="search"
+            placeholder="ابحث عن رواية في مكتبتك..."
+            autocomplete="off"
+          >
+        </label>
+
+        <select id="myLibrarySort" aria-label="ترتيب الروايات">
+          <option value="newest">الأحدث إضافة</option>
+          <option value="oldest">الأقدم إضافة</option>
+          <option value="title">الترتيب الأبجدي</option>
+        </select>
+      </div>
+
+      <div
+        id="myLibraryMessage"
+        class="my-library-message"
+        role="status"
+        aria-live="polite"
+      >
+        جاري تحميل مكتبتك...
+      </div>
+
+      <div id="myLibraryGrid" class="my-library-grid"></div>
+
+      <div id="myLibraryEmpty" class="my-library-empty" hidden>
+        <div class="my-library-empty-icon" aria-hidden="true">✦</div>
+        <h3>مكتبتك تنتظر أول حكاية</h3>
+        <p>
+          لسه مفيش روايات مضافة عندك.
+          اكتشف رواية تعجبك وابدأ رحلتك معها.
+        </p>
+        <a href="/Library/library.html" class="my-library-primary-link">
+          تصفح الروايات
+        </a>
+      </div>
+
+    </section>
+  </main>
+
+  <footer>
+    <a href="#" class="logo">
+      <img src="logo.png" alt="حكاية ورواية">
+    </a>
+    <p>مساحة عربية لكل الحكايات.</p>
+    <small>© <span id="year"></span> حكاية ورواية — جميع الحقوق محفوظة لمنصة حكاية ورواية</small>
+  </footer>
+
+  <!-- قارئ الروايات المحمي -->
+  <div id="readerModal" class="reader-modal" hidden>
+    <div
+      class="reader-panel"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="readerTitle"
+    >
+      <div class="reader-toolbar">
+        <h2 id="readerTitle">قارئ حكاية ورواية</h2>
+        <button id="closeReader" type="button" aria-label="إغلاق القارئ">
+          ✕
+        </button>
+      </div>
+
+      <div id="readerMessage" class="reader-message">
+        جاري فتح الرواية...
+      </div>
+
+      <iframe id="readerFrame" title="محتوى الرواية" hidden></iframe>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="MyLibrary.js"></script>
+
+  <div id="global-scrollbar" aria-label="شريط تمرير الصفحة">
+    <div class="scrollbar-track">
+      <div class="scrollbar-thumb"></div>
+    </div>
+  </div>
+  
+  <link rel="stylesheet" href="/Scrollbar/global-scrollbar.css">
+  <script src="/Scrollbar/global-scrollbar.js"></script>
+
+</body>
+</html>

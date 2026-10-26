@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#104b3d">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet"
+  >
+
+  <title>لوحة تحكم الكاتب | حكاية ورواية</title>
+  <link rel="icon" type="image/png" href="TabLogo.png">
+
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="author-dashboard.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="author-dashboard.js" defer></script>
+</head>
+
+<body class="author-dashboard-page">
+
+  <div class="dashboard-layout">
+
+    <!-- القائمة الجانبية -->
+    <aside class="sidebar">
+
+      <a href="/index.html" class="brand">
+        <span class="brand-mark">ح</span>
+
+        <span>
+          <strong>حكاية ورواية</strong>
+          <small>مساحة الكاتب</small>
+        </span>
+      </a>
+
+      <div class="sidebar-profile">
+        <div class="profile-avatar" id="sidebarAvatar">ك</div>
+
+        <div class="sidebar-user-info">
+          <strong id="sidebarName">أهلًا بك</strong>
+          <span>لوحة تحكم الكاتب</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="التنقل داخل لوحة الكاتب">
+
+        <a
+          href="#overview"
+          class="nav-link active"
+          data-tab="overview"
+          aria-current="page"
+        >
+          <span class="nav-icon">⌂</span>
+          <span>نظرة عامة</span>
+        </a>
+
+        <a
+          href="#my-books"
+          class="nav-link"
+          data-tab="my-books"
+        >
+          <span class="nav-icon">▤</span>
+          <span>مكتبتي</span>
+        </a>
+
+        <a
+          href="#upload-section"
+          class="nav-link"
+          data-tab="upload-section"
+        >
+          <span class="nav-icon">＋</span>
+          <span>إضافة رواية</span>
+        </a>
+
+      </nav>
+
+      <div class="sidebar-bottom">
+
+        <div class="sidebar-tip">
+          <span class="tip-icon">✦</span>
+          <strong>كل كتاب له حكاية</strong>
+          <p>قد تكون روايتك بداية جميلة لقارئ جديد</p>
+        </div>
+
+        <a href="/Profile/profile.html" class="back-to-account">
+          <span>العودة لحسابي</span>
+          <span class="back-arrow">←</span>
+        </a>
+
+      </div>
+    </aside>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="main-content">
+
+      <!-- الشريط العلوي -->
+      <header class="topbar">
+
+        <div class="topbar-heading">
+
+          <div class="breadcrumb">
+            <a href="/Profile/profile.html">حسابي</a>
+            <span>/</span>
+            <span>لوحة الكاتب</span>
+          </div>
+
+          <h1>
+            مساحة الكاتب
+            <span class="heading-sparkle">✦</span>
+          </h1>
+
+          <p>كل رواياتك وإبداعاتك في مكان واحد.</p>
+
+        </div>
+
+        <button
+          id="refreshBooksBtn"
+          class="secondary-btn"
+          type="button"
+        >
+          <span>↻</span>
+          تحديث البيانات
+        </button>
+
+      </header>
+
+      <!-- رسائل التنبيه -->
+      <div
+        id="pageMessage"
+        class="page-message"
+        role="status"
+        hidden
+      ></div>
+
+      <!-- =========================================
+           التاب الأول: نظرة عامة
+      ========================================== -->
+      <div
+        id="overview-panel"
+        class="tab-panel active"
+        data-tab-panel="overview"
+      >
+
+        <section id="overview" class="welcome-banner">
+
+          <div class="welcome-copy">
+
+            <span class="eyebrow">مساحتك الإبداعية</span>
+
+            <h2>
+              أهلًا بيك،
+              <span id="welcomeName">يا كاتب</span>
+              👋
+            </h2>
+
+            <p>
+              تابع أعمالك، راجع حالة رواياتك، وشارك حكاياتك
+              مع مجتمع حكاية ورواية.
+            </p>
+
+            <a
+              href="#my-books"
+              class="banner-link"
+              data-go="my-books"
+            >
+              استكشف مكتبتك
+              <span>←</span>
+            </a>
+
+          </div>
+
+          <div class="welcome-art" aria-hidden="true">
+            <div class="art-circle"></div>
+            <div class="art-book art-book-back"></div>
+
+            <div class="art-book art-book-front">
+              <span>حكاية ورواية</span>
+              <i>✦</i>
+            </div>
+
+            <span class="art-star star-one">✦</span>
+            <span class="art-star star-two">✧</span>
+          </div>
+
+        </section>
+
+        <!-- إحصائيات الكاتب -->
+        <section
+          class="stats-grid"
+          aria-label="إحصائيات الكاتب"
+        >
+
+          <article class="stat-card">
+            <div class="stat-icon icon-total">▤</div>
+            <span class="stat-label">إجمالي رواياتي</span>
+            <strong class="stat-value" id="totalBooks">—</strong>
+            <small>جميع أعمالك المسجلة</small>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-icon icon-published">✓</div>
+            <span class="stat-label">روايات منشورة</span>
+            <strong class="stat-value" id="publishedBooks">—</strong>
+            <small>متاحة للقراء</small>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-icon icon-pending">◷</div>
+            <span class="stat-label">قيد المراجعة</span>
+            <strong class="stat-value" id="pendingBooks">—</strong>
+            <small>في انتظار قرار الإدارة</small>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-icon icon-rejected">!</div>
+            <span class="stat-label">تحتاج إلى تعديل</span>
+            <strong class="stat-value" id="rejectedBooks">—</strong>
+            <small>روايات مرفوضة عند الرفع</small>
+          </article>
+
+        </section>
+
+      </div>
+
+      <!-- =========================================
+           التاب الثاني: مكتبتي
+      ========================================== -->
+      <section
+        id="my-books"
+        class="content-section tab-panel"
+        data-tab-panel="my-books"
+        hidden
+      >
+
+        <div class="section-heading">
+
+          <div>
+            <span class="section-kicker">أعمالك الأدبية</span>
+            <h2>مكتبتي</h2>
+            <p>إدارة رواياتك ومتابعة حالتها.</p>
+          </div>
+
+          <button
+            id="addBookFromLibraryBtn"
+            class="primary-btn"
+            type="button"
+            data-scroll-upload
+          >
+            <span>＋</span>
+            أضف رواية جديدة
+          </button>
+
+        </div>
+
+        <!-- البحث والتصفية -->
+        <div class="library-toolbar">
+
+          <div class="search-box">
+            <span>⌕</span>
+
+            <input
+              id="bookSearch"
+              type="search"
+              placeholder="ابحث عن رواية..."
+              aria-label="البحث عن رواية"
+            >
+          </div>
+
+          <select
+            id="statusFilter"
+            aria-label="فلترة الروايات حسب الحالة"
+          >
+            <option value="all">كل الحالات</option>
+            <option value="published">منشورة</option>
+            <option value="pending">قيد المراجعة</option>
+            <option value="rejected">مرفوضة</option>
+          </select>
+
+        </div>
+
+        <!-- حالة تحميل الروايات -->
+        <div id="booksLoading" class="loading-state">
+          <span class="loading-spinner"></span>
+          <p>بنجهز مكتبتك...</p>
+        </div>
+
+        <!-- شبكة الروايات -->
+        <div id="booksGrid" class="books-grid" hidden></div>
+
+        <!-- المكتبة فارغة -->
+        <div id="booksEmpty" class="empty-state" hidden>
+
+          <div class="empty-icon">▤</div>
+
+          <h3>مكتبتك مستنياك!</h3>
+
+          <p>لسه مفيش روايات هنا. ابدأ بأول حكاية ليك.</p>
+
+          <button
+            class="primary-btn"
+            type="button"
+            data-scroll-upload
+          >
+            ＋ أضف أول رواية
+          </button>
+
+        </div>
+
+        <!-- لا توجد نتائج للبحث -->
+        <div
+          id="noSearchResults"
+          class="empty-state compact-empty"
+          hidden
+        >
+
+          <div class="empty-icon">⌕</div>
+
+          <h3>ملقيناش روايات مطابقة</h3>
+
+          <p>جرّب كلمة بحث تانية أو غيّر فلتر الحالة.</p>
+
+        </div>
+
+      </section>
+
+      <!-- =========================================
+           التاب الثالث: إضافة رواية
+      ========================================== -->
+      <section
+        id="upload-section"
+        class="content-section upload-section tab-panel"
+        data-tab-panel="upload-section"
+        hidden
+      >
+
+        <div class="section-heading">
+
+          <div>
+            <span class="section-kicker">حكاية جديدة</span>
+            <h2>أضف رواية جديدة</h2>
+            <p>جهّز تفاصيل روايتك قبل إرسالها للمراجعة.</p>
+          </div>
+
+          <div class="upload-heading-icon">✧</div>
+
+        </div>
+
+        <!-- نموذج رفع الرواية -->
+        <form id="bookForm" class="upload-form">
+
+          <div class="form-grid">
+
+            <div class="form-field full-field">
+
+              <label for="bookTitle">
+                عنوان الرواية <span>*</span>
+              </label>
+
+              <input
+                id="bookTitle"
+                name="title"
+                type="text"
+                maxlength="180"
+                placeholder="اكتب عنوانًا يعبّر عن حكايتك"
+                required
+              >
+
+            </div>
+
+            <div class="form-field full-field">
+
+              <label for="bookDescription">
+                نبذة عن الرواية <span>*</span>
+              </label>
+
+              <textarea
+                id="bookDescription"
+                name="description"
+                rows="5"
+                maxlength="10000"
+                placeholder="عرّف القراء بعالم روايتك..."
+                required
+              ></textarea>
+
+            </div>
+
+            <div class="form-field full-field">
+
+              <label for="bookCategory">
+                التصنيف <span>*</span>
+              </label>
+
+              <select
+                id="bookCategory"
+                name="category"
+                required
+              >
+                <option value="">جاري تحميل التصنيفات...</option>
+              </select>
+
+            </div>
+
+            <!-- سعر الرواية -->
+            <div class="form-field full-field price-field">
+              <label for="bookPrice">سعر الرواية</label>
+            
+              <div class="price-panel">
+                <div class="price-input-wrap">
+                  <span class="price-currency">ج.م</span>
+                  <input
+                    id="bookPrice"
+                    name="price"
+                    type="number"
+                    min="0.01"
+                    step="0.01"
+                    inputmode="decimal"
+                    placeholder="مثال: 50"
+                    required
+                    disabled
+                  >
+                </div>
+              
+                <label class="free-toggle" for="bookFree">
+                  <input
+                    id="bookFree"
+                    name="is_free"
+                    type="checkbox"
+                  >
+                  <span class="free-toggle-box" aria-hidden="true">✓</span>
+                  <span class="free-toggle-copy">
+                    <strong>مجانية</strong>
+                    <small>إتاحة الرواية للقراء دون مقابل</small>
+                  </span>
+                </label>
+              </div>
+            
+              <small class="price-help" id="priceHelp">
+                الرواية مجانية حاليًا. ألغِ التحديد لإضافة سعر.
+              </small>
+            </div>
+
+            <!-- ملف الرواية PDF -->
+            <div class="form-field">
+
+              <label for="bookPdf">
+                ملف الرواية <span>*</span>
+              </label>
+
+              <label for="bookPdf" class="file-drop pdf-drop">
+
+                <span class="file-drop-icon">PDF</span>
+
+                <strong>اختار ملف الرواية</strong>
+
+                <small>ملف PDF فقط — بحد أقصى 20MB</small>
+
+                <span
+                  id="pdfFileName"
+                  class="selected-file"
+                >
+                  لم يتم اختيار ملف
+                </span>
+
+              </label>
+
+              <input
+                id="bookPdf"
+                name="pdf"
+                type="file"
+                accept=".pdf,application/pdf"
+                required
+                hidden
+              >
+
+            </div>
+
+            <!-- غلاف الرواية -->
+            <div class="form-field">
+
+              <label for="bookCover">
+                غلاف الرواية <span>*</span>
+              </label>
+
+              <label for="bookCover" class="file-drop">
+
+                <span class="file-drop-icon">▧</span>
+
+                <strong>اختار صورة الغلاف</strong>
+
+                <small>JPG أو PNG أو WebP — بحد أقصى 2MB</small>
+
+                <span
+                  id="coverFileName"
+                  class="selected-file"
+                >
+                  لم يتم اختيار ملف
+                </span>
+
+              </label>
+
+              <input
+                id="bookCover"
+                name="cover"
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                required
+                hidden
+              >
+
+              <img
+                id="coverPreview"
+                class="cover-preview"
+                alt="معاينة غلاف الرواية"
+                hidden
+              >
+
+            </div>
+
+          </div>
+
+          <!-- تنبيه المراجعة -->
+          <div class="form-notice">
+
+            <span>ⓘ</span>
+
+            <p>
+              بعد رفع الرواية، هتكون حالتها «قيد المراجعة».
+              مش هتظهر للقراء إلا بعد موافقة إدارة حكاية ورواية.
+            </p>
+
+          </div>
+
+          <!-- أزرار النموذج -->
+          <div class="form-actions">
+
+            <button
+              id="uploadBookBtn"
+              class="primary-btn submit-book-btn"
+              type="submit"
+            >
+              <span>✦</span>
+              إرسال الرواية للمراجعة
+            </button>
+
+            <span class="form-footnote">
+              راجع التفاصيل والملفات قبل الإرسال.
+            </span>
+
+          </div>
+
+        </form>
+
+      </section>
+
+      <!-- التذييل: يظل ظاهرًا خارج التابات -->
+      <footer class="dashboard-footer">
+
+        <span>
+          حكاية ورواية ©
+          <span id="currentYear"></span>
+        </span>
+
+        <span>مساحتك، حكاياتك، أثرك.</span>
+
+      </footer>
+
+    </main>
+
+  </div>
+
+  <!-- =========================================
+       نافذة تأكيد العمليات
+  ========================================== -->
+  <div
+    id="confirmOverlay"
+    class="modal-overlay"
+    hidden
+  >
+
+    <section
+      class="confirm-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="confirmTitle"
+    >
+
+      <div id="confirmIcon" class="confirm-icon">!</div>
+
+      <h2 id="confirmTitle">تأكيد العملية</h2>
+
+      <p id="confirmText">
+        هل أنت متأكد من تنفيذ العملية؟
+      </p>
+
+      <div class="confirm-actions">
+
+        <button
+          id="confirmCancel"
+          class="secondary-btn"
+          type="button"
+        >
+          إلغاء
+        </button>
+
+        <button
+          id="confirmAccept"
+          class="danger-btn"
+          type="button"
+        >
+          تأكيد
+        </button>
+
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- =========================================
+       نافذة تفاصيل الرواية
+  ========================================== -->
+  <div
+    id="detailsOverlay"
+    class="modal-overlay"
+    hidden
+  >
+
+    <section
+      class="details-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="detailsTitle"
+    >
+
+      <button
+        id="closeDetailsBtn"
+        class="modal-close"
+        type="button"
+        aria-label="إغلاق"
+      >
+        ×
+      </button>
+
+      <div id="detailsContent"></div>
+
+    </section>
+
+  </div>
+
+  <div id="global-scrollbar" aria-label="شريط تمرير الصفحة">
+    <div class="scrollbar-track">
+      <div class="scrollbar-thumb"></div>
+    </div>
+  </div>
+  
+  <link rel="stylesheet" href="/Scrollbar/global-scrollbar.css">
+  <script src="/Scrollbar/global-scrollbar.js"></script>
+
+</body>
+</html>

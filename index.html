@@ -1,0 +1,233 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>حكاية ورواية | مكتبتك العربية</title>
+  <link rel="icon" type="image/png" href="TabLogo.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <header class="navbar">
+    <a href="#" class="logo">
+      <img src="logo.png" alt="حكاية ورواية">
+    </a>
+
+    <nav>
+      <a href="#home">الرئيسية</a>
+      <a href="#library">المكتبة</a>
+      <a href="#about">عن المنصة</a>
+    </nav>
+
+    <div class="nav-actions">
+      <a
+        href="/My Library/MyLibrary.html"
+        class="btn btn-primary"
+        id="myLibraryBtn"
+        hidden
+      >مكتبتي</a>
+    
+      <button class="btn btn-outline" id="loginBtn">تسجيل الدخول</button>
+      <button class="btn btn-primary" id="signupBtn">إنشاء حساب</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-content">
+        <span class="tag">مساحة لكل حكاية</span>
+        <h1>رواية جديدة،<br><span>وعالم جديد.</span></h1>
+        <p>
+          اكتشف روايات وأفكارًا جديدة، واستمتع بمكتبة عربية
+          تجمع القراء والكتّاب في مكان واحد.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#library" class="btn btn-primary btn-large">اكتشف الروايات ←</a>
+          <a href="#about" class="btn btn-light btn-large">اعرف أكتر</a>
+        </div>
+
+        <div class="hero-note">
+          <span class="status-dot"></span>
+          كل الروايات المتاحة حاليًا مجانية
+        </div>
+      </div>
+
+      <div class="hero-visual" aria-label="رسم توضيحي لروايات">
+        <div class="decor-circle"></div>
+        <div class="book book-back">
+          <span>حكايات</span>
+        </div>
+        <div class="book book-front">
+          <small>Hekaya W Rewaya LIBRARY</small>
+          <strong>بين<br>السّطور</strong>
+          <span>كل حكاية لها بداية</span>
+        </div>
+        <div class="floating-star">✦</div>
+      </div>
+    </section>
+
+    <section class="features">
+      <article>
+        <span class="feature-icon">▤</span>
+        <div>
+          <h3>مكتبة عربية</h3>
+          <p>روايات في مكان واحد.</p>
+        </div>
+      </article>
+
+      <article>
+        <span class="feature-icon">✎</span>
+        <div>
+          <h3>مساحة للكتّاب</h3>
+          <p>شارك أعمالك بعد مراجعتها.</p>
+        </div>
+      </article>
+
+      <article>
+        <span class="feature-icon">♡</span>
+        <div>
+          <h3>قراءة مجانية</h3>
+          <p>ابدأ رحلتك مع الروايات المتاحة.</p>
+        </div>
+      </article>
+    </section>
+
+    <section class="library" id="library">
+      <div class="section-heading">
+        <div>
+          <span class="tag">اختار حكايتك</span>
+          <h2>استكشف المكتبة</h2>
+          <p>عالم كامل من الروايات المختلفة.</p>
+        </div>
+      </div>
+      
+      <div class="book-grid" id="bookGrid"></div>
+        <p class="empty-message" id="emptyMessage" hidden>
+          مفيش روايات مطابقة للبحث. جرّب كلمة تانية.
+        </p>
+
+      <div class="library-more">
+        <a href="/Library/library.html" class="btn btn-primary btn-large">
+          عرض جميع الروايات ←
+        </a>
+      </div>
+    </section>
+
+    
+<section class="about" id="about">
+  <div class="about-container">
+
+    <div class="about-heading">
+      <span class="about-eyebrow">حكايتنا تبدأ من هنا</span>
+
+      <h2>
+        كل حكاية
+        <span>تستحق أن تجد قارئها.</span>
+      </h2>
+
+      <p class="about-intro">
+        نؤمن أن وراء كل رواية عالمًا يستحق الاكتشاف،
+        ووراء كل كاتب حكاية تستحق أن تصل إلى الناس.
+        لذلك أنشأنا حكاية ورواية لتكون مساحة تجمع
+        محبّي القراءة بمن يصنعون الحكايات.
+      </p>
+    </div>
+
+    <div class="about-content">
+
+      <article class="about-card">
+        <div class="about-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M12 7v14m0-14C9.5 4.8 6.2 4 3 5v14c3.2-1 6.5-.2 9 2m0-14c2.5-2.2 5.8-3 9-2v14c-3.2-1-6.5-.2-9 2"
+              stroke="currentColor" stroke-width="1.6"
+              stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <h3>لكل قارئ حكاية</h3>
+
+        <p>
+          اكتشف روايات جديدة، وتجوّل بين عوالم
+          مختلفة، واختر الحكاية التي تستحق أن تعيشها
+          صفحةً بعد صفحة.
+        </p>
+
+        <button href="/Library/library.html" class="about-link">
+          استكشف المكتبة <span aria-hidden="true">←</span>
+        </button>
+      </article>
+
+      <article class="about-card">
+        <div class="about-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="m14.5 6.5 3 3M4 20l4.2-.9L19 8.3a2.12 2.12 0 0 0-3-3L5.2 16.1 4 20Z"
+              stroke="currentColor" stroke-width="1.6"
+              stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M13 20h7"
+              stroke="currentColor" stroke-width="1.6"
+              stroke-linecap="round"/>
+          </svg>
+        </div>
+
+        <h3>لكل كاتب مساحة</h3>
+
+        <p>
+          امنح كلماتك فرصة للوصول إلى قراء جدد.
+          قدّم روايتك عبر المنصة، وتابع خطوات مراجعته
+          تمهيدًا لنشره بعد الموافقة.
+        </p>
+
+        <button type="button" class="about-link about-author-link" id="aboutAuthorBtn">
+          ابدأ رحلتك ككاتب <span aria-hidden="true">←</span>
+        </button>
+      </article>
+
+    </div>
+
+    <div class="about-footer">
+      <span class="about-footer-mark" aria-hidden="true">ح</span>
+
+      <p>
+        <strong>حكاية ورواية</strong>
+        <span>لأن بعض الحكايات تغيّر نظرتنا إلى العالم.</span>
+      </p>
+    </div>
+
+  </div>
+</section>
+  
+  </main>
+
+  <footer>
+    <a href="#" class="logo">
+      <img src="logo.png" alt="حكاية ورواية">
+    </a>
+    <p>مساحة عربية لكل الحكايات.</p>
+    <small>© <span id="year"></span> حكاية ورواية — جميع الحقوق محفوظة لمنصة حكاية ورواية</small>
+  </footer>
+
+  <dialog id="infoDialog">
+    <button id="closeDialog" class="close-dialog" aria-label="إغلاق">×</button>
+    <div class="dialog-symbol">ك</div>
+    <h2 id="dialogTitle">أهلًا بيك في موقع حكاية ورواية</h2>
+    <p id="dialogMessage"></p>
+    <button id="dialogOk" class="btn btn-primary">تمام</button>
+  </dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js"></script>
+
+  <div id="global-scrollbar" aria-label="شريط تمرير الصفحة">
+    <div class="scrollbar-track">
+      <div class="scrollbar-thumb"></div>
+    </div>
+  </div>
+  
+  <link rel="stylesheet" href="/Scrollbar/global-scrollbar.css">
+  <script src="/Scrollbar/global-scrollbar.js"></script>
+
+</body>
+</html>

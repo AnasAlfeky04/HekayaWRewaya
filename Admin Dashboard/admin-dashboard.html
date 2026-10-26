@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#123d32"><title>لوحة التحكم الأدمن | حكاية ورواية</title>
+  <link rel="icon" type="image/png" href="TabLogo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin-dashboard.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="admin-dashboard.js"></script>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="/index.html"><span class="brand-mark">ح</span><span>حكاية ورواية<small>إدارة المنصة</small></span></a>
+    <div class="side-label">القائمة الرئيسية</div>
+    <nav class="side-nav" aria-label="التنقل داخل لوحة التحكم">
+      <button class="nav-item active" data-tab="overview"><span>▦</span> نظرة عامة</button>
+      <button class="nav-item" data-tab="published"><span>▤</span> الروايات المنشورة <b id="navPublished">—</b></button>
+      <button class="nav-item" data-tab="books"><span>▧</span> كل الروايات</button>
+      <button class="nav-item" data-tab="revisions"><span>⟳</span>تعديلات الروايات<b id="navRevisions">—</b></button>
+      <button class="nav-item" data-tab="users"><span>♙</span> المستخدمون</button>
+      <button class="nav-item" data-tab="statistics"><span>▥</span> الإحصائيات</button>
+    </nav>
+    <div class="sidebar-bottom"><div class="secure-note"><span class="secure-icon">✓</span><div><strong>وصول إداري</strong><small>تُحمّل البيانات من قاعدة البيانات</small></div></div><a class="back-link" href="/Profile/profile.html">← العودة إلى حسابي</a></div>
+  </aside>
+  <main class="main-area">
+    <header class="topbar"><button id="menuToggle" class="icon-btn menu-toggle" aria-label="فتح القائمة">☰</button><div><div class="breadcrumb">حكاية ورواية <span>/</span> <strong id="breadcrumbCurrent">نظرة عامة</strong></div><h1 id="pageTitle">نظرة عامة</h1></div><div class="top-actions"><span class="admin-chip"><i></i> مدير المنصة</span><button id="refreshBtn" class="btn btn-light">↻ <span>تحديث البيانات</span></button></div></header>
+    <div id="pageMessage" class="notice" role="status" hidden></div>
+    <section class="welcome-banner"><div><span class="eyebrow">مساحة إدارة حكاية ورواية</span><h2>كل تفاصيل المنصة، في مكان واحد.</h2><p>تابع الروايات والمستخدمين وحالة النشر من لوحة تحكم واحدة.</p><div class="banner-meta"><span>● البيانات مرتبطة بـ Supabase</span><span id="lastUpdated">جارٍ تحميل البيانات…</span></div></div><div class="banner-art" aria-hidden="true"><div class="art-book book-one"></div><div class="art-book book-two"></div><div class="art-book book-three"></div><span>حكاية ورواية</span></div></section>
+    <section class="tab-panel active" id="panel-overview">
+      <div class="section-heading"><div><h2>ملخص المنصة</h2><p>نظرة سريعة على الأرقام الحالية.</p></div><button class="text-btn" data-go="statistics">عرض الإحصائيات ←</button></div>
+      <div class="stats-grid">
+        <article class="stat-card"><div class="stat-top"><span class="stat-icon green">▤</span><span class="stat-caption">إجمالي الروايات</span></div><strong id="statAll">—</strong><small>جميع الحالات</small></article>
+        <article class="stat-card"><div class="stat-top"><span class="stat-icon amber">◷</span><span class="stat-caption">قيد المراجعة</span></div><strong id="statPending">—</strong><small>تحتاج إلى قرار إداري</small></article>
+        <article class="stat-card"><div class="stat-top"><span class="stat-icon blue">✓</span><span class="stat-caption">روايات منشورة</span></div><strong id="statPublished">—</strong><small>متاحة في المكتبة</small></article>
+        <article class="stat-card"><div class="stat-top"><span class="stat-icon red">×</span><span class="stat-caption">روايات مرفوضة</span></div><strong id="statRejected">—</strong><small>لم يتم اعتمادها</small></article>
+        <article class="stat-card"><div class="stat-top"><span class="stat-icon purple">♙</span><span class="stat-caption">المستخدمون</span></div><strong id="statUsers">—</strong><small>قرّاء وكُتّاب ومدير</small></article>
+      </div>
+      <div class="content-grid"><article class="surface"><div class="surface-heading"><div><h3>أحدث الروايات</h3><p>آخر الروايات المضافة إلى قاعدة البيانات</p></div><button class="text-btn" data-go="books">عرض الكل ←</button></div><div id="recentBooks" class="recent-list"><div class="loading-state">جارٍ تحميل أحدث الروايات…</div></div></article><article class="surface quick-actions"><div class="surface-heading"><div><h3>اختصارات سريعة</h3><p>انتقل مباشرة إلى القسم المطلوب</p></div></div><button class="quick-action" data-go="books"><span class="quick-icon amber">◷</span><span><strong>مراجعة الروايات</strong><small>قبول أو رفض الروايات المعلقة</small></span><span class="arrow">←</span></button><button class="quick-action" data-go="published"><span class="quick-icon green">▤</span><span><strong>إدارة الروايات المنشورة</strong><small>معاينة الروايات أو حذفها</small></span><span class="arrow">←</span></button><button class="quick-action" data-go="users"><span class="quick-icon purple">♙</span><span><strong>المستخدمون</strong><small>عرض حسابات القراء والكتاب</small></span><span class="arrow">←</span></button></article></div>
+    </section>
+    <section class="tab-panel" id="panel-published"><div class="section-heading"><div><h2>الروايات المنشورة</h2><p>معاينة الروايات المنشورة أو حذف سجل الرواية وملفاته.</p></div><span class="count-pill" id="publishedCount">0 رواية</span></div><div class="surface"><div class="filters"><label class="search-box"><span>⌕</span><input id="publishedSearch" type="search" placeholder="ابحث باسم الرواية أو الكاتب…"></label><button class="btn btn-light" id="publishedRefresh">↻ تحديث</button></div><div id="publishedBooks" class="books-grid"><div class="loading-state">جارٍ تحميل الروايات المنشورة…</div></div></div></section>
+    <section class="tab-panel" id="panel-books"><div class="section-heading"><div><h2>كل الروايات</h2><p>إدارة الروايات حسب حالتها، مع البحث والتصفية.</p></div><span class="count-pill" id="allBooksCount">0 رواية</span></div><div class="surface"><div class="filters"><label class="search-box"><span>⌕</span><input id="booksSearch" type="search" placeholder="ابحث باسم الرواية أو الكاتب…"></label><select id="statusFilter" class="filter-select" aria-label="تصفية حسب حالة الرواية"><option value="all">كل الحالات</option><option value="pending">قيد المراجعة</option><option value="published">منشور</option><option value="rejected">مرفوض</option></select></div><div id="allBooks" class="books-grid"><div class="loading-state">جارٍ تحميل الروايات…</div></div></div></section>
+    
+<section class="tab-panel" id="panel-revisions">
+  <div class="section-heading">
+    <div>
+      <h2>مراجعة تعديلات الروايات</h2>
+      <p>
+        راجع التغييرات المقترحة على الروايات المنشورة قبل اعتمادها.
+        تظل النسخة الحالية منشورة حتى الموافقة.
+      </p>
+    </div>
+    <span class="count-pill" id="revisionsCount">0 تعديل</span>
+  </div>
+
+  <div class="surface">
+    <div class="filters">
+      <label class="search-box">
+        <span>⌕</span>
+        <input
+          id="revisionsSearch"
+          type="search"
+          placeholder="ابحث بعنوان الرواية أو الكاتب…"
+        >
+      </label>
+
+      <button class="btn btn-light" id="revisionsRefresh" type="button">
+        ↻ تحديث
+      </button>
+    </div>
+
+    <div
+      id="revisionsList"
+      class="revisions-grid"
+      aria-live="polite"
+    >
+      <div class="loading-state">
+        جارٍ تحميل التعديلات المقترحة…
+      </div>
+    </div>
+  </div>
+</section>
+
+    <section class="tab-panel" id="panel-users"><div class="section-heading"><div><h2>المستخدمون</h2><p>بيانات الملفات الشخصية المسجلة في المنصة.</p></div><span class="count-pill" id="usersCount">0 مستخدم</span></div><div class="surface"><div class="filters"><label class="search-box"><span>⌕</span><input id="usersSearch" type="search" placeholder="ابحث بالاسم أو معرّف الحساب…"></label><select id="roleFilter" class="filter-select" aria-label="تصفية حسب نوع الحساب"><option value="all">كل الأدوار</option><option value="reader">قارئ</option><option value="author">كاتب</option><option value="admin">مدير</option></select></div><div class="table-wrap"><table class="data-table"><thead><tr><th>المستخدم</th><th>نوع الحساب</th><th>معرّف الحساب</th><th>إجراءات</th></tr></thead><tbody id="usersTable"><tr><td colspan="4" class="loading-state">جارٍ تحميل المستخدمين…</td></tr></tbody></table></div></div><p class="privacy-note">ملاحظة: لا يتم عرض البريد الإلكتروني من جدول المصادقة في المتصفح؛ تُعرض هنا البيانات الموجودة في الملفات الشخصية فقط.</p></section>
+    <section class="tab-panel" id="panel-statistics"><div class="section-heading"><div><h2>إحصائيات المنصة</h2><p>الأرقام الفعلية المحمّلة من قاعدة البيانات.</p></div></div><div class="stats-grid statistics-grid"><article class="stat-card"><div class="stat-top"><span class="stat-icon green">▤</span><span class="stat-caption">إجمالي الروايات</span></div><strong id="detailAll">—</strong><small>كل سجلات الروايات</small></article><article class="stat-card"><div class="stat-top"><span class="stat-icon blue">✓</span><span class="stat-caption">نسبة النشر</span></div><strong id="publishRate">—</strong><small>الروايات المنشورة من إجمالي الروايات</small></article><article class="stat-card"><div class="stat-top"><span class="stat-icon amber">◷</span><span class="stat-caption">معدل المراجعة</span></div><strong id="reviewRate">—</strong><small>الروايات التي حُسمت حالتها</small></article><article class="stat-card"><div class="stat-top"><span class="stat-icon purple">♙</span><span class="stat-caption">القرّاء</span></div><strong id="readerCount">—</strong><small>حسابات بدور قارئ</small></article><article class="stat-card"><div class="stat-top"><span class="stat-icon blue">✍</span><span class="stat-caption">الكُتّاب</span></div><strong id="authorCount">—</strong><small>حسابات بدور كاتب</small></article></div><div class="surface"><div class="surface-heading"><div><h3>توزيع حالات الروايات</h3><p>مقارنة عدد الروايات في كل حالة.</p></div></div><div class="bar-chart" id="statusChart"></div><div class="chart-legend"><span><i class="legend-pending"></i> قيد المراجعة</span><span><i class="legend-published"></i> منشور</span><span><i class="legend-rejected"></i> مرفوض</span></div></div><p class="privacy-note">لا يتم احتساب مشاهدات الروايات أو إجمالي القراءات لعدم وجود سجل أحداث مخصص يقيس كل قراءة بصورة موثوقة.</p></section>
+    <footer class="page-footer">حكاية ورواية <span>•</span> لوحة الإدارة <span>•</span> <span id="footerYear"></span></footer>
+  </main>
+</div>
+
+
+<!-- نافذة تفاصيل المستخدم -->
+<div class="modal-backdrop user-modal-backdrop" id="userDetailsModal" hidden>
+  <section
+    class="user-details-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="userDetailsTitle"
+  >
+    <header class="user-modal-header">
+      <div>
+        <span class="user-modal-eyebrow">حكاية ورواية · إدارة الحسابات</span>
+        <h2 id="userDetailsTitle">تفاصيل المستخدم</h2>
+        <p>بيانات الحساب وجميع الروايات المرتبطة به.</p>
+      </div>
+      <button
+        class="user-modal-close"
+        id="closeUserDetails"
+        type="button"
+        aria-label="إغلاق النافذة"
+      >×</button>
+    </header>
+
+    <div id="userDetailsContent">
+      <div class="loading-state">جارٍ تحميل التفاصيل…</div>
+    </div>
+  </section>
+</div>
+
+
+<!-- نافذة تفاصيل الرواية -->
+<div class="modal-backdrop book-details-backdrop" id="bookDetailsModal" hidden>
+  <section
+    class="book-details-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="bookDetailsTitle"
+  >
+    <header class="book-details-header">
+      <div>
+        <span class="book-details-eyebrow">حكاية ورواية · إدارة المكتبة</span>
+        <h2 id="bookDetailsTitle">تفاصيل الرواية</h2>
+        <p>معلومات الرواية وإجراءات إدارته.</p>
+      </div>
+
+      <button
+        class="user-modal-close"
+        id="closeBookDetails"
+        type="button"
+        aria-label="إغلاق النافذة"
+      >×</button>
+    </header>
+
+    <div id="bookDetailsContent">
+      <div class="loading-state">جارٍ تحميل تفاصيل الرواية…</div>
+    </div>
+  </section>
+</div>
+
+
+
+<!-- نافذة تفاصيل التعديل المقترح -->
+<div
+  class="modal-backdrop revision-details-backdrop"
+  id="revisionDetailsModal"
+  hidden
+>
+  <section
+    class="revision-details-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="revisionDetailsTitle"
+  >
+    <header class="revision-details-header">
+      <div>
+        <span class="book-details-eyebrow">
+          حكاية ورواية · مراجعة التعديلات
+        </span>
+
+        <h2 id="revisionDetailsTitle">تفاصيل التعديل المقترح</h2>
+
+        <p id="revisionDetailsSubtitle">
+          مقارنة النسخة المنشورة بالتعديلات الجديدة.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="user-modal-close"
+        id="closeRevisionDetails"
+        aria-label="إغلاق النافذة"
+      >×</button>
+    </header>
+
+    <div id="revisionDetailsContent">
+      <div class="loading-state">جارٍ تحميل التفاصيل…</div>
+    </div>
+  </section>
+</div>
+
+
+
+<!-- نافذة روايةة سبب رفض الرواية -->
+<div class="modal-backdrop rejection-modal-backdrop"
+     id="rejectionModal"
+     hidden>
+  <section class="rejection-dialog"
+           role="dialog"
+           aria-modal="true"
+           aria-labelledby="rejectionTitle">
+
+    <header class="rejection-header">
+      <div>
+        <h2 id="rejectionTitle">رفض الرواية</h2>
+        <p id="rejectionBookTitle"></p>
+      </div>
+
+      <button type="button"
+              class="user-modal-close"
+              id="closeRejectionModal"
+              aria-label="إغلاق">×</button>
+    </header>
+
+    <div class="rejection-body">
+      <label for="rejectionReason">
+        سبب الرفض <span aria-hidden="true">*</span>
+      </label>
+
+      <textarea
+        id="rejectionReason"
+        rows="5"
+        maxlength="2000"
+        placeholder="اكتب للكاتب سبب رفض الرواية وما يحتاج إلى تعديله..."
+        required></textarea>
+
+      <p class="rejection-hint">
+        سيظهر هذا السبب لصاحب الرواية في حسابه.
+      </p>
+
+      <div class="rejection-actions">
+        <button type="button"
+                class="btn btn-light"
+                id="cancelRejection">إلغاء</button>
+
+        <button type="button"
+                class="btn btn-danger"
+                id="submitRejection">تأكيد الرفض</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+
+<div
+  class="modal-backdrop rejection-modal-backdrop"
+  id="revisionRejectionModal"
+  hidden
+>
+  <section
+    class="rejection-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="revisionRejectionTitle"
+  >
+    <header class="rejection-header">
+      <div>
+        <h2 id="revisionRejectionTitle">رفض التعديل المقترح</h2>
+        <p id="revisionRejectionBookTitle"></p>
+      </div>
+
+      <button
+        type="button"
+        class="user-modal-close"
+        id="closeRevisionRejectionModal"
+        aria-label="إغلاق"
+      >×</button>
+    </header>
+
+    <div class="rejection-body">
+      <label for="revisionRejectionReason">
+        سبب رفض التعديل <span aria-hidden="true">*</span>
+      </label>
+
+      <textarea
+        id="revisionRejectionReason"
+        rows="5"
+        maxlength="2000"
+        placeholder="وضّح للكاتب سبب رفض التعديلات المطلوبة..."
+        required
+      ></textarea>
+
+      <p class="rejection-hint">
+        سيُحفظ السبب مع التعديل المقترح، ولن يغيّر سبب رفض الرواية الأصلية.
+      </p>
+
+      <div class="rejection-actions">
+        <button
+          type="button"
+          class="btn btn-light"
+          id="cancelRevisionRejection"
+        >إلغاء</button>
+
+        <button
+          type="button"
+          class="btn btn-danger"
+          id="submitRevisionRejection"
+        >تأكيد رفض التعديل</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+
+<div class="modal-backdrop" id="confirmModal" hidden><section class="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="confirmTitle"><div class="modal-symbol" id="confirmSymbol">!</div><h2 id="confirmTitle">تأكيد العملية</h2><p id="confirmText">هل أنت متأكد؟</p><div class="modal-actions"><button class="btn btn-light" id="cancelConfirm">إلغاء</button><button class="btn btn-danger" id="acceptConfirm">تأكيد</button></div></section></div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+
+<div id="global-scrollbar" aria-label="شريط تمرير الصفحة">
+  <div class="scrollbar-track">
+    <div class="scrollbar-thumb"></div>
+  </div>
+</div>
+
+<link rel="stylesheet" href="/Scrollbar/global-scrollbar.css">
+<script src="/Scrollbar/global-scrollbar.js"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,1139 @@
+/* =========================================================
+   حكاية ورواية | قارئ PDF
+   الهوية: أخضر داكن + ذهبي + ورق عاجي
+   ========================================================= */
+
+/* 1. المتغيرات الأساسية */
+:root {
+    --green: #123d32;
+    --green-2: #1a5143;
+    --gold: #d8b46a;
+    --gold-2: #f0d69a;
+  
+    --ink: #25332d;
+    --muted: #78827b;
+  
+    --app: #f3f1eb;
+    --panel: #fffefa;
+    --paper: #fffdf7;
+    --line: #e5e1d7;
+  
+    --shadow: 0 18px 55px #102d2418;
+    --font: "Cairo", sans-serif;
+  }
+  
+  /* 2. إعادة الضبط العامة */
+  * {
+    box-sizing: border-box;
+  }
+  
+  html,
+  body {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    font-family: var(--font);
+    color: var(--ink);
+    background: var(--app);
+  }
+  
+  body {
+    min-height: 100vh;
+  }
+  
+  button,
+  input {
+    font-family: inherit;
+  }
+  
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+  }
+  
+  .reader-app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--app);
+  }
+  
+  /* 3. الشريط العلوي */
+  .topbar {
+    position: relative;
+    z-index: 2;
+  
+    min-height: 82px;
+    padding: 12px clamp(16px, 3vw, 44px);
+  
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(180px, 1.2fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 18px;
+  
+    color: #fff;
+    background: var(--green);
+    box-shadow: 0 4px 18px #0b251e20;
+  }
+  
+  .brand {
+    width: max-content;
+    max-width: 100%;
+  
+    display: flex;
+    align-items: center;
+    gap: 11px;
+  
+    color: inherit;
+    text-decoration: none;
+  }
+  
+  .brand-mark {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 auto;
+  
+    display: grid;
+    place-items: center;
+  
+    border: 1px solid #d8b46a80;
+    border-radius: 13px;
+    background: #ffffff08;
+  }
+  
+  .brand-mark svg {
+    width: 27px;
+    fill: none;
+    stroke: var(--gold);
+    stroke-width: 1.7;
+    stroke-linejoin: round;
+  }
+  
+  .brand-copy {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.5;
+  }
+  
+  .brand-copy strong {
+    font-size: 15px;
+    letter-spacing: 0.1px;
+  }
+  
+  .brand-copy small {
+    color: #c9d8d1;
+    font-size: 10px;
+  }
+  
+  .book-heading {
+    min-width: 0;
+    text-align: center;
+  }
+  
+  .eyebrow {
+    display: block;
+    color: var(--gold);
+    font-size: 10px;
+  }
+  
+  .book-heading h1 {
+    margin: 0;
+    overflow: hidden;
+  
+    font-size: 16px;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  
+  .top-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 9px;
+  }
+  
+  .icon-btn,
+  .tool-btn,
+  .mini-btn,
+  .turn-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  
+    border: 0;
+    font-family: inherit;
+    cursor: pointer;
+  
+    transition:
+      background 0.18s ease,
+      color 0.18s ease,
+      border-color 0.18s ease,
+      transform 0.18s ease;
+  }
+  
+  .icon-btn {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 auto;
+  
+    color: #fff;
+    background: #ffffff0b;
+    border: 1px solid #ffffff2a;
+    border-radius: 12px;
+  }
+  
+  .icon-btn:hover {
+    background: #ffffff1b;
+    border-color: #d8b46a80;
+  }
+  
+  .icon-btn svg,
+  .tool-btn svg,
+  .secure-note svg {
+    width: 19px;
+    height: 19px;
+  
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  
+  .back-link {
+    padding: 8px 12px;
+  
+    color: var(--gold-2);
+    font-size: 12px;
+    text-decoration: none;
+    white-space: nowrap;
+  
+    border: 1px solid #d8b46a70;
+    border-radius: 10px;
+  
+    transition: background 0.18s ease;
+  }
+  
+  .back-link:hover {
+    background: #ffffff0d;
+  }
+  
+  /* 4. شريط أدوات القراءة */
+  .toolbar {
+    position: relative;
+    z-index: 1;
+  
+    min-height: 66px;
+    padding: 10px clamp(12px, 3vw, 42px);
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 17px;
+  
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+  }
+  
+  .tool-btn {
+    gap: 7px;
+    padding: 9px 10px;
+  
+    color: var(--green);
+    font-size: 12px;
+    white-space: nowrap;
+  
+    background: transparent;
+    border-radius: 9px;
+  }
+  
+  .tool-btn:hover {
+    background: #123d320d;
+  }
+  
+  .tool-btn svg {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+  }
+  
+  .toolbar-separator {
+    width: 1px;
+    height: 28px;
+    flex: 0 0 auto;
+    background: var(--line);
+  }
+  
+  .zoom-tools,
+  .page-jump,
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .mini-btn {
+    min-width: 30px;
+    height: 30px;
+    padding: 0 6px;
+  
+    color: var(--green);
+    font-size: 17px;
+  
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+  
+  .mini-btn:hover {
+    background: #d8b46a18;
+    border-color: var(--gold);
+  }
+  
+  .mini-btn:disabled,
+  .icon-btn:disabled,
+  .tool-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  
+  .zoom-tools > span {
+    min-width: 42px;
+    color: var(--green);
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+  }
+  
+  .fit-btn {
+    padding-inline: 7px;
+  }
+  
+  .page-jump {
+    color: var(--muted);
+    font-size: 12px;
+  }
+  
+  .page-jump input {
+    width: 53px;
+    height: 32px;
+    padding: 0 4px;
+  
+    color: var(--ink);
+    font: 600 12px var(--font);
+    text-align: center;
+  
+    background: var(--app);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    outline: none;
+  }
+  
+  .page-jump input:focus,
+  .search-box input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px #d8b46a20;
+  }
+  
+  .page-total {
+    white-space: nowrap;
+  }
+  
+  .go-btn {
+    padding-inline: 8px;
+    font-size: 12px;
+  }
+  
+  .search-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .search-box {
+    max-width: 100%;
+    padding: 4px 7px;
+  
+    background: var(--app);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+  }
+  
+  .search-box input {
+    width: 190px;
+    max-width: 34vw;
+    height: 30px;
+    padding: 0 8px;
+  
+    color: var(--ink);
+    font-size: 12px;
+  
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    outline: none;
+  }
+  
+  .search-status {
+    color: var(--muted);
+    font-size: 11px;
+    white-space: nowrap;
+  }
+  
+  /* 5. منطقة القراءة الرئيسية */
+  .reading-area {
+    flex: 1;
+    min-height: 350px;
+    min-width: 0;
+  
+    display: grid;
+    grid-template-columns: clamp(42px, 6vw, 76px) minmax(0, 1fr) clamp(42px, 6vw, 76px);
+    align-items: stretch;
+    gap: 8px;
+  
+    padding: 20px clamp(6px, 1.6vw, 24px);
+  }
+  
+  .book-stage {
+    position: relative;
+    min-width: 0;
+    min-height: 350px;
+    height: 100%;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    overflow: auto;
+  }
+  
+  .page-spread {
+    width: 100%;
+    max-width: 1200px;
+    height: min(100%, calc(100vh - 230px));
+    min-height: 340px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 12px minmax(0, 1fr);
+    align-items: stretch;
+    filter: drop-shadow(0 12px 22px #1c30241a);
+    direction: rtl;
+  }
+  
+  .page-sheet {
+    position: relative;
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    overflow: auto;
+    cursor: grab;
+    overscroll-behavior: contain;
+    background: var(--paper);
+    border: 1px solid #e4dfd2;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .page-left {
+    border-radius: 4px 0 0 4px;
+  }
+  
+  .page-right {
+    border-radius: 0 4px 4px 0;
+  }
+  
+  .page-sheet canvas {
+    display: block;
+    flex: 0 0 auto;
+  
+    max-width: none;
+    max-height: none;
+  
+    object-fit: contain;
+  }
+  
+  .book-gutter {
+    position: relative;
+    z-index: 1;
+  
+    background: linear-gradient(
+      90deg,
+      #d8d0c0,
+      #f8f3e8 48%,
+      #d7cebd
+    );
+  
+    box-shadow:
+      inset 1px 0 #c7bead,
+      inset -1px 0 #c7bead;
+  }
+  
+  /* طبقة النص المستخدمة للبحث */
+  .text-layer {
+    position: absolute;
+    inset: 0;
+  
+    overflow: hidden;
+    opacity: 0;
+  
+    color: transparent;
+    line-height: 1;
+    user-select: text;
+    pointer-events: none;
+  }
+  
+  .text-layer span {
+    position: absolute;
+    white-space: pre;
+    transform-origin: 0 0;
+    cursor: text;
+  }
+  
+  /* إبراز الصفحات التي تحتوي على نتيجة بحث */
+  .page-sheet.search-highlight .text-layer {
+    opacity: 0.23;
+    color: #8a5b00;
+    background: #f6d77a20;
+  }
+  
+  /* 6. التحميل والأخطاء */
+  .loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  
+    padding: 30px;
+  
+    color: var(--green);
+    text-align: center;
+  }
+  
+  .loading-state strong {
+    font-size: 15px;
+  }
+  
+  .loading-state p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  
+  .spinner {
+    width: 34px;
+    height: 34px;
+    margin-bottom: 8px;
+  
+    border: 3px solid #d8b46a50;
+    border-top-color: var(--green);
+    border-radius: 50%;
+  
+    animation: reader-spin 0.8s linear infinite;
+  }
+  
+  @keyframes reader-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* 7. أزرار تقليب الصفحات */
+  .turn-btn {
+    width: 44px;
+    height: 54px;
+    align-self: center;
+    justify-self: center;
+  
+    color: var(--green);
+    background: var(--panel);
+  
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: 0 5px 15px #102d240a;
+  }
+  
+  .turn-btn svg {
+    width: 23px;
+    height: 23px;
+  
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  
+  .turn-btn:hover:not(:disabled) {
+    color: #fff;
+    background: var(--green);
+    border-color: var(--green);
+    transform: translateY(-1px);
+  }
+  
+  .turn-btn:disabled {
+    opacity: 0.28;
+    cursor: not-allowed;
+  }
+  
+  /* 8. الشريط السفلي والتقدم */
+  .reader-footer {
+    padding: 0 clamp(16px, 3vw, 42px) 14px;
+  }
+  
+  .reading-progress {
+    height: 3px;
+    overflow: hidden;
+  
+    background: #dcd8ce;
+    border-radius: 4px;
+  }
+  
+  .reading-progress span {
+    display: block;
+    width: 0;
+    height: 100%;
+  
+    background: linear-gradient(90deg, var(--green), var(--gold));
+    transition: width 0.25s ease;
+  }
+  
+  .footer-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  
+    padding-top: 9px;
+  
+    color: var(--muted);
+    font-size: 11px;
+  }
+  
+  .secure-note {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+  }
+  
+  .secure-note svg {
+    width: 14px;
+    height: 14px;
+    color: var(--green);
+  }
+  
+  /* 9. رسائل التنبيه */
+  .toast {
+    position: fixed;
+    z-index: 10;
+    bottom: 26px;
+    left: 50%;
+  
+    max-width: calc(100vw - 28px);
+    padding: 10px 16px;
+  
+    color: #fff;
+    font-size: 12px;
+    text-align: center;
+  
+    background: var(--green);
+    border: 1px solid #d8b46a80;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+  
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 20px);
+  
+    transition:
+      opacity 0.25s ease,
+      transform 0.25s ease;
+  }
+  
+  .toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  
+  /* 10. الوضع الليلي — ألوان واضحة ومتناسقة */
+
+body.dark {
+  --app: #101a16;
+  --panel: #172720;
+  --paper: #202c25;
+  --ink: #f0d69a;
+  --muted: #c2b58f;
+  --line: #3b493d;
+  --shadow: 0 18px 55px #0007;
+
+  color: var(--gold-2);
+  background: var(--app);
+}
+
+body.dark .reader-app,
+body.dark .reading-area,
+body.dark .book-stage {
+  color: var(--gold-2);
+  background: var(--app);
+}
+
+body.dark .topbar {
+  background: #0d2119;
+}
+
+body.dark .toolbar,
+body.dark .search-box {
+  color: var(--gold-2);
+  background: var(--panel);
+  border-color: var(--line);
+}
+
+body.dark .tool-btn,
+body.dark .zoom-tools > span,
+body.dark .page-jump,
+body.dark .book-heading h1,
+body.dark .secure-note svg {
+  color: var(--gold-2);
+}
+
+body.dark .tool-btn:hover {
+  background: #ffffff0c;
+}
+
+body.dark .mini-btn,
+body.dark .page-jump input {
+  color: var(--gold-2);
+  background: #101a16;
+  border-color: var(--line);
+}
+
+body.dark .search-box input {
+  color: var(--gold-2);
+}
+
+body.dark .search-box input::placeholder {
+  color: #b8aa83;
+}
+
+body.dark .page-sheet {
+  background: var(--paper);
+  border-color: #475346;
+}
+
+body.dark .page-sheet canvas {
+  filter: invert(0.88) sepia(0.45) saturate(1.7) hue-rotate(5deg);
+}
+
+body.dark .text-layer {
+  color: var(--gold-2);
+}
+
+body.dark .page-sheet.search-highlight .text-layer {
+  color: #ffe8a8;
+  background: #d8b46a24;
+}
+
+body.dark .book-gutter {
+  background: linear-gradient(
+    90deg,
+    #26342b,
+    #3b4637 48%,
+    #26342b
+  );
+
+  box-shadow:
+    inset 1px 0 #4b5544,
+    inset -1px 0 #4b5544;
+}
+
+body.dark .turn-btn {
+  color: var(--gold-2);
+  background: var(--panel);
+  border-color: var(--line);
+}
+
+body.dark .turn-btn:hover:not(:disabled) {
+  color: #fff;
+  background: var(--green-2);
+}
+
+body.dark .reading-progress {
+  background: #35463d;
+}
+
+body.dark .reader-footer,
+body.dark .footer-meta {
+  color: var(--muted);
+}
+
+body.dark .toast {
+  color: var(--gold-2);
+  background: #172720;
+  border-color: var(--gold);
+}
+
+body.dark .reader-app:fullscreen {
+  background: var(--app);
+}
+  
+  /* 11. وضع ملء الشاشة */
+  .reader-app:fullscreen {
+    width: 100%;
+    min-height: 100vh;
+    background: var(--app);
+  }
+  
+  .reader-app:fullscreen .reading-area {
+    min-height: 0;
+  }
+  
+  .reader-app:fullscreen .book-stage {
+    min-height: 0;
+  }
+  
+  .reader-app:fullscreen .page-spread {
+    height: calc(100vh - 220px);
+    max-height: none;
+  }
+  
+  /* إخفاء العناصر المخفية فعليًا */
+  [hidden] {
+    display: none !important;
+  }
+  
+  /* =========================================================
+     12. الشاشات المتوسطة والصغيرة
+     ========================================================= */
+  
+  @media (min-width: 1200px) {
+    .page-spread {
+      max-height: calc(100vh - 235px);
+    }
+  }
+  
+  /* الموبايل والتابلت الصغير */
+  @media (max-width: 760px) {
+    .topbar {
+      min-height: 70px;
+      padding: 10px 13px;
+  
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+    }
+  
+    .brand {
+      gap: 8px;
+    }
+  
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+    }
+  
+    .brand-copy strong {
+      font-size: 13px;
+    }
+  
+    .brand-copy small {
+      font-size: 9px;
+    }
+  
+    .book-heading {
+      display: none;
+    }
+  
+    .top-actions {
+      gap: 6px;
+    }
+  
+    .icon-btn {
+      width: 34px;
+      height: 34px;
+    }
+  
+    .back-link {
+      padding: 7px 9px;
+      font-size: 11px;
+    }
+  
+    .toolbar {
+      min-height: unset;
+      padding: 9px 8px;
+      gap: 7px;
+    }
+  
+    .tool-btn {
+      padding: 8px 7px;
+      gap: 5px;
+      font-size: 11px;
+    }
+  
+    .tool-btn svg {
+      width: 17px;
+      height: 17px;
+    }
+  
+    .toolbar-separator {
+      height: 24px;
+    }
+  
+    .fit-btn span,
+    .search-group > .tool-btn span {
+      display: none;
+    }
+  
+    .search-box {
+      flex-basis: 100%;
+      justify-content: center;
+    }
+  
+    .search-box input {
+      width: min(58vw, 250px);
+      max-width: none;
+    }
+  
+    .reading-area {
+      min-height: 320px;
+      padding: 12px 3px;
+      gap: 3px;
+  
+      grid-template-columns: 36px minmax(0, 1fr) 36px;
+    }
+  
+    .book-stage {
+      min-height: 320px;
+      height: 100%;
+    }
+  
+    .page-spread {
+      width: 100%;
+      height: calc(100vh - 255px);
+      max-height: calc(100vh - 255px);
+      min-height: 0;
+  
+      grid-template-columns: minmax(0, 1fr);
+    }
+  
+    .page-left,
+    .book-gutter {
+      display: none;
+    }
+  
+    .page-right {
+      border: 1px solid #e4dfd2;
+      border-radius: 4px;
+    }
+  
+    .turn-btn {
+      width: 32px;
+      height: 45px;
+      border-radius: 11px;
+    }
+  
+    .turn-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+  
+    .reader-footer {
+      padding: 0 12px 12px;
+    }
+  
+    .footer-meta {
+      font-size: 10px;
+    }
+  
+    .page-jump {
+      gap: 5px;
+    }
+  
+    .page-jump input {
+      width: 44px;
+    }
+  
+    .zoom-tools {
+      gap: 5px;
+    }
+  
+    .zoom-tools > span {
+      min-width: 36px;
+      font-size: 11px;
+    }
+  
+    .reader-app:fullscreen .page-spread {
+      height: calc(100vh - 210px);
+      max-height: none;
+    }
+  }
+  
+  /* الشاشات الضيقة جدًا */
+  @media (max-width: 420px) {
+    .toolbar {
+      column-gap: 5px;
+    }
+  
+    .toolbar-separator {
+      display: none;
+    }
+  
+    .tool-btn span {
+      font-size: 10px;
+    }
+  
+    .page-jump label {
+      display: none;
+    }
+  
+    .page-total {
+      font-size: 10px;
+    }
+  
+    .go-btn {
+      min-width: 27px;
+    }
+  
+    .reading-area {
+      grid-template-columns: 30px minmax(0, 1fr) 30px;
+    }
+  
+    .turn-btn {
+      width: 29px;
+      height: 42px;
+    }
+  
+    .brand-copy strong {
+      font-size: 12px;
+    }
+  
+    .back-link {
+      padding: 7px;
+      font-size: 10px;
+    }
+  
+    .top-actions {
+      gap: 4px;
+    }
+  
+    .search-status {
+      font-size: 10px;
+    }
+  }
+  
+  /* تقليل الحركة لمن يفضّل ذلك */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+/* تثبيت ترتيب صفحات الكتاب العربي */
+@media (min-width: 761px) {
+  .page-spread {
+    direction: ltr;
+  }
+
+  .page-left {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .book-gutter {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .page-right {
+    grid-column: 3;
+    grid-row: 1;
+  }
+}
+
+/* تثبيت أماكن أزرار تقليب الصفحات */
+.reading-area {
+  direction: ltr;
+}
+
+#prevBtn {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+#nextBtn {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.book-stage {
+  grid-column: 2;
+  grid-row: 1;
+  direction: rtl;
+}
+
+/* السحب والتحريك أثناء التكبير */
+.page-sheet {
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x pan-y;
+}
+
+.page-sheet.is-dragging {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.page-sheet.is-dragging canvas {
+  pointer-events: none;
+}
+
+/* مساحة التمرير للصفحات المكبرة */
+.page-sheet {
+  min-width: 0;
+  min-height: 0;
+  align-items: flex-start;
+  justify-content: flex-start;
+  overflow: auto;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* إبقاء الصفحة عند بدايتها بدل توسيطها */
+.page-sheet canvas {
+  flex: 0 0 auto;
+  max-width: none;
+  max-height: none;
+  object-fit: initial;
+}
+
+.page-sheet {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow: auto;
+}
+
+/* إخفاء شريط التمرير مع الحفاظ على التمرير */
+.page-sheet {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.page-sheet::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}

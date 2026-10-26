@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>المكتبة | حكاية ورواية</title>
+  <link rel="icon" type="image/png" href="TabLogo.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="library.css">
+</head>
+<body>
+
+    <header class="navbar">
+      <a href="/index.html" class="logo">
+        <img src="logo.png" alt="حكاية ورواية">
+      </a>
+    
+        <nav>
+            <a href="/index.html">الرئيسية</a>
+            <a href="/index.html#about">عن المنصة</a>
+            <a href="/My Library/MyLibrary.html">مكتبتي</a>
+        </nav>
+    
+        <div class="nav-actions">
+          <button class="btn btn-outline" id="loginBtn">تسجيل الدخول</button>
+          <button class="btn btn-secondary-glass" id="homeBtn" hidden>العودة للرئيسية</button>          
+          <button class="btn btn-primary" id="signupBtn">إنشاء حساب</button>
+        </div>
+    </header>
+
+  <main class="library-main">
+
+    <section class="library-hero">
+      <span class="library-eyebrow">عالم من المعرفة بين إيديك</span>
+      <h1>اكتشف روايتك <span>التالية</span></h1>
+      <p>تصفّح الروايات، اكتشف عوالم جديدة، وابدأ رحلتك في القراءة.</p>
+
+      <div class="library-search">
+        <span aria-hidden="true">⌕</span>
+        <input
+          id="librarySearch"
+          type="search"
+          placeholder="ابحث عن اسم الرواية أو اسم الكاتب..."
+          autocomplete="off"
+        >
+        <button id="clearSearch" type="button" hidden>مسح</button>
+      </div>
+    </section>
+
+    <section class="library-content">
+      <div class="library-section-heading">
+        <div>
+          <span class="library-eyebrow">اختار اللي يناسبك</span>
+          <h2>مكتبة الروايات</h2>
+        </div>
+
+        <div class="library-sort custom-sort" id="customSort">
+          <select id="librarySort" class="sort-native" aria-hidden="true" tabindex="-1">
+            <option value="newest">الأحدث أولاً</option>
+            <option value="oldest">الأقدم أولاً</option>
+            <option value="title">حسب اسم الرواية</option>
+          </select>
+        
+          <button
+            type="button"
+            class="sort-trigger"
+            id="sortTrigger"
+            aria-expanded="false"
+            aria-haspopup="listbox"
+            aria-controls="sortOptions"
+          >
+            <span class="sort-trigger-label" id="sortCurrentLabel">الأحدث أولاً</span>
+            <span class="sort-chevron" aria-hidden="true">⌄</span>
+          </button>
+        
+          <div class="sort-options" id="sortOptions" role="listbox" aria-label="ترتيب الروايات" hidden>
+            <button type="button" class="sort-option is-selected" role="option" aria-selected="true" data-value="newest">
+              <span>الأحدث أولاً</span>
+              <span class="sort-check" aria-hidden="true">✓</span>
+            </button>
+            <button type="button" class="sort-option" role="option" aria-selected="false" data-value="oldest">
+              <span>الأقدم أولاً</span>
+              <span class="sort-check" aria-hidden="true">✓</span>
+            </button>
+            <button type="button" class="sort-option" role="option" aria-selected="false" data-value="title">
+              <span>حسب اسم الرواية</span>
+              <span class="sort-check" aria-hidden="true">✓</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="libraryCategories" class="library-categories">
+        <button class="library-category active" data-category="all">
+          كل الروايات
+        </button>
+      </div>
+
+      <div class="library-results">
+        <p id="libraryResultsCount">جاري تحميل الروايات...</p>
+      </div>
+
+      <div id="libraryMessage" class="library-message" role="status">
+        جاري تحميل الروايات...
+      </div>
+
+      <div id="libraryBookGrid" class="library-book-grid"></div>
+
+      <div id="libraryPagination" class="library-pagination"></div>
+    </section>
+
+  </main>
+
+  <footer>
+    <a href="#" class="logo">
+      <img src="logo.png" alt="حكاية ورواية">
+    </a>
+    <p>مساحة عربية لكل الحكايات.</p>
+    <small>© <span id="year"></span> حكاية ورواية — جميع الحقوق محفوظة لمنصة حكاية ورواية</small>
+  </footer>
+
+  <div id="bookDetailsModal" class="book-details-modal" hidden>
+    <div
+      class="book-details-panel"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="detailsBookTitle"
+    >
+      <button
+        id="closeBookDetails"
+        class="book-details-close"
+        type="button"
+        aria-label="إغلاق تفاصيل الرواية"
+      >✕</button>
+  
+      <div class="book-details-content">
+        <div class="book-details-cover-wrap">
+          <img
+            id="detailsBookCover"
+            class="book-details-cover"
+            src=""
+            alt=""
+            hidden
+          >
+          <div id="detailsCoverPlaceholder" class="book-details-cover-placeholder">
+            حكاية ورواية
+          </div>
+        </div>
+  
+        <div class="book-details-info">
+          <span id="detailsBookCategory" class="library-book-category"></span>
+  
+          <h2 id="detailsBookTitle"></h2>
+
+          <div id="detailsBookAuthor" class="library-book-author details-book-author">
+            <span class="library-book-author-icon" aria-hidden="true">✍️</span>
+            <span id="detailsBookAuthorName">كاتب غير معروف</span>
+          </div>
+          
+          <div class="details-book-meta">
+            <div id="detailsBookPrice" class="book-details-price"></div>
+          
+            <div
+              id="detailsBookOwnerCount"
+              class="library-book-owner-count details-book-owner-count"
+              aria-label="عدد الأشخاص الذين يمتلكون الرواية"
+            >
+              <span class="library-book-owner-eye" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="18" height="18"
+                     fill="none" stroke="currentColor" stroke-width="1.8"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              </span>
+              <span id="detailsBookOwnerCountValue">0</span>
+            </div>
+          </div>
+  
+          <div class="book-details-divider"></div>
+  
+          <h3>عن الرواية</h3>
+          <p id="detailsBookDescription" class="book-details-description"></p>
+  
+          <button
+            id="detailsBookAction"
+            class="library-read-btn book-details-action"
+            type="button"
+          >شراء الرواية</button>
+  
+          <p id="detailsBookMessage" class="book-details-message" role="status"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="readerModal" class="reader-modal" hidden>
+    <div class="reader-panel" role="dialog" aria-modal="true" aria-labelledby="readerTitle">
+      <div class="reader-toolbar">
+        <h2 id="readerTitle">قارئ حكاية ورواية</h2>
+        <button id="closeReader" type="button" aria-label="إغلاق القارئ">✕</button>
+      </div>
+      <div id="readerMessage" class="reader-message">جاري فتح الرواية...</div>
+      <iframe id="readerFrame" title="محتوى الرواية" hidden></iframe>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="library.js"></script>
+  <div id="global-scrollbar" aria-label="شريط تمرير الصفحة">
+    <div class="scrollbar-track">
+      <div class="scrollbar-thumb"></div>
+    </div>
+  </div>
+  
+  <link rel="stylesheet" href="/Scrollbar/global-scrollbar.css">
+  <script src="/Scrollbar/global-scrollbar.js"></script>
+</body>
+</html>
