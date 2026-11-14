@@ -241,24 +241,30 @@ async function loadBookCovers(root = document) {
     // ---------------------------------------------------------
   
     
-function updateBodyScroll() {
-  const bookModal = $('bookDetailsModal');
-  const userModal = $('userDetailsModal');
-  const revisionDetailsModal = $('revisionDetailsModal');
-  const confirmModal = $('confirmModal');
-  const rejectionModal = $('rejectionModal');
-  const revisionRejectionModal = $('revisionRejectionModal');
-
-  const anyModalOpen =
-    (bookModal && !bookModal.hidden) ||
-    (userModal && !userModal.hidden) ||
-    (rejectionModal && !rejectionModal.hidden) ||
-    (revisionRejectionModal && !revisionRejectionModal.hidden) ||
-    (revisionDetailsModal && !revisionDetailsModal.hidden) ||
-    (confirmModal && !confirmModal.hidden);
-
-  document.body.style.overflow = anyModalOpen ? 'hidden' : '';
-}
+    function updateBodyScroll() {
+      const bookModal = $('bookDetailsModal');
+      const userModal = $('userDetailsModal');
+      const revisionDetailsModal = $('revisionDetailsModal');
+      const confirmModal = $('confirmModal');
+      const rejectionModal = $('rejectionModal');
+      const revisionRejectionModal = $('revisionRejectionModal');
+    
+      const anyModalOpen =
+        (bookModal && !bookModal.hidden) ||
+        (userModal && !userModal.hidden) ||
+        (rejectionModal && !rejectionModal.hidden) ||
+        (revisionRejectionModal && !revisionRejectionModal.hidden) ||
+        (revisionDetailsModal && !revisionDetailsModal.hidden) ||
+        (confirmModal && !confirmModal.hidden);
+    
+      document.body.style.overflow = anyModalOpen ? 'hidden' : '';
+    
+      const globalScrollbar = $('global-scrollbar');
+    
+      if (globalScrollbar) {
+        globalScrollbar.style.display = anyModalOpen ? 'none' : '';
+      }
+    }
   
     function confirm(options, action) {
       $('confirmTitle').textContent = options.title;
@@ -372,8 +378,8 @@ function updateBodyScroll() {
   
       
 try {
-  const [booksRes, usersRes, categoriesRes, revisionsRes] =
-    await Promise.all([
+  const [booksRes, usersRes, categoriesRes, revisionsRes, userBooksRes] =
+  await Promise.all([
       db.from('books')
         .select(
           'id, author_id, category_id, title, description, cover_path, file_path, status, price, rejection_reason, created_at'
@@ -381,7 +387,7 @@ try {
         .order('created_at', { ascending: false }),
 
       db.from('profiles')
-        .select('id, display_name, role, avatar_path'),
+        .select('id, display_name, role, avatar_path, created_at'),
 
       db.from('categories')
         .select('id, name'),
@@ -391,7 +397,10 @@ try {
           'id, book_id, author_id, proposed_category_id, proposed_title, proposed_description, proposed_cover_path, proposed_file_path, status, rejection_reason, submitted_at, reviewed_at, reviewed_by'
         )
         .eq('status', 'pending')
-        .order('submitted_at', { ascending: false })
+        .order('submitted_at', { ascending: false }),
+
+      db.from('user_books')
+        .select('user_id, created_at, book:books(id, status)')
     ]);
 
   if (booksRes.error) {
@@ -405,6 +414,15 @@ try {
       'تعذر تحميل المستخدمين: ' + getErrorMessage(usersRes.error)
     );
   }
+
+
+  if (userBooksRes.error) {
+    throw new Error(
+      'تعذر تحميل إحصائيات المكتبات الشخصية: ' +
+      getErrorMessage(userBooksRes.error)
+    );
+  }
+  
 
   if (revisionsRes.error) {
     console.error(
@@ -455,6 +473,71 @@ try {
     category_name:
       categoryNames.get(String(book.category_id)) || 'غير محدد'
   }));
+
+
+  // حساب عدد الروايات الموجودة في المكتبة الشخصية لكل مستخدم
+
+  
+  // تجهيز الروايات الموجودة في المكتبات الشخصية
+// مع الاحتفاظ ببيانات الرواية وتاريخ إضافتها
+state.userBooks = (userBooksRes.data || [])
+.filter((item) => item.book && item.book.status === 'published')
+.map((item) => {
+  const book = state.books.find(
+    (b) => String(b.id) === String(item.book.id)
+  );
+
+  return {
+    user_id: item.user_id,
+    added_at: item.created_at,
+    book: book || null
+  };
+})
+.filter((item) => item.book);
+
+
+// حساب عدد الروايات في المكتبة الشخصية لكل مستخدم
+const libraryCounts = new Map();
+
+state.userBooks.forEach((item) => {
+const userId = String(item.user_id);
+
+libraryCounts.set(
+  userId,
+  (libraryCounts.get(userId) || 0) + 1
+);
+});
+
+
+  // ربط إحصائيات المكتبة وعدد الروايات المنشورة بكل مستخدم
+  state.users = state.users.map((user) => {
+    const userId = String(user.id);
+
+    const libraryBooksCount =
+      libraryCounts.get(userId) || 0;
+
+    const publishedBooksCount = state.books.filter(
+      (book) =>
+        String(book.author_id) === userId &&
+        book.status === 'published'
+    ).length;
+
+    return {
+      ...user,
+      library_books_count: libraryBooksCount,
+      published_books_count: publishedBooksCount
+    };
+  });
+
+  // ترتيب المستخدمين: المدير أولًا، ثم الأحدث إنشاءً
+  state.users.sort((a, b) => {
+    // حساب المدير يظل دائمًا في أول القائمة
+    if (a.role === 'admin' && b.role !== 'admin') return -1;
+    if (a.role !== 'admin' && b.role === 'admin') return 1;
+
+    // باقي الحسابات من الأحدث إلى الأقدم
+    return new Date(b.created_at) - new Date(a.created_at);
+  });
 
   
 state.revisions = state.revisions.map((revision) => {
@@ -958,6 +1041,30 @@ function openRevisionDetails(revisionId) {
     ? 'يوجد ملف PDF مقترح'
     : 'لم يتم اقتراح ملف PDF جديد';
 
+
+    // فحص الحقول التي تم تعديلها
+const normalizeValue = (value) =>
+String(value ?? '').trim();
+
+const titleChanged =
+normalizeValue(currentTitle) !== normalizeValue(proposedTitle);
+
+const categoryChanged =
+normalizeValue(currentCategory) !== normalizeValue(proposedCategory);
+
+const descriptionChanged =
+normalizeValue(currentDescription) !== normalizeValue(proposedDescription);
+
+const coverChanged =
+Boolean(revision.proposed_cover_path) &&
+normalizeValue(revision.current_cover_path) !==
+normalizeValue(revision.proposed_cover_path);
+
+const fileChanged =
+Boolean(revision.proposed_file_path) &&
+normalizeValue(revision.current_file_path) !==
+normalizeValue(revision.proposed_file_path);
+
   if (subtitle) {
     subtitle.textContent =
       `الكاتب: ${revision.author_name || 'كاتب غير معروف'}`;
@@ -988,7 +1095,7 @@ function openRevisionDetails(revisionId) {
           </thead>
 
           <tbody>
-            <tr>
+            <tr class="${titleChanged ? 'revision-row-changed' : ''}">
               <td>
                 <span class="revision-field-label">عنوان الرواية</span>
                 <strong>${esc(currentTitle)}</strong>
@@ -1000,7 +1107,7 @@ function openRevisionDetails(revisionId) {
               </td>
             </tr>
 
-            <tr>
+            <tr class="${categoryChanged ? 'revision-row-changed' : ''}">
               <td>
                 <span class="revision-field-label">التصنيف</span>
                 <span>${esc(currentCategory)}</span>
@@ -1012,7 +1119,7 @@ function openRevisionDetails(revisionId) {
               </td>
             </tr>
 
-            <tr>
+            <tr class="${descriptionChanged ? 'revision-row-changed' : ''}">
               <td>
                 <span class="revision-field-label">الوصف</span>
                 <p>${esc(currentDescription)}</p>
@@ -1024,7 +1131,7 @@ function openRevisionDetails(revisionId) {
               </td>
             </tr>
 
-            <tr>
+            <tr class="${coverChanged ? 'revision-row-changed' : ''}">
               <td>
                 <span class="revision-field-label">الغلاف الحالي</span>
                 <div class="revision-comparison-cover">
@@ -1040,7 +1147,7 @@ function openRevisionDetails(revisionId) {
               </td>
             </tr>
 
-            <tr>
+            <tr class="${fileChanged ? 'revision-row-changed' : ''}">
               <td>
                 <span class="revision-field-label">ملف الرواية</span>
                 <span>${esc(currentFile)}</span>
@@ -1246,6 +1353,30 @@ function openRevisionDetails(revisionId) {
     $('closeRevisionDetails').addEventListener('click', () => {
       closeRevisionDetails();
     });
+
+    $('usersTable').addEventListener('click', (event) => {
+      if (event.target.closest('[data-action="copy-user"]')) {
+        return;
+      }
+    
+      const row = event.target.closest('[data-action="open-user"]');
+    
+      if (!row) return;
+    
+      openUserDetails(row.dataset.id);
+    });
+    
+    
+    $('usersTable').addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+    
+      const row = event.target.closest('[data-action="open-user"]');
+    
+      if (!row) return;
+    
+      event.preventDefault();
+      openUserDetails(row.dataset.id);
+    });
   
     // ---------------------------------------------------------
     // 9. نافذة تفاصيل المستخدم
@@ -1255,92 +1386,128 @@ function openRevisionDetails(revisionId) {
       const user = state.users.find(
         (item) => String(item.id) === String(userId)
       );
-  
+    
       if (!user) {
         toast('لم يتم العثور على المستخدم. حدّث البيانات وحاول مجددًا.');
         return;
       }
-  
-      const userBooks = state.books.filter(
-        (book) => String(book.author_id) === String(user.id)
+    
+      // الروايات الموجودة في المكتبة الشخصية للمستخدم
+      const libraryBooks = (state.userBooks || [])
+        .filter((item) => String(item.user_id) === String(user.id))
+        .map((item) => ({
+          ...item.book,
+          added_at: item.added_at
+        }))
+        .filter((book) => book && book.status === 'published');
+    
+      // الروايات المنشورة التي ألّفها المستخدم
+      const publishedBooks = state.books.filter(
+        (book) =>
+          String(book.author_id) === String(user.id) &&
+          book.status === 'published'
       );
-  
+    
       const avatarUrl = user.avatar_path
         ? db.storage.from('avatars').getPublicUrl(user.avatar_path).data.publicUrl
         : '';
-  
+    
       const initial = (user.display_name || 'م').trim().charAt(0) || 'م';
-  
-      const published = userBooks.filter(
-        (book) => book.status === 'published'
-      ).length;
-  
-      const pending = userBooks.filter(
-        (book) => book.status === 'pending'
-      ).length;
-  
-      const rejected = userBooks.filter(
-        (book) => book.status === 'rejected'
-      ).length;
-  
+    
       const roleClass = ['reader', 'author', 'admin'].includes(user.role)
         ? user.role
         : 'reader';
-  
-      const booksHtml = userBooks.length
-        ? userBooks.map((book) => `
-            <article class="book-card">
-              ${bookCover(book)}
-  
-              <div class="book-main">
-                <h4 class="book-title">${esc(book.title)}</h4>
-  
-                <span class="book-author">
-                  ${esc(roleLabels[user.role] || 'مستخدم')}
-                </span>
-  
-                <span class="book-date">
-                  أُضيف في ${dateLabel(book.created_at)}
-                </span>
-  
-                <p class="book-desc">
-                  ${esc(book.description || 'لا يوجد وصف للرواية.')}
-                </p>
-  
-                <div class="book-meta">
-                  ${statusBadge(book.status)}
-  
-                  <span class="book-date">
-                    ${
-                      book.price == null || Number(book.price) === 0
-                        ? 'مجاني'
-                        : `${esc(book.price)} ج.م`
-                    }
-                  </span>
-                </div>
-  
-                <div class="book-actions">
-                  <button
-                    type="button"
-                    class="btn btn-light"
-                    data-action="preview"
-                    data-id="${esc(book.id)}"
-                  >
-                    ▣ معاينة الرواية
-                  </button>
-                </div>
+    
+      // إنشاء كارت الرواية
+      function renderUserBookCard(book, dateText, dateValue) {
+        const price =
+          book.price == null || Number(book.price) === 0
+            ? 'مجاني'
+            : `${esc(book.price)} ج.م`;
+    
+        return `
+          <article class="book-card user-library-book-card">
+    
+            ${bookCover(book)}
+    
+            <div class="book-main">
+    
+              <h4 class="book-title">
+                ${esc(book.title)}
+              </h4>
+    
+              <p class="book-desc">
+                ${esc(book.description || 'لا يوجد وصف للرواية.')}
+              </p>
+    
+              <div class="user-library-book-category">
+                <span>التصنيف</span>
+                <strong>
+                  ${esc(book.category_name || 'غير محدد')}
+                </strong>
               </div>
-            </article>
-          `).join('')
-        : empty(
-            user.role === 'reader'
-              ? 'هذا الحساب قارئ ولا توجد روايات مرتبطة به ككاتب.'
-              : 'لم يضف هذا المستخدم أي روايات حتى الآن.'
-          );
-  
+    
+              <div class="user-library-book-meta">
+    
+                <span class="user-library-book-price">
+                  ${price}
+                </span>
+    
+                ${
+                  dateValue
+                    ? `<span class="user-library-book-date">
+                        ${dateText} ${dateLabel(dateValue)}
+                      </span>`
+                    : ''
+                }
+    
+              </div>
+    
+              <div class="book-actions">
+                <button
+                  type="button"
+                  class="btn btn-light"
+                  data-action="preview"
+                  data-id="${esc(book.id)}"
+                >
+                  ▣ معاينة الرواية
+                </button>
+              </div>
+    
+            </div>
+          </article>
+        `;
+      }
+    
+      // كروت المكتبة الشخصية
+      const libraryBooksHtml = libraryBooks.length
+        ? libraryBooks.map((book) =>
+            renderUserBookCard(
+              book,
+              'أُضيفت للمكتبة في',
+              book.added_at
+            )
+          ).join('')
+        : empty('لا توجد روايات منشورة في المكتبة الشخصية لهذا المستخدم حتى الآن.');
+    
+      // كروت الروايات المنشورة للمؤلف
+      const publishedBooksHtml = publishedBooks.length
+        ? publishedBooks.map((book) =>
+            renderUserBookCard(
+              book,
+              'تاريخ النشر:',
+              book.created_at
+            )
+          ).join('')
+        : empty('لم ينشر هذا الكاتب أي روايات حتى الآن.');
+    
+      // التبويب الثاني يظهر للكاتب فقط
+      const hasAuthorTab = user.role === 'author';
+    
       $('userDetailsContent').innerHTML = `
+    
         <div class="user-profile-summary">
-  
+    
           <div class="user-profile-avatar">
             ${
               avatarUrl
@@ -1349,65 +1516,174 @@ function openRevisionDetails(revisionId) {
                 : esc(initial)
             }
           </div>
-  
+    
           <div class="user-profile-info">
+    
             <h3>${esc(user.display_name || 'مستخدم بدون اسم')}</h3>
-  
+    
             <p>
               <span class="role-badge role-${roleClass}">
                 ${esc(roleLabels[user.role] || 'غير محدد')}
               </span>
             </p>
-  
+    
             <p>معرّف الحساب:</p>
-            <div class="user-id-box">${esc(user.id)}</div>
+    
+            <div class="user-id-box">
+              ${esc(user.id)}
+            </div>
+    
           </div>
+    
         </div>
-  
+    
+    
         <div class="user-detail-stats">
-  
+    
           <div class="user-detail-stat">
-            <span>إجمالي الروايات</span>
-            <strong>${userBooks.length.toLocaleString('ar-EG')}</strong>
+            <span>روايات في مكتبته</span>
+            <strong>
+              ${libraryBooks.length.toLocaleString('ar-EG')}
+            </strong>
           </div>
-  
+    
           <div class="user-detail-stat">
-            <span>روايات منشورة</span>
-            <strong>${published.toLocaleString('ar-EG')}</strong>
+            <span>روايات منشورة من تأليفه</span>
+            <strong>
+              ${publishedBooks.length.toLocaleString('ar-EG')}
+            </strong>
           </div>
-  
-          <div class="user-detail-stat">
-            <span>قيد المراجعة</span>
-            <strong>${pending.toLocaleString('ar-EG')}</strong>
-          </div>
-  
+    
         </div>
-  
-        <div class="user-books-heading">
-          <div>
-            <h3>روايات المستخدم</h3>
-            <p>تظهر الروايات المنشورة والمعلقة والمرفوضة.</p>
-          </div>
-  
-          <span class="count-pill">
-            ${userBooks.length.toLocaleString('ar-EG')} رواية
-          </span>
+    
+    
+        <div class="user-library-tabs" role="tablist">
+    
+          <button
+            type="button"
+            class="user-library-tab active"
+            data-user-tab="library"
+            role="tab"
+            aria-selected="true"
+          >
+            مكتبته
+            <span>${libraryBooks.length.toLocaleString('ar-EG')}</span>
+          </button>
+    
+          ${
+            hasAuthorTab
+              ? `
+                <button
+                  type="button"
+                  class="user-library-tab"
+                  data-user-tab="published"
+                  role="tab"
+                  aria-selected="false"
+                >
+                  رواياته المنشورة
+                  <span>${publishedBooks.length.toLocaleString('ar-EG')}</span>
+                </button>
+              `
+              : ''
+          }
+    
         </div>
-  
+    
+    
+        <section
+          class="user-library-panel"
+          data-user-panel="library"
+          role="tabpanel"
+        >
+    
+          <div class="user-books-heading">
+    
+            <div>
+              <h3>مكتبته الشخصية</h3>
+              <p>الروايات المنشورة التي أضافها المستخدم إلى مكتبته.</p>
+            </div>
+    
+            <span class="count-pill">
+              ${libraryBooks.length.toLocaleString('ar-EG')} رواية
+            </span>
+    
+          </div>
+    
+          <div class="user-books-grid user-library-books-grid">
+            ${libraryBooksHtml}
+          </div>
+    
+        </section>
+    
+    
         ${
-          rejected
-            ? `<p class="privacy-note">الروايات المرفوضة: ${rejected.toLocaleString('ar-EG')}</p>`
+          hasAuthorTab
+            ? `
+              <section
+                class="user-library-panel"
+                data-user-panel="published"
+                role="tabpanel"
+                hidden
+              >
+    
+                <div class="user-books-heading">
+    
+                  <div>
+                    <h3>رواياته المنشورة</h3>
+                    <p>جميع الروايات المنشورة التي قام هذا الكاتب بتأليفها.</p>
+                  </div>
+    
+                  <span class="count-pill">
+                    ${publishedBooks.length.toLocaleString('ar-EG')} رواية
+                  </span>
+    
+                </div>
+    
+                <div class="user-books-grid user-library-books-grid">
+                  ${publishedBooksHtml}
+                </div>
+    
+              </section>
+            `
             : ''
         }
-  
-        <div class="user-books-grid">
-          ${booksHtml}
-        </div>
+    
       `;
-  
+    
+    
+      // التحكم في التبديل بين التبويبات
+      const tabButtons = $('userDetailsContent').querySelectorAll(
+        '[data-user-tab]'
+      );
+    
+      const tabPanels = $('userDetailsContent').querySelectorAll(
+        '[data-user-panel]'
+      );
+    
+      tabButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          const selectedTab = button.dataset.userTab;
+    
+          tabButtons.forEach((tab) => {
+            const isActive = tab.dataset.userTab === selectedTab;
+    
+            tab.classList.toggle('active', isActive);
+            tab.setAttribute('aria-selected', String(isActive));
+          });
+    
+          tabPanels.forEach((panel) => {
+            panel.hidden = panel.dataset.userPanel !== selectedTab;
+          });
+        });
+      });
+    
+    
       $('userDetailsModal').hidden = false;
+    
       loadBookCovers($('userDetailsContent'));
+    
       updateBodyScroll();
+    
       $('closeUserDetails').focus();
     }
   
@@ -1435,13 +1711,13 @@ function openRevisionDetails(revisionId) {
       const query = $('usersSearch').value
         .trim()
         .toLocaleLowerCase('ar');
-  
+    
       const selectedRole = $('roleFilter').value;
-  
+    
       const users = state.users.filter((user) => {
         const matchesRole =
           selectedRole === 'all' || user.role === selectedRole;
-  
+    
         const matchesSearch =
           !query ||
           [
@@ -1453,62 +1729,118 @@ function openRevisionDetails(revisionId) {
               .toLocaleLowerCase('ar')
               .includes(query)
           );
-  
+    
         return matchesRole && matchesSearch;
       });
-  
+    
       $('usersCount').textContent =
         state.users.length.toLocaleString('ar-EG') + ' مستخدم';
-  
+    
       $('usersTable').innerHTML = users.length
-        ? users.map((user) => `
-            <tr>
-              <td>
-                <div class="user-row-actions">
-                  <button
-                    type="button"
-                    class="table-action"
-                    data-action="user-details"
-                    data-id="${esc(user.id)}"
-                  >
-                    عرض التفاصيل ←
-                  </button>
-  
+        ? users.map((user) => {
+            const avatarUrl = user.avatar_path
+              ? db.storage.from('avatars').getPublicUrl(user.avatar_path).data.publicUrl
+              : '';
+    
+            const displayName =
+              user.display_name || 'مستخدم بدون اسم';
+    
+            const initial = displayName.trim().charAt(0) || '؟';
+    
+            const libraryCount = user.library_books_count || 0;
+            const publishedCount = user.published_books_count || 0;
+    
+            return `
+              <tr
+                class="user-clickable-row"
+                data-action="open-user"
+                data-id="${esc(user.id)}"
+                tabindex="0"
+                role="button"
+                aria-label="عرض تفاصيل ${esc(displayName)}"
+              >
+    
+                <!-- المستخدم -->
+                <td>
+                  <div class="user-table-profile">
+    
+                    <div class="user-table-avatar">
+                      ${
+                        avatarUrl
+                          ? `
+                            <img
+                              src="${esc(avatarUrl)}"
+                              alt="${esc(displayName)}"
+                            >
+                          `
+                          : `
+                            <span>${esc(initial)}</span>
+                          `
+                      }
+                    </div>
+    
+                    <div class="user-table-info">
+                      <span class="user-table-name">
+                        ${esc(displayName)}
+                      </span>
+                    </div>
+    
+                  </div>
+                </td>
+    
+                <!-- نوع الحساب -->
+                <td>
+                  <span class="role-badge role-${esc(user.role)}">
+                    ${esc(roleLabels[user.role] || user.role || 'غير محدد')}
+                  </span>
+                </td>
+    
+                <!-- الإحصائيات -->
+                <td>
+                  <div class="user-table-stats">
+    
+                    ${
+                      user.role === 'author'
+                        ? `
+                          <div class="user-table-stat">
+                            <span class="user-table-stat-value">
+                              ${publishedCount.toLocaleString('ar-EG')}
+                            </span>
+                            <span class="user-table-stat-label">
+                              رواية منشورة
+                            </span>
+                          </div>
+                        `
+                        : ''
+                    }
+    
+                    <div class="user-table-stat">
+                      <span class="user-table-stat-value">
+                        ${libraryCount.toLocaleString('ar-EG')}
+                      </span>
+                      <span class="user-table-stat-label">
+                        في مكتبته
+                      </span>
+                    </div>
+    
+                  </div>
+                </td>
+    
+                <!-- معرّف المستخدم -->
+                <td>
                   <button
                     type="button"
                     class="table-action"
                     data-action="copy-user"
                     data-id="${esc(user.id)}"
                   >
-                    نسخ المعرّف
+                    <span>نسخ المعرّف</span>
                   </button>
-                </div>
-              </td>
-  
-              <td>
-                <span class="role-badge role-${esc(user.role)}">
-                  ${esc(roleLabels[user.role] || user.role || 'غير محدد')}
-                </span>
-              </td>
-  
-              <td>
-                <div class="id-cell" title="${esc(user.id)}">
-                  ${esc(user.id)}
-                </div>
-              </td>
-  
-              <td>
-                <button
-                  type="button"
-                  class="table-action"
-                  data-action="copy-user"
-                  data-id="${esc(user.id)}"
-                >
-                  نسخ المعرّف
-                </button>
-              </td>
-            </tr>
-          `).join('')
+                </td>
+    
+              </tr>
+            `;
+          }).join('')
         : `
             <tr>
               <td colspan="4">
@@ -1936,8 +2268,175 @@ $('submitRevisionRejection').addEventListener('click', async () => {
     $('publishedSearch').addEventListener('input', renderPublished);
     $('booksSearch').addEventListener('input', renderBooks);
     $('statusFilter').addEventListener('change', renderBooks);
+
+    // Custom status filter dropdown
+(() => {
+  const dropdown = $('statusFilterDropdown');
+  const trigger = $('statusFilterTrigger');
+  const menu = $('statusFilterMenu');
+  const nativeSelect = $('statusFilter');
+  const label = $('statusFilterLabel');
+
+  if (!dropdown || !trigger || !menu || !nativeSelect || !label) return;
+
+  const options = menu.querySelectorAll('.status-filter-option');
+
+  function closeDropdown() {
+    dropdown.classList.remove('open');
+    menu.hidden = true;
+    trigger.setAttribute('aria-expanded', 'false');
+  }
+
+  function openDropdown() {
+    dropdown.classList.add('open');
+    menu.hidden = false;
+    trigger.setAttribute('aria-expanded', 'true');
+  }
+
+  function syncDropdown() {
+    const selectedValue = nativeSelect.value;
+    const selectedOption = [...options].find(
+      option => option.dataset.value === selectedValue
+    );
+
+    if (!selectedOption) return;
+
+    label.textContent = selectedOption.querySelector('span:nth-child(2)').textContent;
+
+    options.forEach(option => {
+      const isActive = option.dataset.value === selectedValue;
+
+      option.classList.toggle('active', isActive);
+      option.setAttribute('aria-selected', String(isActive));
+    });
+  }
+
+  trigger.addEventListener('click', () => {
+    if (menu.hidden) {
+      openDropdown();
+    } else {
+      closeDropdown();
+    }
+  });
+
+  options.forEach(option => {
+    option.addEventListener('click', () => {
+      nativeSelect.value = option.dataset.value;
+
+      nativeSelect.dispatchEvent(new Event('change', {
+        bubbles: true
+      }));
+
+      syncDropdown();
+      closeDropdown();
+    });
+  });
+
+  document.addEventListener('click', event => {
+    if (!dropdown.contains(event.target)) {
+      closeDropdown();
+    }
+  });
+
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+      closeDropdown();
+    }
+  });
+
+  nativeSelect.addEventListener('change', syncDropdown);
+
+  syncDropdown();
+})();
+
     $('usersSearch').addEventListener('input', renderUsers);
     $('roleFilter').addEventListener('change', renderUsers);
+
+    // Custom role filter dropdown
+(() => {
+  const dropdown = $('roleFilterDropdown');
+  const trigger = $('roleFilterTrigger');
+  const menu = $('roleFilterMenu');
+  const nativeSelect = $('roleFilter');
+  const label = $('roleFilterLabel');
+
+  if (!dropdown || !trigger || !menu || !nativeSelect || !label) {
+    return;
+  }
+
+  const options = menu.querySelectorAll('.role-filter-option');
+
+  function closeDropdown() {
+    dropdown.classList.remove('open');
+    menu.hidden = true;
+    trigger.setAttribute('aria-expanded', 'false');
+  }
+
+  function openDropdown() {
+    dropdown.classList.add('open');
+    menu.hidden = false;
+    trigger.setAttribute('aria-expanded', 'true');
+  }
+
+  function syncDropdown() {
+    const selectedValue = nativeSelect.value;
+
+    const selectedOption = [...options].find(
+      option => option.dataset.value === selectedValue
+    );
+
+    if (!selectedOption) return;
+
+    label.textContent =
+      selectedOption.querySelector('.role-option-label').textContent;
+
+    options.forEach(option => {
+      const isActive = option.dataset.value === selectedValue;
+
+      option.classList.toggle('active', isActive);
+      option.setAttribute('aria-selected', String(isActive));
+    });
+  }
+
+  trigger.addEventListener('click', () => {
+    if (menu.hidden) {
+      openDropdown();
+    } else {
+      closeDropdown();
+    }
+  });
+
+  options.forEach(option => {
+    option.addEventListener('click', () => {
+      nativeSelect.value = option.dataset.value;
+
+      nativeSelect.dispatchEvent(
+        new Event('change', { bubbles: true })
+      );
+
+      syncDropdown();
+      closeDropdown();
+    });
+  });
+
+  document.addEventListener('click', event => {
+    if (!dropdown.contains(event.target)) {
+      closeDropdown();
+    }
+  });
+
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+      closeDropdown();
+    }
+  });
+
+  nativeSelect.addEventListener('change', syncDropdown);
+
+  syncDropdown();
+})();
+
+
     $('revisionsSearch').addEventListener('input', renderRevisions);
     $('revisionsRefresh').addEventListener('click', loadData);
 

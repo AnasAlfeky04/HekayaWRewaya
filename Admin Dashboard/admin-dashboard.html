@@ -41,7 +41,82 @@
       <div class="content-grid"><article class="surface"><div class="surface-heading"><div><h3>أحدث الروايات</h3><p>آخر الروايات المضافة إلى قاعدة البيانات</p></div><button class="text-btn" data-go="books">عرض الكل ←</button></div><div id="recentBooks" class="recent-list"><div class="loading-state">جارٍ تحميل أحدث الروايات…</div></div></article><article class="surface quick-actions"><div class="surface-heading"><div><h3>اختصارات سريعة</h3><p>انتقل مباشرة إلى القسم المطلوب</p></div></div><button class="quick-action" data-go="books"><span class="quick-icon amber">◷</span><span><strong>مراجعة الروايات</strong><small>قبول أو رفض الروايات المعلقة</small></span><span class="arrow">←</span></button><button class="quick-action" data-go="published"><span class="quick-icon green">▤</span><span><strong>إدارة الروايات المنشورة</strong><small>معاينة الروايات أو حذفها</small></span><span class="arrow">←</span></button><button class="quick-action" data-go="users"><span class="quick-icon purple">♙</span><span><strong>المستخدمون</strong><small>عرض حسابات القراء والكتاب</small></span><span class="arrow">←</span></button></article></div>
     </section>
     <section class="tab-panel" id="panel-published"><div class="section-heading"><div><h2>الروايات المنشورة</h2><p>معاينة الروايات المنشورة أو حذف سجل الرواية وملفاته.</p></div><span class="count-pill" id="publishedCount">0 رواية</span></div><div class="surface"><div class="filters"><label class="search-box"><span>⌕</span><input id="publishedSearch" type="search" placeholder="ابحث باسم الرواية أو الكاتب…"></label><button class="btn btn-light" id="publishedRefresh">↻ تحديث</button></div><div id="publishedBooks" class="books-grid"><div class="loading-state">جارٍ تحميل الروايات المنشورة…</div></div></div></section>
-    <section class="tab-panel" id="panel-books"><div class="section-heading"><div><h2>كل الروايات</h2><p>إدارة الروايات حسب حالتها، مع البحث والتصفية.</p></div><span class="count-pill" id="allBooksCount">0 رواية</span></div><div class="surface"><div class="filters"><label class="search-box"><span>⌕</span><input id="booksSearch" type="search" placeholder="ابحث باسم الرواية أو الكاتب…"></label><select id="statusFilter" class="filter-select" aria-label="تصفية حسب حالة الرواية"><option value="all">كل الحالات</option><option value="pending">قيد المراجعة</option><option value="published">منشور</option><option value="rejected">مرفوض</option></select></div><div id="allBooks" class="books-grid"><div class="loading-state">جارٍ تحميل الروايات…</div></div></div></section>
+    <section class="tab-panel" id="panel-books">
+      <div class="section-heading"><div>
+        <h2>كل الروايات</h2>
+        <p>إدارة الروايات حسب حالتها، مع البحث والتصفية.</p>
+      </div>
+      <span class="count-pill" id="allBooksCount">0 رواية</span>
+    </div>
+    <div class="surface">
+      <div class="filters">
+        <label class="search-box">
+          <span>⌕</span>
+          <input id="booksSearch" type="search" placeholder="ابحث باسم الرواية أو الكاتب…">
+        </label>
+        
+
+        <div class="status-filter-dropdown" id="statusFilterDropdown">
+
+          <button
+            type="button"
+            class="status-filter-trigger"
+            id="statusFilterTrigger"
+            aria-expanded="false"
+            aria-haspopup="listbox"
+          >
+            <span id="statusFilterLabel">كل الحالات</span>
+            <span class="status-filter-arrow">⌄</span>
+          </button>
+        
+          <div
+            class="status-filter-menu"
+            id="statusFilterMenu"
+            role="listbox"
+            aria-label="حالات الروايات"
+            hidden
+          >
+            <button type="button" class="status-filter-option active" data-value="all">
+              <span class="status-option-dot all"></span>
+              <span>كل الحالات</span>
+              <span class="status-option-check">✓</span>
+            </button>
+        
+            <button type="button" class="status-filter-option" data-value="pending">
+              <span class="status-option-dot pending"></span>
+              <span>قيد المراجعة</span>
+              <span class="status-option-check">✓</span>
+            </button>
+        
+            <button type="button" class="status-filter-option" data-value="published">
+              <span class="status-option-dot published"></span>
+              <span>منشور</span>
+              <span class="status-option-check">✓</span>
+            </button>
+        
+            <button type="button" class="status-filter-option" data-value="rejected">
+              <span class="status-option-dot rejected"></span>
+              <span>مرفوض</span>
+              <span class="status-option-check">✓</span>
+            </button>
+          </div>
+        
+          <select id="statusFilter" class="status-filter-native" aria-label="تصفية حسب حالة الرواية" tabindex="-1">
+            <option value="all">كل الحالات</option>
+            <option value="pending">قيد المراجعة</option>
+            <option value="published">منشور</option>
+            <option value="rejected">مرفوض</option>
+          </select>
+        
+        </div>
+
+
+      </div>
+      <div id="allBooks" class="books-grid">
+        <div class="loading-state">جارٍ تحميل الروايات…</div>
+      </div>
+    </div>
+  </section>
     
 <section class="tab-panel" id="panel-revisions">
   <div class="section-heading">
@@ -83,7 +158,112 @@
   </div>
 </section>
 
-    <section class="tab-panel" id="panel-users"><div class="section-heading"><div><h2>المستخدمون</h2><p>بيانات الملفات الشخصية المسجلة في المنصة.</p></div><span class="count-pill" id="usersCount">0 مستخدم</span></div><div class="surface"><div class="filters"><label class="search-box"><span>⌕</span><input id="usersSearch" type="search" placeholder="ابحث بالاسم أو معرّف الحساب…"></label><select id="roleFilter" class="filter-select" aria-label="تصفية حسب نوع الحساب"><option value="all">كل الأدوار</option><option value="reader">قارئ</option><option value="author">كاتب</option><option value="admin">مدير</option></select></div><div class="table-wrap"><table class="data-table"><thead><tr><th>المستخدم</th><th>نوع الحساب</th><th>معرّف الحساب</th><th>إجراءات</th></tr></thead><tbody id="usersTable"><tr><td colspan="4" class="loading-state">جارٍ تحميل المستخدمين…</td></tr></tbody></table></div></div><p class="privacy-note">ملاحظة: لا يتم عرض البريد الإلكتروني من جدول المصادقة في المتصفح؛ تُعرض هنا البيانات الموجودة في الملفات الشخصية فقط.</p></section>
+    <section class="tab-panel" id="panel-users"><div class="section-heading">
+      <div>
+        <h2>المستخدمون</h2>
+        <p>بيانات الملفات الشخصية المسجلة في المنصة.</p>
+      </div>
+      <span class="count-pill" id="usersCount">0 مستخدم</span>
+    </div>
+    <div class="surface">
+      <div class="filters">
+        <label class="search-box">
+          <span>⌕</span>
+          <input id="usersSearch" type="search" placeholder="ابحث بالاسم أو معرّف الحساب…">
+        </label>
+        <div class="role-filter-dropdown" id="roleFilterDropdown">
+
+          <button
+            type="button"
+            class="role-filter-trigger"
+            id="roleFilterTrigger"
+            aria-expanded="false"
+            aria-haspopup="listbox"
+          >
+            <span id="roleFilterLabel">كل الأدوار</span>
+            <span class="role-filter-arrow">⌄</span>
+          </button>
+        
+          <div
+            class="role-filter-menu"
+            id="roleFilterMenu"
+            role="listbox"
+            aria-label="أنواع الحسابات"
+            hidden
+          >
+        
+            <button
+              type="button"
+              class="role-filter-option active"
+              data-value="all"
+              role="option"
+              aria-selected="true"
+            >
+              <span class="role-option-dot all"></span>
+              <span class="role-option-label">كل الأدوار</span>
+              <span class="role-option-check">✓</span>
+            </button>
+        
+            <button
+              type="button"
+              class="role-filter-option"
+              data-value="reader"
+              role="option"
+              aria-selected="false"
+            >
+              <span class="role-option-dot reader"></span>
+              <span class="role-option-label">قارئ</span>
+              <span class="role-option-check">✓</span>
+            </button>
+        
+            <button
+              type="button"
+              class="role-filter-option"
+              data-value="author"
+              role="option"
+              aria-selected="false"
+            >
+              <span class="role-option-dot author"></span>
+              <span class="role-option-label">كاتب</span>
+              <span class="role-option-check">✓</span>
+            </button>
+        
+          </div>
+        
+          <select
+            id="roleFilter"
+            class="role-filter-native"
+            aria-label="تصفية حسب نوع الحساب"
+            tabindex="-1"
+          >
+            <option value="all">كل الأدوار</option>
+            <option value="reader">قارئ</option>
+            <option value="author">كاتب</option>
+          </select>
+        
+        </div>
+      </div>
+      
+      <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>المستخدم</th>
+                <th>نوع الحساب</th>
+                <th>الإحصائيات</th>
+                <th>معرّف المستخدم</th>
+              </tr>
+            </thead>
+            <tbody id="usersTable">
+              <tr>
+                <td colspan="4" class="loading-state">جارٍ تحميل المستخدمين…</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <p class="privacy-note">ملاحظة: لا يتم عرض البريد الإلكتروني من جدول المصادقة في المتصفح؛ تُعرض هنا البيانات الموجودة في الملفات الشخصية فقط.</p></section>
     <section class="tab-panel" id="panel-statistics"><div class="section-heading"><div><h2>إحصائيات المنصة</h2><p>الأرقام الفعلية المحمّلة من قاعدة البيانات.</p></div></div><div class="stats-grid statistics-grid"><article class="stat-card"><div class="stat-top"><span class="stat-icon green">▤</span><span class="stat-caption">إجمالي الروايات</span></div><strong id="detailAll">—</strong><small>كل سجلات الروايات</small></article><article class="stat-card"><div class="stat-top"><span class="stat-icon blue">✓</span><span class="stat-caption">نسبة النشر</span></div><strong id="publishRate">—</strong><small>الروايات المنشورة من إجمالي الروايات</small></article><article class="stat-card"><div class="stat-top"><span class="stat-icon amber">◷</span><span class="stat-caption">معدل المراجعة</span></div><strong id="reviewRate">—</strong><small>الروايات التي حُسمت حالتها</small></article><article class="stat-card"><div class="stat-top"><span class="stat-icon purple">♙</span><span class="stat-caption">القرّاء</span></div><strong id="readerCount">—</strong><small>حسابات بدور قارئ</small></article><article class="stat-card"><div class="stat-top"><span class="stat-icon blue">✍</span><span class="stat-caption">الكُتّاب</span></div><strong id="authorCount">—</strong><small>حسابات بدور كاتب</small></article></div><div class="surface"><div class="surface-heading"><div><h3>توزيع حالات الروايات</h3><p>مقارنة عدد الروايات في كل حالة.</p></div></div><div class="bar-chart" id="statusChart"></div><div class="chart-legend"><span><i class="legend-pending"></i> قيد المراجعة</span><span><i class="legend-published"></i> منشور</span><span><i class="legend-rejected"></i> مرفوض</span></div></div><p class="privacy-note">لا يتم احتساب مشاهدات الروايات أو إجمالي القراءات لعدم وجود سجل أحداث مخصص يقيس كل قراءة بصورة موثوقة.</p></section>
     <footer class="page-footer">حكاية ورواية <span>•</span> لوحة الإدارة <span>•</span> <span id="footerYear"></span></footer>
   </main>
@@ -191,7 +371,7 @@
 
 
 
-<!-- نافذة روايةة سبب رفض الرواية -->
+<!-- نافذة رواية سبب رفض الرواية -->
 <div class="modal-backdrop rejection-modal-backdrop"
      id="rejectionModal"
      hidden>

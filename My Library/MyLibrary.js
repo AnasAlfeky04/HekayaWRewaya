@@ -273,7 +273,72 @@ async function loadMyLibrary() {
 }
 
 myLibrarySearch.addEventListener("input", renderMyLibrary);
-myLibrarySort.addEventListener("change", renderMyLibrary);
+
+
+/* =========================================
+   CUSTOM SORT DROPDOWN
+========================================= */
+
+const myLibrarySortWrapper = $("myLibrarySortWrapper");
+const myLibrarySortTrigger = $("myLibrarySortTrigger");
+const myLibrarySortCurrent = $("myLibrarySortCurrent");
+const myLibrarySortMenu = $("myLibrarySortMenu");
+const myLibrarySortOptions = document.querySelectorAll(
+  ".my-library-sort-option"
+);
+
+function closeMyLibrarySort() {
+  myLibrarySortMenu.hidden = true;
+  myLibrarySortTrigger.setAttribute("aria-expanded", "false");
+}
+
+function openMyLibrarySort() {
+  myLibrarySortMenu.hidden = false;
+  myLibrarySortTrigger.setAttribute("aria-expanded", "true");
+}
+
+myLibrarySortTrigger.addEventListener("click", function () {
+  const isOpen =
+    myLibrarySortTrigger.getAttribute("aria-expanded") === "true";
+
+  if (isOpen) {
+    closeMyLibrarySort();
+  } else {
+    openMyLibrarySort();
+  }
+});
+
+myLibrarySortOptions.forEach((option) => {
+  option.addEventListener("click", function () {
+    const selectedValue = option.dataset.value;
+
+    myLibrarySort.value = selectedValue;
+    myLibrarySortCurrent.textContent = option.textContent.trim();
+
+    myLibrarySortOptions.forEach((item) => {
+      const isActive = item === option;
+
+      item.classList.toggle("active", isActive);
+      item.setAttribute("aria-selected", String(isActive));
+    });
+
+    closeMyLibrarySort();
+    renderMyLibrary();
+  });
+});
+
+document.addEventListener("click", function (event) {
+  if (!myLibrarySortWrapper.contains(event.target)) {
+    closeMyLibrarySort();
+  }
+});
+
+document.addEventListener("keydown", function (event) {
+  if (event.key === "Escape") {
+    closeMyLibrarySort();
+  }
+});
+
 
 db.auth.onAuthStateChange(function () {
   loadMyLibrary();

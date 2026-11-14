@@ -1,14 +1,4 @@
 
-/* =========================================================
-   حكاية ورواية | لوحة تحكم الكاتب
-   Supabase JS v2
-   - تحميل الروايات والتصنيفات
-   - تحديث البيانات مع إظهار الأخطاء
-   - حذف الرواية والتحقق من الحذف الفعلي
-   - تعديل الروايات المرفوضة قبل إعادة تقديمها
-   - الحفاظ على النسخة المنشورة وعدم تعديلها مباشرة
-   ========================================================= */
-
    (() => {
     "use strict";
   
@@ -32,6 +22,7 @@
     let currentUser = null;
     let currentProfile = null;
     let allBooks = [];
+    let bookOwnerCounts = new Map();
     let categories = [];
     let activeConfirmAction = null;
     let uploading = false;
@@ -422,10 +413,16 @@
   
         allBooks = data || [];
 
-// تحميل آخر مراجعة لكل رواية منشورة.
+// تحديد الروايات المنشورة.
 const bookIds = allBooks
   .filter((book) => book.status === "published")
   .map((book) => book.id);
+
+// تحميل عدد القراء الذين يمتلكون كل رواية منشورة.
+await loadBookOwnerCounts(bookIds);
+
+// تحميل آخر مراجعة لكل رواية منشورة.
+
 
 if (bookIds.length > 0) {
   const { data: revisions, error: revisionsError } = await db
@@ -479,6 +476,30 @@ await renderBooks();
         $("booksLoading").hidden = true;
       }
     }
+
+
+    async function loadBookOwnerCounts(bookIds) {
+      bookOwnerCounts = new Map();
+    
+      if (!bookIds || bookIds.length === 0) return;
+    
+      const { data, error } = await db.rpc("get_book_owner_counts", {
+        p_book_ids: bookIds
+      });
+    
+      if (error) {
+        console.error("Book owner counts error:", error);
+        return;
+      }
+    
+      (data || []).forEach((item) => {
+        bookOwnerCounts.set(
+          String(item.book_id),
+          Number(item.owner_count) || 0
+        );
+      });
+    }
+
   
     function updateStatistics() {
         $("totalBooks").textContent = allBooks.length;
@@ -563,6 +584,25 @@ await renderBooks();
   
       $("booksGrid").innerHTML = filteredBooks.map((book) => {
         const status = getStatusInfo(book.status);
+
+        const ownerCount = bookOwnerCounts.get(String(book.id)) || 0;
+
+const ownerCountHTML = book.status === "published"
+  ? `
+    <div class="library-book-owner-count"
+         aria-label="عدد الأشخاص الذين يمتلكون الرواية">
+      <span class="library-book-owner-eye" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="18" height="18"
+             fill="none" stroke="currentColor" stroke-width="1.8"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+      </span>
+      <span>${ownerCount.toLocaleString("ar-EG")}</span>
+    </div>
+  `
+  : "";
   
         const rejectedRevision =
   book.latestRevision?.status === "rejected"
@@ -641,6 +681,8 @@ const rejectionHTML =
                   }
                 </span>
               </div>
+
+              ${ownerCountHTML}
   
               <p class="book-description">
                 ${escapeHTML(
@@ -723,6 +765,87 @@ const rejectionHTML =
         console.error("Filter rendering error:", error);
       });
     });
+
+    // القائمة المخصصة لفلترة الروايات
+(() => {
+  const dropdown = document.getElementById("statusDropdown");
+  const trigger = document.getElementById("statusDropdownTrigger");
+  const menu = document.getElementById("statusDropdownMenu");
+  const nativeSelect = document.getElementById("statusFilter");
+  const currentLabel = document.getElementById("statusDropdownCurrent");
+  const options = Array.from(
+    menu.querySelectorAll(".status-dropdown-option")
+  );
+
+  if (!dropdown || !trigger || !menu || !nativeSelect || !currentLabel) {
+    return;
+  }
+
+  function closeMenu() {
+    dropdown.classList.remove("is-open");
+    menu.hidden = true;
+    trigger.setAttribute("aria-expanded", "false");
+  }
+
+  function openMenu() {
+    dropdown.classList.add("is-open");
+    menu.hidden = false;
+    trigger.setAttribute("aria-expanded", "true");
+  }
+
+  function syncDropdown() {
+    const selectedOption = nativeSelect.options[nativeSelect.selectedIndex];
+
+    currentLabel.textContent = selectedOption
+      ? selectedOption.textContent.trim()
+      : "كل الحالات";
+
+    options.forEach((option) => {
+      const selected = option.dataset.value === nativeSelect.value;
+
+      option.classList.toggle("is-selected", selected);
+      option.setAttribute("aria-selected", String(selected));
+    });
+  }
+
+  trigger.addEventListener("click", () => {
+    if (menu.hidden) {
+      openMenu();
+    } else {
+      closeMenu();
+    }
+  });
+
+  options.forEach((option) => {
+    option.addEventListener("click", () => {
+      nativeSelect.value = option.dataset.value;
+
+      // يحافظ على نظام الفلترة الحالي في الصفحة
+      nativeSelect.dispatchEvent(new Event("change", { bubbles: true }));
+
+      syncDropdown();
+      closeMenu();
+      trigger.focus();
+    });
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!dropdown.contains(event.target)) {
+      closeMenu();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !menu.hidden) {
+      closeMenu();
+      trigger.focus();
+    }
+  });
+
+  nativeSelect.addEventListener("change", syncDropdown);
+
+  syncDropdown();
+})();
   
     // -------------------------------------------------------
     // 8. زر تحديث الكل
@@ -765,73 +888,151 @@ const rejectionHTML =
   
     async function showBookDetails(bookId) {
       const book = getBookById(bookId);
-  
+    
       if (!book) {
         showMessage("الرواية المطلوبة غير موجودة.", "error");
         return;
       }
-  
+    
       const status = getStatusInfo(book.status);
       const coverUrl = await getCoverUrl(book.cover_path);
-  
+
+      const category = categories.find(
+        (item) => String(item.id) === String(book.category_id)
+      );
+      
+      const categoryName = category
+        ? category.name
+        : "بدون تصنيف";
+    
+      const ownerCount = bookOwnerCounts.get(String(book.id)) || 0;
+    
+      const isPublished = book.status === "published";
+    
+      const priceHTML = Number(book.price || 0) === 0
+        ? `<span class="details-price-free">مجانية</span>`
+        : `<span class="details-price-value">${escapeHTML(book.price)} ج.م</span>`;
+    
       const rejectionHTML =
         book.status === "rejected" && book.rejection_reason
           ? `
             <div class="details-rejection">
-              <strong>سبب رفض الرفع:</strong>
+              <div class="details-rejection-title">
+                <span>!</span>
+                سبب رفض الرواية
+              </div>
               <p>${escapeHTML(book.rejection_reason)}</p>
             </div>
           `
           : "";
-  
+
+
+          $("detailsHeaderStatus").innerHTML = `
+            <span class="book-status ${status.className}">
+              ${escapeHTML(status.label)}
+            </span>
+          `;
+
+    
       $("detailsContent").innerHTML = `
         <div class="details-content">
-          <div class="details-header">
-            ${
-              coverUrl
-                ? `
-                  <img
-                    class="details-cover"
-                    src="${escapeHTML(coverUrl)}"
-                    alt="غلاف الرواية"
-                  >
-                `
-                : '<div class="details-cover"></div>'
-            }
-  
-            <div>
-              <span class="book-status ${status.className}">
-                ${escapeHTML(status.label)}
-              </span>
-  
-              <h2>${escapeHTML(book.title)}</h2>
-  
-              <p>
-                تاريخ الإضافة:
-                ${escapeHTML(formatDate(book.created_at))}
-              </p>
-  
-              <p>
-                السعر:
-                ${
-                  Number(book.price || 0) === 0
-                    ? "مجاني"
-                    : escapeHTML(book.price) + " ج.م"
-                }
-              </p>
+    
+          <div class="details-hero">
+    
+            <div class="details-cover-frame">
+              ${
+                coverUrl
+                  ? `
+                    <img
+                      class="details-cover"
+                      src="${escapeHTML(coverUrl)}"
+                      alt="غلاف ${escapeHTML(book.title)}"
+                    >
+                  `
+                  : `
+                    <div class="details-cover-placeholder">
+                      <span>كُتُبنا</span>
+                    </div>
+                  `
+              }
             </div>
+    
+            <div class="details-book-info">
+              <div class="details-title-row">
+                <h3>${escapeHTML(book.title)}</h3>
+
+                <span class="book-status ${status.className}">
+                  ${escapeHTML(status.label)}
+                </span>
+              </div>
+    
+              <div class="details-book-date">
+                <span class="details-small-icon">◷</span>
+                تاريخ الإضافة:
+                <strong>${escapeHTML(formatDate(book.created_at))}</strong>
+              </div>
+
+              <div class="details-category">
+                <span class="details-category-icon">▤</span>
+                <span>التصنيف:</span>
+                <strong>${escapeHTML(categoryName)}</strong>
+              </div>
+    
+              <div class="details-price-box">
+                <span>سعر الرواية</span>
+                ${priceHTML}
+              </div>
+            </div>
+    
           </div>
-  
-          <h3>نبذة الرواية</h3>
-  
-          <p class="details-description">
-            ${escapeHTML(book.description || "لا توجد نبذة مسجلة.")}
-          </p>
-  
+    
+          ${
+            isPublished
+              ? `
+                <div class="details-owner-card">
+                  <div class="details-owner-icon">
+                    <svg viewBox="0 0 24 24" width="23" height="23"
+                         fill="none" stroke="currentColor" stroke-width="1.8"
+                         stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/>
+                      <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  </div>
+    
+                  <div class="details-owner-text">
+                    <strong>${ownerCount.toLocaleString("ar-EG")}</strong>
+                    <span>شخص يمتلك هذه الرواية</span>
+                  </div>
+    
+                  <div class="details-owner-label">
+                    عدد القراء
+                  </div>
+                </div>
+              `
+              : ""
+          }
+    
+          <section class="details-section">
+            <div class="details-section-heading">
+              <span class="details-section-line"></span>
+              <h3>نبذة عن الرواية</h3>
+            </div>
+    
+            <div class="details-description">
+              ${escapeHTML(book.description || "لا توجد نبذة مسجلة لهذه الرواية.")}
+            </div>
+          </section>
+    
           ${rejectionHTML}
+    
+          <div class="details-footer">
+            <span>حكاية ورواية</span>
+            <span>تفاصيل الكتاب</span>
+          </div>
+    
         </div>
       `;
-  
+    
       $("detailsOverlay").hidden = false;
     }
   
@@ -1018,6 +1219,41 @@ const rejectionHTML =
       validateCoverFile(cover);
       validatePdfFile(pdf);
     }
+
+
+    // التحكم في سكرول الصفحة عند فتح وإغلاق النوافذ
+function updateAuthorBodyScroll() {
+  const modalIds = [
+    "confirmOverlay",
+    "detailsOverlay",
+    "rejectedEditOverlay"
+  ];
+
+  const anyModalOpen = modalIds.some((id) => {
+    const modal = document.getElementById(id);
+    return modal && !modal.hidden;
+  });
+
+  document.body.style.overflow = anyModalOpen ? "hidden" : "";
+
+  const globalScrollbar = document.getElementById("global-scrollbar");
+
+  if (globalScrollbar) {
+    globalScrollbar.style.display = anyModalOpen ? "none" : "";
+  }
+}
+
+// مراقبة فتح وإغلاق النوافذ تلقائيًا
+const authorModalObserver = new MutationObserver(() => {
+  updateAuthorBodyScroll();
+});
+
+authorModalObserver.observe(document.body, {
+  subtree: true,
+  attributes: true,
+  attributeFilter: ["hidden", "style", "class"]
+});
+
   
     // -------------------------------------------------------
     // 12. نافذة تعديل الرواية المرفوضة
@@ -1044,214 +1280,133 @@ const rejectionHTML =
       ].join(";");
   
       overlay.innerHTML = `
-        <section
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="rejectedEditTitle"
-          style="
-            width:100%;
-            max-width:700px;
-            max-height:92vh;
-            overflow-y:auto;
-            background:#fff;
-            color:#202b26;
-            border-radius:18px;
-            padding:24px;
-            box-shadow:0 20px 70px rgba(0,0,0,.3);
-            direction:rtl;
-            font-family:inherit;
-          "
-        >
-          <div style="
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            gap:12px;
-            margin-bottom:18px;
-          ">
+      <section class="edit-modal-card" role="dialog" aria-modal="true" aria-labelledby="rejectedEditTitle">
+
+      <header class="edit-modal-header">
+        <div class="edit-modal-heading">
+          <span class="edit-modal-eyebrow">حكاية ورواية · مساحة الكاتب</span>
+          <h2 id="rejectedEditTitle">تحرير الرواية</h2>
+          <p id="editModalSubtitle">حدّث بيانات روايتك وملفاتها.</p>
+        </div>
+
+        <button id="rejectedEditClose" class="edit-modal-close" type="button" aria-label="إغلاق">×</button>
+      </header>
+
+      <div id="rejectedEditReason" class="edit-rejection-reason" hidden></div>
+
+      <form id="rejectedEditForm">
+
+        <section class="edit-form-section">
+          <div class="edit-section-heading">
+            <span class="edit-section-number">01</span>
             <div>
-              <h2 id="rejectedEditTitle" style="margin:0 0 6px">
-                تعديل
-              </h2>
-  
-              <p style="margin:0;color:#68766e;font-size:14px">
-                عدّل البيانات المطلوبة قبل إعادة إرسال الرواية للمراجعة.
-              </p>
+              <h3>المعلومات الأساسية</h3>
+              <p>التفاصيل التي يتعرف بها القراء على روايتك.</p>
             </div>
-  
-            <button
-              id="rejectedEditClose"
-              type="button"
-              aria-label="إغلاق"
-              style="
-                border:0;
-                background:#edf2ee;
-                width:38px;
-                height:38px;
-                border-radius:10px;
-                cursor:pointer;
-                font-size:22px;
-                flex-shrink:0;
-              "
-            >×</button>
           </div>
-  
-          <div
-            id="rejectedEditReason"
-            style="
-              background:#fff4f1;
-              color:#8e3730;
-              border:1px solid #f0d0ca;
-              border-radius:12px;
-              padding:12px;
-              margin-bottom:18px;
-              line-height:1.8;
-            "
-            hidden
-          ></div>
-  
-          <form id="rejectedEditForm">
-            <label for="editBookTitle" style="display:block;margin-bottom:6px">
-              عنوان الرواية *
-            </label>
-  
-            <input
-              id="editBookTitle"
-              type="text"
-              maxlength="200"
-              required
-              style="
-                width:100%;
-                box-sizing:border-box;
-                padding:12px;
-                border:1px solid #dce4de;
-                border-radius:10px;
-                margin-bottom:16px;
-                font:inherit;
-              "
-            >
-  
-            <label for="editBookDescription" style="display:block;margin-bottom:6px">
-              نبذة الرواية *
-            </label>
-  
-            <textarea
-              id="editBookDescription"
-              rows="5"
-              required
-              style="
-                width:100%;
-                box-sizing:border-box;
-                padding:12px;
-                border:1px solid #dce4de;
-                border-radius:10px;
-                margin-bottom:16px;
-                resize:vertical;
-                font:inherit;
-              "
-            ></textarea>
-  
-            <label for="editBookCategory" style="display:block;margin-bottom:6px">
-              التصنيف *
-            </label>
-  
-            <select
-              id="editBookCategory"
-              required
-              style="
-                width:100%;
-                box-sizing:border-box;
-                padding:12px;
-                border:1px solid #dce4de;
-                border-radius:10px;
-                margin-bottom:18px;
-                background:#fff;
-                font:inherit;
-              "
-            ></select>
-  
-            <div style="
-              border-top:1px solid #e6ebe7;
-              padding-top:16px;
-              margin-bottom:16px;
-            ">
-              <h3 style="margin:0 0 8px;font-size:16px">
-                استبدال الملفات (اختياري)
-              </h3>
-  
-              <p style="margin:0 0 14px;color:#68766e;font-size:13px;line-height:1.8">
-                لو الملف الحالي سليم، اترك الحقل فارغًا للاحتفاظ به.
-              </p>
-  
-              <label for="editBookCover" style="display:block;margin-bottom:6px">
-                غلاف جديد
-              </label>
-  
-              <input
-                id="editBookCover"
-                type="file"
-                accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
-                style="display:block;width:100%;margin-bottom:14px"
-              >
-  
-              <label for="editBookPdf" style="display:block;margin-bottom:6px">
-                ملف PDF جديد
-              </label>
-  
-              <input
-                id="editBookPdf"
-                type="file"
-                accept=".pdf,application/pdf"
-                style="display:block;width:100%;margin-bottom:8px"
-              >
-  
-              <p style="margin:0;color:#68766e;font-size:12px">
-                الحد الأقصى للغلاف 2MB، وملف PDF ‏20MB.
-              </p>
-            </div>
-  
-            <div style="
-              display:flex;
-              gap:10px;
-              flex-wrap:wrap;
-              margin-top:20px;
-            ">
-              <button
-                id="saveRejectedEditBtn"
-                type="submit"
-                style="
-                  flex:1;
-                  min-width:180px;
-                  padding:13px;
-                  border:0;
-                  border-radius:10px;
-                  background:#174f40;
-                  color:#fff;
-                  font:inherit;
-                  font-weight:bold;
-                  cursor:pointer;
-                "
-              >حفظ التعديلات وإعادة التقديم</button>
-  
-              <button
-                id="cancelRejectedEditBtn"
-                type="button"
-                style="
-                  padding:13px 20px;
-                  border:1px solid #dce4de;
-                  border-radius:10px;
-                  background:#fff;
-                  color:#202b26;
-                  font:inherit;
-                  cursor:pointer;
-                "
-              >إلغاء</button>
-            </div>
-          </form>
+
+          <div class="edit-field">
+            <label for="editBookTitle">عنوان الرواية <span>*</span></label>
+            <input id="editBookTitle" type="text" maxlength="200" placeholder="اكتب عنوان الرواية" required>
+          </div>
+
+          <div class="edit-field">
+            <label for="editBookDescription">نبذة عن الرواية <span>*</span></label>
+            <textarea id="editBookDescription" rows="5" maxlength="10000" placeholder="اكتب نبذة جذابة عن روايتك..." required></textarea>
+          </div>
+
+          <div class="edit-field">
+            <label for="editBookCategory">التصنيف الأدبي <span>*</span></label>
+            <select id="editBookCategory" required></select>
+          </div>
         </section>
+
+        <section class="edit-form-section">
+          <div class="edit-section-heading">
+            <span class="edit-section-number">02</span>
+            <div>
+              <h3>تسعير الرواية</h3>
+              <p>حدد إذا كانت روايتك مجانية أو مدفوعة.</p>
+            </div>
+          </div>
+
+          <div class="edit-price-card">
+            <div class="edit-price-top">
+              <div>
+                <strong>سعر البيع</strong>
+                <p>السعر بالجنيه المصري</p>
+              </div>
+              <span class="edit-price-currency">ج.م</span>
+            </div>
+
+            <div class="edit-price-input-wrap">
+              <input id="editBookPrice" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="مثال: 50">
+            </div>
+
+            <label class="edit-free-toggle" for="editBookFree">
+              <input id="editBookFree" type="checkbox">
+              <span class="edit-free-check">✓</span>
+              <span>
+                <strong>رواية مجانية</strong>
+                <small>إتاحة الرواية للقراء دون مقابل</small>
+              </span>
+            </label>
+
+            <p id="editPriceHelp" class="edit-price-help">أدخل سعرًا أكبر من صفر أو اختر رواية مجانية.</p>
+          </div>
+        </section>
+
+        <section class="edit-form-section">
+          <div class="edit-section-heading">
+            <span class="edit-section-number">03</span>
+            <div>
+              <h3>ملفات الرواية</h3>
+              <p>استبدل الملفات عند الحاجة فقط.</p>
+            </div>
+          </div>
+
+          <div class="edit-file-field">
+            <label for="editBookPdf">ملف الرواية PDF</label>
+            <div class="edit-file-box">
+              <span class="edit-file-icon pdf">PDF</span>
+              <div>
+                <strong>اختيار ملف PDF جديد</strong>
+                <small>PDF فقط · بحد أقصى 20MB</small>
+              </div>
+              <input id="editBookPdf" type="file" accept=".pdf,application/pdf">
+            </div>
+          </div>
+
+          <div class="edit-file-field">
+            <label for="editBookCover">غلاف الرواية</label>
+            <div class="edit-file-box">
+              <span class="edit-file-icon">▧</span>
+              <div>
+                <strong>اختيار غلاف جديد</strong>
+                <small>JPG أو PNG أو WebP · بحد أقصى 2MB</small>
+              </div>
+              <input id="editBookCover" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
+            </div>
+          </div>
+
+          <p class="edit-files-note">إذا لم تختر ملفات جديدة، سنحتفظ بالملفات الحالية.</p>
+        </section>
+
+        <footer class="edit-modal-footer">
+          <button id="saveRejectedEditBtn" class="edit-save-button" type="submit">
+            حفظ التعديلات
+          </button>
+          <button id="cancelRejectedEditBtn" class="edit-cancel-button" type="button">
+            إلغاء
+          </button>
+        </footer>
+
+      </form>
+    </section>
       `;
   
       document.body.appendChild(overlay);
+      initEditCategoryDropdown();
   
       $("rejectedEditClose").addEventListener(
         "click",
@@ -1268,11 +1423,271 @@ const rejectionHTML =
           closeRejectedEdit();
         }
       });
+
+      $("editBookFree").addEventListener(
+        "change",
+        syncEditBookPriceField
+      );
   
       $("rejectedEditForm").addEventListener(
         "submit",
         submitRejectedEdit
       );
+
+      updateAuthorBodyScroll();
+    }
+
+
+    function initEditCategoryDropdown() {
+      const select = $("editBookCategory");
+      if (!select) return;
+    
+      const field = select.closest(".edit-field");
+      select.classList.add("edit-category-native");
+      if (!field) return;
+    
+      let dropdown = field.querySelector(".edit-category-dropdown");
+    
+      if (!dropdown) {
+        dropdown = document.createElement("div");
+        dropdown.className = "edit-category-dropdown";
+    
+        dropdown.innerHTML = `
+          <button type="button"
+            class="edit-category-trigger"
+            aria-expanded="false">
+            <span class="edit-category-current">اختر تصنيف الرواية</span>
+            <span class="edit-category-arrow">⌄</span>
+          </button>
+    
+          <div class="edit-category-menu" hidden></div>
+        `;
+    
+        select.insertAdjacentElement("afterend", dropdown);
+    
+        dropdown.querySelector(".edit-category-trigger")
+          .addEventListener("click", () => {
+            const menu = dropdown.querySelector(".edit-category-menu");
+            const trigger = dropdown.querySelector(".edit-category-trigger");
+            const willOpen = menu.hidden;
+    
+            // إغلاق أي قائمة أخرى مفتوحة
+            document.querySelectorAll(".edit-category-menu").forEach(item => {
+              item.hidden = true;
+            });
+    
+            document.querySelectorAll(".edit-category-trigger").forEach(item => {
+              item.setAttribute("aria-expanded", "false");
+            });
+    
+            if (willOpen) {
+              renderOptions();
+              menu.hidden = false;
+              trigger.setAttribute("aria-expanded", "true");
+            }
+          });
+    
+        document.addEventListener("click", event => {
+          if (!dropdown.contains(event.target)) {
+            dropdown.querySelector(".edit-category-menu").hidden = true;
+            dropdown.querySelector(".edit-category-trigger")
+              .setAttribute("aria-expanded", "false");
+          }
+        });
+      }
+    
+      function renderOptions() {
+        const menu = dropdown.querySelector(".edit-category-menu");
+        const current = dropdown.querySelector(".edit-category-current");
+    
+        menu.innerHTML = "";
+    
+        [...select.options].forEach(option => {
+          if (!option.value) return;
+    
+          const item = document.createElement("button");
+          item.type = "button";
+          item.className = "edit-category-option";
+    
+          const name = document.createElement("span");
+          name.textContent = option.textContent;
+    
+          const check = document.createElement("span");
+          check.className = "edit-category-check";
+          check.textContent = "✓";
+    
+          item.append(name, check);
+    
+          if (option.value === select.value) {
+            item.classList.add("selected");
+          }
+    
+          item.addEventListener("click", () => {
+            select.value = option.value;
+            select.dispatchEvent(new Event("change", { bubbles: true }));
+    
+            current.textContent = option.textContent;
+    
+            menu.querySelectorAll(".edit-category-option").forEach(button => {
+              button.classList.remove("selected");
+            });
+    
+            item.classList.add("selected");
+            menu.hidden = true;
+    
+            dropdown.querySelector(".edit-category-trigger")
+              .setAttribute("aria-expanded", "false");
+          });
+    
+          menu.appendChild(item);
+        });
+    
+        const selectedOption = select.options[select.selectedIndex];
+        current.textContent = selectedOption?.value
+          ? selectedOption.textContent
+          : "اختر تصنيف الرواية";
+      }
+    
+      // تحديث اسم التصنيف الظاهر لو القيمة اتغيرت من كود آخر
+      select.addEventListener("change", () => {
+        const selectedOption = select.options[select.selectedIndex];
+        dropdown.querySelector(".edit-category-current").textContent =
+          selectedOption?.value
+            ? selectedOption.textContent
+            : "اختر تصنيف الرواية";
+      });
+    
+      renderOptions();
+    }
+
+
+    function initAddCategoryDropdown() {
+      const select = $("bookCategory");
+      if (!select) return;
+    
+      const field = select.closest(".form-field, .edit-field");
+      select.classList.add("edit-category-native");
+    
+      if (!field) return;
+    
+      let dropdown = field.querySelector(".edit-category-dropdown");
+    
+      if (!dropdown) {
+        dropdown = document.createElement("div");
+        dropdown.className = "edit-category-dropdown";
+    
+        dropdown.innerHTML = `
+          <button type="button"
+            class="edit-category-trigger"
+            aria-expanded="false">
+            <span class="edit-category-current">اختر تصنيف الرواية</span>
+            <span class="edit-category-arrow">⌄</span>
+          </button>
+    
+          <div class="edit-category-menu" hidden></div>
+        `;
+    
+        select.insertAdjacentElement("afterend", dropdown);
+    
+        dropdown.querySelector(".edit-category-trigger")
+          .addEventListener("click", () => {
+            const menu = dropdown.querySelector(".edit-category-menu");
+            const trigger = dropdown.querySelector(".edit-category-trigger");
+            const willOpen = menu.hidden;
+    
+            // إغلاق أي قائمة أخرى مفتوحة
+            document.querySelectorAll(".edit-category-menu").forEach(item => {
+              item.hidden = true;
+            });
+    
+            document.querySelectorAll(".edit-category-trigger").forEach(item => {
+              item.setAttribute("aria-expanded", "false");
+            });
+    
+            if (willOpen) {
+              renderOptions();
+              menu.hidden = false;
+              trigger.setAttribute("aria-expanded", "true");
+            }
+          });
+    
+        document.addEventListener("click", event => {
+          if (!dropdown.contains(event.target)) {
+            dropdown.querySelector(".edit-category-menu").hidden = true;
+            dropdown.querySelector(".edit-category-trigger")
+              .setAttribute("aria-expanded", "false");
+          }
+        });
+      }
+    
+      function renderOptions() {
+        const menu = dropdown.querySelector(".edit-category-menu");
+        const current = dropdown.querySelector(".edit-category-current");
+    
+        menu.innerHTML = "";
+    
+        [...select.options].forEach(option => {
+          if (!option.value) return;
+    
+          const item = document.createElement("button");
+          item.type = "button";
+          item.className = "edit-category-option";
+    
+          const name = document.createElement("span");
+          name.textContent = option.textContent;
+    
+          const check = document.createElement("span");
+          check.className = "edit-category-check";
+          check.textContent = "✓";
+    
+          item.append(name, check);
+    
+          if (option.value === select.value) {
+            item.classList.add("selected");
+          }
+    
+          item.addEventListener("click", () => {
+            select.value = option.value;
+            select.dispatchEvent(new Event("change", { bubbles: true }));
+    
+            current.textContent = option.textContent;
+    
+            menu.querySelectorAll(".edit-category-option").forEach(button => {
+              button.classList.remove("selected");
+            });
+    
+            item.classList.add("selected");
+            menu.hidden = true;
+    
+            dropdown.querySelector(".edit-category-trigger")
+              .setAttribute("aria-expanded", "false");
+          });
+    
+          menu.appendChild(item);
+        });
+    
+        const selectedOption = select.options[select.selectedIndex];
+    
+        current.textContent = selectedOption?.value
+          ? selectedOption.textContent
+          : "اختر تصنيف الرواية";
+      }
+    
+      // منع إضافة مستمع change أكثر من مرة
+      if (select.dataset.addCategoryDropdownInitialized !== "true") {
+        select.addEventListener("change", () => {
+          const selectedOption = select.options[select.selectedIndex];
+    
+          dropdown.querySelector(".edit-category-current").textContent =
+            selectedOption?.value
+              ? selectedOption.textContent
+              : "اختر تصنيف الرواية";
+        });
+    
+        select.dataset.addCategoryDropdownInitialized = "true";
+      }
+    
+      renderOptions();
     }
 
     
@@ -1365,6 +1780,7 @@ const rejectionHTML =
     
       function closePendingRevisionModal() {
         overlay.hidden = true;
+        overlay.style.display = "none";
       }
     
       $("pendingRevisionConfirm").addEventListener(
@@ -1395,6 +1811,20 @@ const rejectionHTML =
       if ($("rejectedEditForm")) {
         $("rejectedEditForm").reset();
       }
+    }
+
+
+    function syncEditBookPriceField() {
+      const isFree = $("editBookFree").checked;
+      const priceInput = $("editBookPrice");
+      const priceHelp = $("editPriceHelp");
+    
+      priceInput.disabled = isFree;
+      priceInput.required = !isFree;
+    
+      priceHelp.textContent = isFree
+        ? "الرواية مجانية ولن يتم احتساب أي سعر عليها."
+        : "أدخل السعر بالجنيه المصري، ويجب أن يكون أكبر من صفر.";
     }
   
     
@@ -1501,7 +1931,15 @@ const rejectionHTML =
     
       $("editBookTitle").value = book.title || "";
       $("editBookDescription").value = book.description || "";
-    
+
+      // تحميل السعر الحالي للرواية
+      const currentPrice = Number(book.price || 0);
+
+      $("editBookFree").checked = currentPrice <= 0;
+      $("editBookPrice").value = currentPrice > 0 ? currentPrice : "";
+
+      syncEditBookPriceField();
+
       $("editBookCategory").innerHTML =
         buildCategoryOptions(book.category_id);
     
@@ -1521,6 +1959,7 @@ const rejectionHTML =
       $("editBookPdf").value = "";
     
       $("rejectedEditOverlay").hidden = false;
+      $("rejectedEditOverlay").style.display = "flex";
       $("editBookTitle").focus();
     }
   
@@ -1553,7 +1992,12 @@ async function submitRejectedEdit(event) {
     const title = $("editBookTitle").value.trim();
     const description = $("editBookDescription").value.trim();
     const categoryId = $("editBookCategory").value;
-  
+    
+    // بيانات السعر
+    const isFree = $("editBookFree").checked;
+    const priceInput = $("editBookPrice").value.trim();
+    const newPrice = isFree ? 0 : Number(priceInput);
+    
     const cover = $("editBookCover").files[0] || null;
     const pdf = $("editBookPdf").files[0] || null;
   
@@ -1564,6 +2008,19 @@ async function submitRejectedEdit(event) {
       );
       return;
     }
+
+    // التحقق من السعر
+if (
+  !isFree &&
+  (!priceInput || !Number.isFinite(newPrice) || newPrice <= 0)
+) {
+  showMessage(
+    "اكتب سعرًا صحيحًا أكبر من صفر، أو اختر أن تكون الرواية مجانية.",
+    "error"
+  );
+  $("editBookPrice").focus();
+  return;
+}
   
     if (
       !categories.some(
@@ -1589,6 +2046,8 @@ async function submitRejectedEdit(event) {
   
     const token = makeBookId();
     const uploadedFiles = [];
+
+    let publishedPriceUpdated = false;
   
     try {
       // نتحقق من حالة الرواية الحالية قبل تنفيذ أي تعديل.
@@ -1640,6 +2099,7 @@ async function submitRejectedEdit(event) {
           ensurePendingRevisionModal();
         
           $("pendingRevisionOverlay").hidden = false;
+          $("pendingRevisionOverlay").style.display = "flex";
           $("pendingRevisionConfirm").focus();
         
           return;
@@ -1702,41 +2162,91 @@ async function submitRejectedEdit(event) {
       }
   
       if (isPublished) {
-        // التعديلات المقترحة تُسجّل منفصلة عن بيانات الرواية المنشورة.
-        const { error: insertError } = await db
-          .from("book_revisions")
-          .insert({
-            book_id: book.id,
-            author_id: currentUser.id,
-            proposed_title: title,
-            proposed_description: description,
-            proposed_category_id: categoryId,
-            proposed_cover_path: newCoverPath,
-            proposed_file_path: newPdfPath,
-            status: "pending",
-            rejection_reason: null
-          });
-  
-        if (insertError) {
-          console.error("Book revision insert error:", insertError);
-  
-          throw new Error(
-            "تعذر إرسال التعديلات للمراجعة. تأكد من صلاحيات جدول التعديلات ومسارات الملفات."
-          );
+        // نحدد هل فيه تغييرات فعلية في بيانات الرواية غير السعر.
+        const hasContentChanges =
+          title !== (book.title || "") ||
+          description !== (book.description || "") ||
+          String(categoryId) !== String(book.category_id) ||
+          Boolean(cover) ||
+          Boolean(pdf);
+      
+        // نحدد هل السعر اتغير فعلًا.
+        const hasPriceChanged =
+          newPrice !== Number(book.price || 0);
+      
+        // لا توجد أي تغييرات.
+        if (!hasContentChanges && !hasPriceChanged) {
+          showMessage("لم يتم إجراء أي تغييرات على الرواية.", "info");
+          return;
         }
-  
-        // لا نعدّل سجل books ولا نحذف ملفاته الحالية.
-        uploadedFiles.length = 0;
-  
+      
+        // تحديث السعر فقط إذا كان قد تغير.
+        if (hasPriceChanged) {
+          const { error: priceError } = await db.rpc(
+            "author_update_published_book_price",
+            {
+              p_book_id: book.id,
+              p_new_price: newPrice
+            }
+          );
+      
+          if (priceError) {
+            console.error("Published book price update error:", priceError);
+            throw new Error("تعذر تحديث سعر الرواية.");
+          }
+      
+          publishedPriceUpdated = true;
+        }
+      
+        // إرسال طلب مراجعة فقط لو فيه تغييرات أخرى غير السعر.
+        if (hasContentChanges) {
+          const { error: insertError } = await db
+            .from("book_revisions")
+            .insert({
+              book_id: book.id,
+              author_id: currentUser.id,
+              proposed_title: title,
+              proposed_description: description,
+              proposed_category_id: categoryId,
+              proposed_cover_path: newCoverPath,
+              proposed_file_path: newPdfPath,
+              status: "pending",
+              rejection_reason: null
+            });
+      
+          if (insertError) {
+            console.error("Book revision insert error:", insertError);
+      
+            throw new Error(
+              "تم تحديث السعر إن كان قد تغير، لكن تعذر إرسال باقي التعديلات للمراجعة."
+            );
+          }
+      
+          // الملفات الجديدة أصبحت مرتبطة بطلب المراجعة.
+          uploadedFiles.length = 0;
+        }
+      
         $("rejectedEditOverlay").hidden = true;
         editingBookId = null;
-  
+      
         await loadMyBooks();
-  
-        showMessage(
-          "تم إرسال التعديلات للأدمن. ستظل الرواية المنشورة كما هي حتى الموافقة.",
-          "success"
-        );
+      
+        if (hasContentChanges && hasPriceChanged) {
+          showMessage(
+            "تم تحديث السعر فورًا وإرسال باقي التعديلات للأدمن للمراجعة.",
+            "success"
+          );
+        } else if (hasContentChanges) {
+          showMessage(
+            "تم إرسال تعديلات الرواية للأدمن للمراجعة.",
+            "success"
+          );
+        } else {
+          showMessage(
+            "تم تحديث سعر الرواية بنجاح دون إرسال طلب مراجعة للأدمن.",
+            "success"
+          );
+        }
       } else {
         // الرواية المرفوضة فقط: تحديثها وإعادة تقديمها.
         const { data: updatedRows, error: updateError } = await db
@@ -1745,6 +2255,7 @@ async function submitRejectedEdit(event) {
             title,
             description,
             category_id: categoryId,
+            price: newPrice,
             cover_path: newCoverPath || latestBook.cover_path,
             file_path: newPdfPath || latestBook.file_path,
             status: "pending",
@@ -1778,7 +2289,7 @@ async function submitRejectedEdit(event) {
         await loadMyBooks();
   
         showMessage(
-          "تم حفظ التعديلات وإعادة تقديم الرواية للمراجعة.",
+          "تم تحديث بيانات الرواية وسعرها وإعادة تقديمها للمراجعة.",
           "success"
         );
       }
@@ -1808,14 +2319,16 @@ async function submitRejectedEdit(event) {
       }
   
       showMessage(
-        error.message || "تعذر حفظ تعديلات الرواية.",
+        publishedPriceUpdated
+          ? "تم تحديث السعر بنجاح، لكن تعذر إرسال باقي التعديلات للمراجعة. يمكنك المحاولة مرة أخرى."
+          : error.message || "تعذر حفظ تعديلات الرواية.",
         "error"
       );
     } finally {
       editing = false;
       setBusy(button, false);
     }
-  }  
+  }
   
     // -------------------------------------------------------
     // 14. أحداث بطاقات الروايات
@@ -2256,6 +2769,8 @@ if (
           loadCategories(),
           loadMyBooks()
         ]);
+
+        initAddCategoryDropdown();
   
       } catch (error) {
         console.error(

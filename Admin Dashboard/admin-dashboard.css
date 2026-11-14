@@ -1696,6 +1696,27 @@
     background: #fff;
     box-shadow: 0 28px 90px #0004;
     animation: userModalEnter 0.2s ease-out;
+    scrollbar-width: thin;
+    scrollbar-color: #b18a3b #f2eee5;
+  }
+
+  .book-details-dialog::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  .book-details-dialog::-webkit-scrollbar-track {
+    background: #f2eee5;
+    border-radius: 10px;
+  }
+  
+  .book-details-dialog::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #d4b36b, #98702e);
+    border-radius: 10px;
+    border: 1px solid #f2eee5;
+  }
+  
+  .book-details-dialog::-webkit-scrollbar-thumb:hover {
+    background: #8f692b;
   }
   
   .book-details-header {
@@ -2675,4 +2696,1210 @@
   #revisionDetailsModal .revision-details-header {
     padding-top: 8px;
   }
+}
+
+.book-details-dialog {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #b18a3b transparent;
+
+  /* قص أطراف شريط السكرول داخل حدود التبويب */
+  border-radius: 22px;
+  overflow-x: hidden;
+  clip-path: inset(0 round 22px);
+}
+
+.book-details-dialog::-webkit-scrollbar {
+  width: 10px;
+}
+
+.book-details-dialog::-webkit-scrollbar-track {
+  background: transparent;
+  margin-block: 12px;
+}
+
+.book-details-dialog::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #b38c3a, #865f21);
+}
+
+/* =====================================
+   Professional Status Filter Dropdown
+===================================== */
+
+.status-filter-dropdown {
+  position: relative;
+  width: 190px;
+  flex-shrink: 0;
+  font-family: inherit;
+  z-index: 20;
+}
+
+/* Main trigger */
+
+.status-filter-trigger {
+  width: 100%;
+  min-height: 55px;
+  padding: 0 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #fff;
+  border: 1px solid #e5dfd2;
+  border-radius: 12px;
+  color: #174f40;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.status-filter-trigger:hover,
+.status-filter-dropdown.open .status-filter-trigger {
+  border-color: #c49a4a;
+  box-shadow: 0 0 0 3px rgba(196, 154, 74, 0.10);
+}
+
+.status-filter-arrow {
+  color: #a17a35;
+  font-size: 19px;
+  line-height: 1;
+  transition: transform 0.25s ease;
+}
+
+.status-filter-dropdown.open .status-filter-arrow {
+  transform: rotate(180deg);
+}
+
+/* Dropdown menu */
+
+.status-filter-menu {
+  position: absolute;
+  top: calc(100% + 9px);
+  right: 0;
+  left: 0;
+
+  padding: 7px;
+
+  background: linear-gradient(145deg, #174f40, #103b30);
+  border: 1px solid rgba(213, 161, 91, 0.45);
+  border-radius: 14px;
+
+  box-shadow:
+    0 14px 30px rgba(13, 43, 34, 0.22),
+    0 3px 8px rgba(0, 0, 0, 0.08);
+
+  animation: statusDropdownIn 0.18s ease;
+}
+
+.status-filter-menu[hidden] {
+  display: none;
+}
+
+@keyframes statusDropdownIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Options */
+
+.status-filter-option {
+  width: 100%;
+  min-height: 42px;
+  padding: 0 11px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  border: 1px solid transparent;
+  border-radius: 9px;
+
+  background: transparent;
+  color: #f7f5ef;
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: right;
+
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.status-filter-option:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(213, 161, 91, 0.5);
+}
+
+.status-filter-option.active {
+  background: rgba(213, 161, 91, 0.14);
+  border-color: rgba(213, 161, 91, 0.65);
+  color: #f0ce8d;
+}
+
+.status-option-dot {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+
+.status-option-dot.all {
+  background: #d5b56f;
+}
+
+.status-option-dot.pending {
+  background: #e9b85c;
+}
+
+.status-option-dot.published {
+  background: #64c69a;
+}
+
+.status-option-dot.rejected {
+  background: #e27c7c;
+}
+
+.status-option-check {
+  margin-right: auto;
+  color: #e5bd70;
+  font-size: 14px;
+  opacity: 0;
+}
+
+.status-filter-option.active .status-option-check {
+  opacity: 1;
+}
+
+.status-filter-native {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ========================================
+   حكاية ورواية | Professional Revision Modal
+======================================== */
+
+/* خلفية النافذة */
+#revisionDetailsModal {
+  position: fixed;
+  inset: 0;
+
+  display: grid;
+  place-items: center;
+
+  overflow: hidden;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+#revisionDetailsModal[hidden] {
+  display: none;
+}
+
+/* النافذة الرئيسية */
+#revisionDetailsModal .revision-details-dialog {
+  width: min(1000px, calc(100vw - 32px));
+  max-width: 1000px;
+
+  max-height: 90vh;
+  margin: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* تثبيت الهيدر */
+#revisionDetailsModal .revision-details-header {
+  flex-shrink: 0;
+  position: relative;
+  z-index: 5;
+
+  background: #fff;
+}
+
+/* منطقة المحتوى القابلة للتمرير */
+#revisionDetailsContent {
+  flex: 1;
+  min-height: 0;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  padding: 4px 8px 8px 3px;
+
+  scrollbar-width: thin;
+  scrollbar-color: #b18a3b #f2eee5;
+}
+
+/* شريط التمرير الذهبي */
+#revisionDetailsContent::-webkit-scrollbar {
+  width: 12px;
+}
+
+#revisionDetailsContent::-webkit-scrollbar-track {
+  background: #f2eee5;
+  border-radius: 20px;
+}
+
+#revisionDetailsContent::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    #d4b36b,
+    #98702e
+  );
+
+  border-radius: 20px;
+  border: 2px solid #f2eee5;
+}
+
+#revisionDetailsContent::-webkit-scrollbar-thumb:hover {
+  background: #8f692b;
+  border: 2px solid #f2eee5;
+}
+
+/* الشاشات الصغيرة */
+@media (max-width: 600px) {
+  #revisionDetailsModal {
+    padding: 10px;
+  }
+
+  #revisionDetailsModal .revision-details-dialog {
+    width: 100%;
+    max-height: 94vh;
+    padding: 15px;
+    border-radius: 14px;
+  }
+
+  #revisionDetailsContent {
+    padding: 4px 5px 6px 2px;
+  }
+}
+
+
+/* تمييز صفوف التعديلات الجديدة */
+.revision-comparison-table tbody tr.revision-row-changed td {
+  background: #fff6e2 !important;
+  transition: background 0.2s ease;
+}
+
+/* إطار ذهبي جانبي للصف المعدل */
+.revision-comparison-table tbody tr.revision-row-changed td:first-child {
+  border-right: 3px solid #c49a45;
+}
+
+.revision-comparison-table tbody tr.revision-row-changed td:last-child {
+  border-left: 3px solid #c49a45;
+}
+
+/* إبراز اسم الحقل داخل الصف المعدل */
+.revision-comparison-table tbody tr.revision-row-changed .revision-field-label {
+  color: #98702e;
+  font-weight: 700;
+}
+
+
+/* =========================================
+   Professional Role Filter Dropdown
+========================================= */
+
+.role-filter-dropdown {
+  position: relative;
+  width: 190px;
+  flex-shrink: 0;
+  font-family: inherit;
+  z-index: 21;
+}
+
+/* Trigger */
+
+.role-filter-trigger {
+  width: 100%;
+  min-height: 55px;
+  padding: 0 15px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  background: #fff;
+  border: 1px solid #e5dfd2;
+  border-radius: 12px;
+
+  color: #174f40;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.role-filter-trigger:hover,
+.role-filter-dropdown.open .role-filter-trigger {
+  border-color: #c49a4a;
+  box-shadow: 0 0 0 3px rgba(196, 154, 74, 0.10);
+}
+
+.role-filter-arrow {
+  color: #a17a35;
+  font-size: 19px;
+  line-height: 1;
+  transition: transform 0.25s ease;
+}
+
+.role-filter-dropdown.open .role-filter-arrow {
+  transform: rotate(180deg);
+}
+
+/* Dropdown Menu */
+
+.role-filter-menu {
+  position: absolute;
+  top: calc(100% + 9px);
+  right: 0;
+  left: 0;
+
+  padding: 7px;
+
+  background: #fff;
+  border: 1px solid #e5dfd2;
+  border-radius: 14px;
+
+  box-shadow:
+    0 14px 35px rgba(25, 48, 36, 0.12),
+    0 3px 8px rgba(25, 48, 36, 0.05);
+
+  animation: roleDropdownIn 0.18s ease;
+}
+
+.role-filter-menu[hidden] {
+  display: none;
+}
+
+@keyframes roleDropdownIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Options */
+
+.role-filter-option {
+  width: 100%;
+  min-height: 43px;
+  padding: 0 11px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 9px;
+
+  color: #43564b;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: right;
+
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.role-filter-option + .role-filter-option {
+  margin-top: 3px;
+}
+
+.role-filter-option:hover {
+  background: #faf8f2;
+  border-color: rgba(196, 154, 74, 0.45);
+  color: #174f40;
+}
+
+.role-filter-option.active {
+  background: #f8f4e9;
+  border-color: rgba(196, 154, 74, 0.65);
+  color: #174f40;
+}
+
+/* Small dots */
+
+.role-option-dot {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #a8b2aa;
+}
+
+.role-option-dot.reader {
+  background: #5c91bd;
+}
+
+.role-option-dot.author {
+  background: #c49a4a;
+}
+
+.role-option-dot.all {
+  background: #174f40;
+}
+
+/* Option label */
+
+.role-option-label {
+  flex: 1;
+}
+
+/* Selected checkmark */
+
+.role-option-check {
+  width: 19px;
+  height: 19px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  background: #174f40;
+  color: #fff;
+
+  font-size: 11px;
+  opacity: 0;
+  transform: scale(0.7);
+
+  transition: all 0.18s ease;
+}
+
+.role-filter-option.active .role-option-check {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Hidden native select */
+
+.role-filter-native {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Mobile */
+
+@media (max-width: 580px) {
+  .role-filter-dropdown {
+    width: 100%;
+  }
+}
+
+
+/* =====================================================
+   PROFESSIONAL USERS TABLE
+   تصميم احترافي لجدول المستخدمين
+===================================================== */
+
+/* مساحة الجدول */
+#panel-users .table-wrap {
+  border: 1px solid #e7ece6;
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: 0 5px 20px rgba(22, 55, 39, 0.035);
+}
+
+/* الجدول */
+#panel-users .data-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  white-space: nowrap;
+}
+
+/* رؤوس الأعمدة */
+#panel-users .data-table th {
+  padding: 17px 16px;
+  background: #f7f9f6;
+  color: #64766a;
+  font-size: 11px;
+  font-weight: 800;
+  border-bottom: 1px solid #e9eee8;
+}
+
+/* خلايا الجدول */
+#panel-users .data-table td {
+  height: 82px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eef1ed;
+  vertical-align: middle;
+  background: #fff;
+  transition: background 0.2s ease;
+}
+
+/* آخر صف */
+#panel-users .data-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* تأثير مرور الماوس */
+#panel-users .data-table tbody tr:hover td {
+  background: #fbfcfa;
+}
+
+/* بطاقة المستخدم */
+.user-table-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 175px;
+  max-width: 260px;
+  padding: 7px 10px;
+  border: 1px solid #edf1eb;
+  border-radius: 12px;
+  background: #fff;
+  transition: all 0.2s ease;
+}
+
+#panel-users .data-table tbody tr:hover .user-table-profile {
+  border-color: #e3d5b8;
+  background: #fdfcf9;
+}
+
+/* صورة المستخدم */
+.user-table-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  overflow: hidden;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #e5f1e8, #d5e8da);
+  color: #236c55;
+  font-size: 17px;
+  font-weight: 900;
+  box-shadow: 0 2px 7px rgba(23, 79, 64, 0.12);
+}
+
+.user-table-avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* اسم المستخدم */
+.user-table-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.user-table-name {
+  display: block;
+  overflow: hidden;
+  max-width: 180px;
+  color: #263b30;
+  font-size: 12px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* شارة نوع الحساب */
+#panel-users .role-badge {
+  justify-content: center;
+  min-width: 65px;
+  padding: 7px 12px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+#panel-users .role-reader {
+  border-color: #dce8f4;
+  background: #f0f5fb;
+  color: #47769e;
+}
+
+#panel-users .role-author {
+  border-color: #dcece0;
+  background: #eff7f0;
+  color: #34744e;
+}
+
+/* مجموعة الإحصائيات */
+.user-table-stats {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+/* بطاقة الإحصائية */
+.user-table-stat {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 39px;
+  padding: 6px 10px;
+  border: 1px solid #e9eee7;
+  border-radius: 9px;
+  background: #fafbf9;
+}
+
+/* رقم الإحصائية */
+.user-table-stat-value {
+  color: #174f40;
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+/* وصف الإحصائية */
+.user-table-stat-label {
+  color: #78857c;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+/* زر نسخ المعرّف */
+#panel-users .table-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 112px;
+  min-height: 36px;
+  padding: 7px 12px;
+  border: 1px solid #dce8de;
+  border-radius: 9px;
+  background: #f5f9f5;
+  color: #236c55;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 800;
+  transition: all 0.2s ease;
+}
+
+#panel-users .table-action:hover {
+  border-color: #c49a4a;
+  background: #faf7ef;
+  color: #946c2c;
+  box-shadow: 0 3px 10px rgba(196, 154, 74, 0.09);
+}
+
+/* توافق الجدول مع الشاشات الصغيرة */
+@media (max-width: 900px) {
+  #panel-users .table-wrap {
+    overflow-x: auto;
+  }
+
+  #panel-users .data-table {
+    min-width: 760px;
+  }
+}
+
+@media (max-width: 580px) {
+  #panel-users .data-table td {
+    height: 76px;
+    padding: 10px 12px;
+  }
+
+  .user-table-avatar {
+    flex-basis: 40px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .user-table-profile {
+    gap: 9px;
+  }
+}
+
+
+/* =========================================================
+   USER DETAILS — PROFESSIONAL LIBRARY TABS
+   ========================================================= */
+
+/* نافذة تفاصيل المستخدم */
+
+.user-modal-backdrop {
+  z-index: 50;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #b18a3b #f2eee5;
+}
+
+.user-modal-backdrop::-webkit-scrollbar {
+  width: 9px;
+}
+
+.user-modal-backdrop::-webkit-scrollbar-track {
+  background: #f2eee5;
+}
+
+.user-modal-backdrop::-webkit-scrollbar-thumb {
+  background: #b18a3b;
+  border: 2px solid #f2eee5;
+  border-radius: 20px;
+}
+
+.user-details-dialog {
+  scrollbar-width: thin;
+  scrollbar-color: #b18a3b #f2eee5;
+}
+
+.user-details-dialog::-webkit-scrollbar {
+  width: 9px;
+}
+
+.user-details-dialog::-webkit-scrollbar-track {
+  background: #f2eee5;
+  border-radius: 20px;
+}
+
+.user-details-dialog::-webkit-scrollbar-thumb {
+  background: #b18a3b;
+  border: 2px solid #f2eee5;
+  border-radius: 20px;
+}
+
+
+/* =========================================================
+   USER LIBRARY TABS
+   ========================================================= */
+
+.user-library-tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  margin: 28px 0 24px;
+  padding: 6px;
+
+  background: #f5f7f4;
+  border: 1px solid #e8ece7;
+  border-radius: 14px;
+}
+
+.user-library-tab {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  flex: 1;
+  min-height: 48px;
+
+  padding: 10px 18px;
+
+  border: 1px solid transparent;
+  border-radius: 10px;
+
+  background: transparent;
+
+  color: #758078;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.user-library-tab:hover {
+  color: #174f40;
+  background: #fff;
+}
+
+.user-library-tab.active {
+  color: #174f40;
+  background: #fff;
+
+  border-color: #e5d5b3;
+
+  box-shadow: 0 3px 12px rgba(23, 79, 64, 0.07);
+}
+
+.user-library-tab span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 25px;
+  height: 25px;
+
+  padding: 0 7px;
+
+  border-radius: 8px;
+
+  background: #edf2ed;
+  color: #557064;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  font-variant-numeric: tabular-nums;
+}
+
+.user-library-tab.active span {
+  background: #e8f1eb;
+  color: #174f40;
+}
+
+.user-library-tab:focus-visible {
+  outline: 3px solid rgba(177, 138, 59, 0.35);
+  outline-offset: 3px;
+}
+
+
+/* =========================================================
+   USER LIBRARY PANELS
+   ========================================================= */
+
+.user-library-panel {
+  animation: userPanelEnter 0.22s ease-out;
+}
+
+.user-library-panel[hidden] {
+  display: none !important;
+}
+
+@keyframes userPanelEnter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* =========================================================
+   USER LIBRARY BOOK CARDS
+   ========================================================= */
+
+.user-library-books-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+
+  margin-top: 20px;
+}
+
+.user-library-book-card {
+  min-width: 0;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+
+  border: 1px solid #e7ebe6;
+  border-radius: 16px;
+
+  background: #fff;
+
+  box-shadow: 0 3px 12px rgba(25, 50, 37, 0.035);
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.user-library-book-card:hover {
+  transform: translateY(-3px);
+
+  border-color: #d5bd8c;
+
+  box-shadow: 0 10px 25px rgba(25, 50, 37, 0.08);
+}
+
+
+/* غلاف الرواية */
+
+.user-library-book-card .book-cover {
+  flex-shrink: 0;
+}
+
+
+/* محتوى الكارت */
+
+.user-library-book-card .book-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  min-width: 0;
+
+  padding: 16px;
+}
+
+.user-library-book-card .book-title {
+  margin: 0 0 10px;
+
+  color: #174f40;
+
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.6;
+}
+
+
+/* نبذة الرواية — سطران فقط */
+
+.user-library-book-card .book-desc {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+
+  overflow: hidden;
+
+  min-height: 44px;
+  max-height: 44px;
+
+  margin: 0 0 14px;
+
+  color: #7b867e;
+
+  font-size: 12px;
+  line-height: 22px;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* التصنيف */
+
+.user-library-book-category {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  padding: 10px 12px;
+
+  margin-bottom: 12px;
+
+  background: #f7f8f5;
+  border: 1px solid #edf0eb;
+  border-radius: 9px;
+
+  font-size: 12px;
+}
+
+.user-library-book-category span {
+  color: #89928b;
+  font-weight: 600;
+}
+
+.user-library-book-category strong {
+  color: #315c49;
+  font-weight: 800;
+}
+
+
+/* السعر والتاريخ */
+
+.user-library-book-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  margin-bottom: 14px;
+}
+
+.user-library-book-price {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 6px 12px;
+
+  border: 1px solid #e4eadf;
+  border-radius: 8px;
+
+  background: #eef4ee;
+
+  color: #225b43;
+
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.user-library-book-date {
+  color: #9a9f99;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+
+/* زر معاينة الرواية */
+
+.user-library-book-card .book-actions {
+  margin-top: auto;
+  padding-top: 12px;
+
+  border-top: 1px solid #f0f2ee;
+}
+
+.user-library-book-card .book-actions button {
+  width: 100%;
+  justify-content: center;
+}
+
+
+/* =========================================================
+   USER DETAILS RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 650px) {
+
+  .user-library-books-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .user-library-tabs {
+    gap: 5px;
+    padding: 5px;
+  }
+
+  .user-library-tab {
+    min-height: 44px;
+    padding: 9px 8px;
+    gap: 6px;
+
+    font-size: 12px;
+  }
+
+  .user-library-tab span {
+    min-width: 22px;
+    height: 22px;
+
+    font-size: 11px;
+  }
+
+  .user-library-book-card .book-main {
+    padding: 14px;
+  }
+
+}
+
+@media (max-width: 380px) {
+
+  .user-library-tab {
+    font-size: 11px;
+  }
+
+  .user-library-book-meta {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+}
+
+/* Clickable user rows */
+
+.user-clickable-row {
+  cursor: pointer;
+  transition: background 0.18s ease;
+}
+
+.user-clickable-row:hover {
+  background: #f4f8f4;
+}
+
+.user-clickable-row:focus-visible {
+  outline: 2px solid #b18a3b;
+  outline-offset: -3px;
+}
+
+.user-clickable-row .user-table-name {
+  transition: color 0.18s ease;
+}
+
+.user-clickable-row:hover .user-table-name {
+  color: #236c55;
+}
+
+/* User Details — Wider Rounded Gold Scrollbar */
+
+.user-details-dialog {
+  scrollbar-width: auto;
+  scrollbar-color: #b18a3b #f2eee5;
+
+  scrollbar-gutter: stable;
+  padding-right: 30px;
+}
+
+.user-details-dialog::-webkit-scrollbar {
+  width: 13px;
+}
+
+.user-details-dialog::-webkit-scrollbar-track {
+  background: #f2eee5;
+  border-radius: 20px;
+  margin: 14px 0;
+}
+
+.user-details-dialog::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    #c9a75e,
+    #a98232
+  );
+
+  border: 3px solid #f2eee5;
+  border-radius: 20px;
+}
+
+.user-details-dialog::-webkit-scrollbar-thumb:hover {
+  background: #92702d;
 }

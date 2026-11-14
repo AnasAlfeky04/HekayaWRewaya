@@ -87,11 +87,77 @@
           >
         </label>
 
-        <select id="myLibrarySort" aria-label="ترتيب الروايات">
-          <option value="newest">الأحدث إضافة</option>
-          <option value="oldest">الأقدم إضافة</option>
-          <option value="title">الترتيب الأبجدي</option>
-        </select>
+        <div class="my-library-sort" id="myLibrarySortWrapper">
+
+          <button
+            type="button"
+            class="my-library-sort-trigger"
+            id="myLibrarySortTrigger"
+            aria-label="ترتيب الروايات"
+            aria-haspopup="listbox"
+            aria-expanded="false"
+          >
+            <span class="my-library-sort-current" id="myLibrarySortCurrent">
+              الأحدث إضافة
+            </span>
+        
+            <span class="my-library-sort-arrow" aria-hidden="true">
+              ▾
+            </span>
+          </button>
+        
+          <div
+            class="my-library-sort-menu"
+            id="myLibrarySortMenu"
+            role="listbox"
+            aria-label="اختار طريقة الترتيب"
+            hidden
+          >
+        
+            <button
+              type="button"
+              class="my-library-sort-option active"
+              data-value="newest"
+              role="option"
+              aria-selected="true"
+            >
+              الأحدث إضافة
+            </button>
+        
+            <button
+              type="button"
+              class="my-library-sort-option"
+              data-value="oldest"
+              role="option"
+              aria-selected="false"
+            >
+              الأقدم إضافة
+            </button>
+        
+            <button
+              type="button"
+              class="my-library-sort-option"
+              data-value="title"
+              role="option"
+              aria-selected="false"
+            >
+              الترتيب الأبجدي
+            </button>
+        
+          </div>
+        
+          <select
+            id="myLibrarySort"
+            aria-hidden="true"
+            tabindex="-1"
+            hidden
+          >
+            <option value="newest" selected>الأحدث إضافة</option>
+            <option value="oldest">الأقدم إضافة</option>
+            <option value="title">الترتيب الأبجدي</option>
+          </select>
+        
+        </div>
       </div>
 
       <div

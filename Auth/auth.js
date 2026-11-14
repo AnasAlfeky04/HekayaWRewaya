@@ -51,7 +51,7 @@ function setMode(nextMode) {
 
   authTitle.textContent = isSignup
     ? "ابدأ رحلتك معانا"
-    : "سعيدين بعودتك!";
+    : "أهلا بعودتك!";
 
   authSubtitle.textContent = isSignup
     ? "أنشئ حسابك واكتشف عالمًا جديدًا من الكتب."

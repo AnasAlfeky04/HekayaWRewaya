@@ -18,6 +18,7 @@ const pagination = document.getElementById("libraryPagination");
 const loginBtn = document.getElementById("loginBtn");
 const signupBtn = document.getElementById("signupBtn");
 const homeBtn = document.getElementById("homeBtn");
+const myLibraryNavLink = document.getElementById("myLibraryNavLink");
 const readerModal = document.getElementById("readerModal");
 const readerTitle = document.getElementById("readerTitle");
 const readerMessage = document.getElementById("readerMessage");
@@ -567,12 +568,14 @@ async function updateAuthButton() {
     signupBtn.hidden = false;
     signupBtn.textContent = "حسابي";
     homeBtn.hidden = false;
+    myLibraryNavLink.hidden = false;
   } else {
     loginBtn.hidden = false;
     loginBtn.textContent = "تسجيل الدخول";
     signupBtn.hidden = false;
     signupBtn.textContent = "إنشاء حساب";
     homeBtn.hidden = true;
+    myLibraryNavLink.hidden = true;
   }
 }
 

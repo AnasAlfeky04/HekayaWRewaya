@@ -390,21 +390,112 @@
     color: #a3a59c;
   }
   
-  .my-library-toolbar select {
-    min-width: 165px;
-    padding: 0 13px;
-    border: 1px solid var(--ml-border);
-    border-radius: 13px;
-    outline: none;
-    background: var(--ml-white);
-    color: var(--ml-text);
-    font-size: 12px;
-    cursor: pointer;
-  }
-  
-  .my-library-toolbar select:focus {
-    border-color: var(--ml-gold);
-  }
+  /* =========================================
+   CUSTOM SORT DROPDOWN
+========================================= */
+
+.my-library-sort {
+  position: relative;
+  width: 190px;
+  flex-shrink: 0;
+  z-index: 20;
+}
+
+.my-library-sort-trigger {
+  width: 100%;
+  min-height: 55px;
+  padding: 0 15px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  border: 1px solid var(--ml-border);
+  border-radius: 13px;
+
+  background: var(--ml-white);
+  color: var(--ml-text);
+
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.my-library-sort-trigger:hover,
+.my-library-sort-trigger[aria-expanded="true"] {
+  border-color: var(--ml-gold);
+  box-shadow: 0 4px 14px rgba(18, 61, 50, 0.07);
+}
+
+.my-library-sort-arrow {
+  color: var(--ml-gold-dark);
+  font-size: 15px;
+  transition: transform 0.2s ease;
+}
+
+.my-library-sort-trigger[aria-expanded="true"]
+.my-library-sort-arrow {
+  transform: rotate(180deg);
+}
+
+/* القائمة */
+
+.my-library-sort-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+
+  width: 100%;
+  padding: 6px;
+
+  background: var(--ml-white);
+  border: 1px solid var(--ml-border);
+  border-radius: 14px;
+
+  box-shadow: 0 12px 30px rgba(25, 45, 35, 0.13);
+
+  z-index: 100;
+}
+
+.my-library-sort-menu[hidden] {
+  display: none;
+}
+
+/* الاختيارات */
+
+.my-library-sort-option {
+  display: block;
+  width: 100%;
+
+  padding: 12px 11px;
+
+  border: 0;
+  border-radius: 9px;
+
+  background: transparent;
+  color: var(--ml-text);
+
+  font: inherit;
+  font-size: 12px;
+  text-align: right;
+
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.my-library-sort-option:hover {
+  background: var(--ml-green-soft);
+}
+
+.my-library-sort-option.active {
+  background: var(--ml-green);
+  color: #fff;
+  font-weight: 600;
+}
   
   /* Book cards - no covers */
   
@@ -755,8 +846,7 @@
       flex-direction: column;
     }
   
-    .my-library-toolbar select {
-      min-height: 46px;
+    .my-library-sort {
       width: 100%;
     }
   

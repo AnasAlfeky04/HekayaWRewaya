@@ -39,7 +39,7 @@ textarea {
     margin: 0;
     background: var(--ad-paper);
     color: var(--ad-ink);
-    font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+    font-family: "Cairo", sans-serif;
   }
   
   .author-dashboard-page *,
@@ -673,7 +673,7 @@ textarea {
     align-items: center;
     gap: 9px;
     min-width: 0;
-    min-height: 45px;
+    min-height: 63px;
     padding: 0 13px;
     background: #fff;
     border: 1px solid var(--ad-line);
@@ -1160,11 +1160,15 @@ textarea {
     z-index: 9999;
     inset: 0;
     padding: 20px;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     background: rgba(11, 32, 24, .6);
     backdrop-filter: blur(5px);
+  }
+
+  .modal-overlay:not([hidden]) {
+    display: flex;
   }
   
   .confirm-modal,
@@ -1731,4 +1735,2029 @@ textarea {
   .author-dashboard-page .free-toggle {
     min-height: 64px;
   }
+}
+
+/* القائمة المخصصة لفلترة الروايات */
+.author-dashboard-page .status-dropdown {
+  position: relative;
+  flex: 0 0 205px;
+  min-width: 0;
+  z-index: 20;
+  font-family: inherit;
+}
+
+.author-dashboard-page .status-dropdown > #statusFilter {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.author-dashboard-page .status-dropdown-trigger {
+  width: 100%;
+  min-height: 54px;
+  display: grid;
+  grid-template-columns: 1fr auto 18px;
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: 12px;
+  padding: 9px 15px;
+  color: white;
+  background: white;
+  border: 1px solid rgba(217, 156, 81, 0.7);
+  border-radius: 13px;
+  box-shadow: 0 5px 15px rgba(16, 75, 61, 0.03);
+  text-align: right;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.author-dashboard-page .status-dropdown-trigger:hover,
+.author-dashboard-page .status-dropdown.is-open .status-dropdown-trigger {
+  border-color: #e9b66f;
+  box-shadow: 0 7px 20px rgba(16, 75, 61, 0.2);
+}
+
+.author-dashboard-page .status-dropdown-trigger:focus-visible {
+  outline: 3px solid rgba(217, 156, 81, 0.35);
+  outline-offset: 3px;
+}
+
+.author-dashboard-page .status-dropdown-caption {
+  grid-column: 1;
+  grid-row: 1;
+  color: #e5c394;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.author-dashboard-page .status-dropdown-current {
+  grid-column: 1;
+  grid-row: 2;
+  color: #0b2d25;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.author-dashboard-page .status-dropdown-arrow {
+  grid-column: 3;
+  grid-row: 1 / 3;
+  color: #e5b36d;
+  font-size: 23px;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.author-dashboard-page .status-dropdown.is-open .status-dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+.author-dashboard-page .status-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 9px);
+  right: 0;
+  width: 100%;
+  min-width: 205px;
+  padding: 7px;
+  background: linear-gradient(160deg, #123d32, #092820);
+  border: 1px solid rgba(217, 156, 81, 0.65);
+  border-radius: 14px;
+  box-shadow: 0 16px 35px rgba(7, 31, 25, 0.25);
+  z-index: 100;
+  animation: statusMenuIn 0.16s ease-out;
+}
+
+.author-dashboard-page .status-dropdown-menu[hidden] {
+  display: none;
+}
+
+.author-dashboard-page .status-dropdown-option {
+  width: 100%;
+  min-height: 44px;
+  display: grid;
+  grid-template-columns: 10px 1fr 18px;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 11px;
+  color: #f5f4ed;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  text-align: right;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.author-dashboard-page .status-dropdown-option:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(217, 156, 81, 0.25);
+}
+
+.author-dashboard-page .status-dropdown-option.is-selected {
+  color: #f1c27f;
+  background: rgba(217, 156, 81, 0.12);
+  border-color: rgba(217, 156, 81, 0.35);
+}
+
+.author-dashboard-page .status-option-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #82958a;
+}
+
+.author-dashboard-page .status-dropdown-option[data-value="published"] .status-option-dot {
+  background: #58c99a;
+}
+
+.author-dashboard-page .status-dropdown-option[data-value="pending"] .status-option-dot {
+  background: #e9b66f;
+}
+
+.author-dashboard-page .status-dropdown-option[data-value="rejected"] .status-option-dot {
+  background: #ee8585;
+}
+
+.author-dashboard-page .status-option-check {
+  color: #e9b66f;
+  text-align: center;
+  opacity: 0;
+}
+
+.author-dashboard-page .status-dropdown-option.is-selected .status-option-check {
+  opacity: 1;
+}
+
+@keyframes statusMenuIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================================
+   Professional Edit Book Modal
+========================================= */
+
+.edit-modal-card {
+  width: min(680px, calc(100% - 28px));
+  height: min(90vh, 850px);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin: auto;
+  padding: 0;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.18);
+  direction: rtl;
+}
+
+.edit-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px 26px 20px;
+  border-bottom: 1px solid #edf0ee;
+}
+
+.edit-modal-heading {
+  min-width: 0;
+}
+
+.edit-modal-eyebrow {
+  display: inline-block;
+  margin-bottom: 7px;
+  color: #6b8d7f;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.edit-modal-heading h2 {
+  margin: 0;
+  color: #173e32;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.edit-modal-heading p {
+  margin: 7px 0 0;
+  color: #7b8580;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.edit-modal-close {
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 12px;
+  background: #f3f6f4;
+  color: #53645b;
+  font-size: 23px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.edit-modal-close:hover {
+  background: #e8efeb;
+  color: #104b3d;
+}
+
+.edit-rejection-reason {
+  margin: 20px 26px 0;
+  padding: 13px 15px;
+  border: 1px solid #f2d8d5;
+  border-radius: 12px;
+  background: #fff8f7;
+  color: #9d4038;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.edit-form-section {
+  padding: 23px 26px;
+  border-bottom: 1px solid #edf0ee;
+}
+
+.edit-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-bottom: 20px;
+}
+
+.edit-section-number {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  border-radius: 10px;
+  background: #eaf2ed;
+  color: #205b47;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.edit-section-heading h3 {
+  margin: 0;
+  color: #234538;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.edit-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 17px;
+}
+
+.edit-field:last-child {
+  margin-bottom: 0;
+}
+
+.edit-field > label {
+  color: #43564c;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.edit-field input,
+.edit-field textarea,
+.edit-field select {
+  width: 100%;
+  min-height: 45px;
+  padding: 11px 13px;
+  border: 1px solid #dfe7e2;
+  border-radius: 11px;
+  outline: none;
+  background: #fbfcfb;
+  color: #243b31;
+  font: inherit;
+  font-size: 13px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.edit-field textarea {
+  min-height: 105px;
+  resize: vertical;
+  line-height: 1.8;
+}
+
+.edit-field input:focus,
+.edit-field textarea:focus,
+.edit-field select:focus {
+  border-color: #4c8b70;
+  box-shadow: 0 0 0 3px rgba(76, 139, 112, 0.11);
+  background: #fff;
+}
+
+.edit-price-card {
+  padding: 17px;
+  border: 1px solid #e1eae4;
+  border-radius: 14px;
+  background: #f8fbf9;
+}
+
+.edit-price-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 13px;
+}
+
+.edit-price-top > span:first-child {
+  color: #43564c;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.edit-price-currency {
+  color: #789084;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.edit-price-input-wrap {
+  position: relative;
+}
+
+.edit-price-input-wrap input {
+  padding-left: 55px;
+  background: #fff;
+}
+
+.edit-free-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  margin-top: 15px;
+  cursor: pointer;
+  color: #345849;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.edit-free-check {
+  width: 17px;
+  height: 17px;
+  accent-color: #23654d;
+  cursor: pointer;
+}
+
+.edit-price-help {
+  display: block;
+  margin-top: 10px;
+  color: #84928a;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.edit-file-field {
+  margin-bottom: 17px;
+}
+
+.edit-file-box {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 15px;
+  border: 1px dashed #cbdad0;
+  border-radius: 13px;
+  background: #fafcfb;
+}
+
+.edit-file-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  border-radius: 12px;
+  background: #eaf2ed;
+  color: #28634c;
+  font-size: 19px;
+}
+
+.edit-file-box input {
+  min-width: 0;
+  width: 100%;
+  color: #64756b;
+  font: inherit;
+  font-size: 12px;
+}
+
+.edit-files-note {
+  margin: 12px 0 0;
+  color: #89958e;
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+.edit-modal-footer {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 17px 26px;
+  border-top: 1px solid #edf0ee;
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.edit-save-button,
+.edit-cancel-button {
+  min-height: 43px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 11px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.edit-save-button {
+  background: #174f3e;
+  color: #fff;
+}
+
+.edit-save-button:hover {
+  background: #103d30;
+}
+
+.edit-cancel-button {
+  background: #f0f3f1;
+  color: #52645a;
+}
+
+.edit-cancel-button:hover {
+  background: #e5ebe7;
+}
+
+.edit-save-button:disabled,
+.edit-cancel-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+  .edit-modal-card {
+    width: calc(100% - 18px);
+    max-height: 94vh;
+    margin: 9px auto;
+    border-radius: 16px;
+  }
+
+  .edit-modal-header,
+  .edit-form-section {
+    padding: 19px 17px;
+  }
+
+  .edit-rejection-reason {
+    margin: 15px 17px 0;
+  }
+
+  .edit-modal-footer {
+    padding: 14px 17px;
+  }
+
+  .edit-modal-heading h2 {
+    font-size: 19px;
+  }
+
+  .edit-save-button,
+  .edit-cancel-button {
+    flex: 1;
+    padding: 0 10px;
+  }
+}
+
+
+/* =========================================
+   PROFESSIONAL EDIT BOOK MODAL
+   ========================================= */
+
+   #rejectedEditOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(12, 30, 24, .68);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+    overflow-y: auto;
+  }
+  
+  #rejectedEditOverlay[hidden] {
+    display: none !important;
+  }
+  
+  .edit-modal-card {
+    width: min(100%, 850px);
+    max-height: min(90vh, 950px);
+    overflow-y: auto;
+    background: #fff;
+    border: 1px solid #e4ebe6;
+    border-radius: 24px;
+    box-shadow: 0 28px 90px rgba(0, 0, 0, .22);
+    animation: editModalEnter .25s ease;
+    scrollbar-width: thin;
+    scrollbar-color: #b8cabe transparent;
+  }
+  
+  @keyframes editModalEnter {
+    from {
+      opacity: 0;
+      transform: translateY(18px) scale(.985);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+  
+  /* Header */
+  
+  .edit-modal-header {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 23px 27px;
+    background: rgba(255, 255, 255, .96);
+    border-bottom: 1px solid #edf1ee;
+    backdrop-filter: blur(12px);
+  }
+  
+  .edit-modal-heading {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  
+  #rejectedEditTitle {
+    margin: 0;
+    color: #123d32;
+    font-size: 23px;
+    font-weight: 800;
+    line-height: 1.4;
+  }
+  
+  #editModalSubtitle {
+    color: #78877f;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  
+  .edit-modal-close {
+    flex: 0 0 42px;
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border: 1px solid #e7ece8;
+    border-radius: 13px;
+    background: #f7f9f7;
+    color: #52645a;
+    font-size: 22px;
+    cursor: pointer;
+    transition: .2s ease;
+  }
+  
+  .edit-modal-close:hover {
+    background: #fff0ed;
+    color: #c34e3f;
+    border-color: #f2d3ce;
+  }
+  
+  /* Form body */
+  
+  #rejectedEditForm {
+    padding: 26px 27px 28px;
+  }
+  
+  .edit-form-section {
+    margin-bottom: 23px;
+    padding: 23px;
+    border: 1px solid #e8eee9;
+    border-radius: 19px;
+    background: #fff;
+    transition: border-color .2s ease, box-shadow .2s ease;
+  }
+  
+  .edit-form-section:hover {
+    border-color: #d6e4da;
+    box-shadow: 0 5px 18px rgba(18, 61, 50, .035);
+  }
+  
+  .edit-section-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 21px;
+    color: #173f33;
+    font-size: 16px;
+    font-weight: 800;
+  }
+  
+  .edit-section-number {
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 34px;
+    border-radius: 11px;
+    background: #eaf3ed;
+    color: #176044;
+    font-size: 14px;
+    font-weight: 800;
+  }
+  
+  /* Fields */
+  
+  .edit-field {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    margin-bottom: 18px;
+  }
+  
+  .edit-field:last-child {
+    margin-bottom: 0;
+  }
+  
+  .edit-field label {
+    color: #344b3e;
+    font-size: 13px;
+    font-weight: 750;
+  }
+  
+  .edit-field input:not([type="checkbox"]):not([type="file"]),
+  .edit-field textarea,
+  .edit-field select {
+    width: 100%;
+    min-height: 49px;
+    padding: 12px 15px;
+    border: 1px solid #dfe8e1;
+    border-radius: 12px;
+    outline: none;
+    background: #fbfcfb;
+    color: #24392e;
+    font-family: inherit;
+    font-size: 14px;
+    transition: .2s ease;
+  }
+  
+  .edit-field textarea {
+    min-height: 125px;
+    resize: vertical;
+    line-height: 1.9;
+  }
+  
+  .edit-field input:focus,
+  .edit-field textarea:focus,
+  .edit-field select:focus {
+    border-color: #43866b;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(67, 134, 107, .10);
+  }
+  
+  .edit-field input::placeholder,
+  .edit-field textarea::placeholder {
+    color: #a4afa8;
+  }
+  
+  /* Price section */
+  
+  .edit-price-card {
+    padding: 19px;
+    border: 1px solid #dce9df;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #f8fbf8, #f0f7f1);
+  }
+  
+  .edit-price-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 17px;
+  }
+  
+  .edit-price-top label {
+    color: #244c39;
+    font-size: 14px;
+    font-weight: 800;
+  }
+  
+  .edit-price-input-wrap {
+    position: relative;
+  }
+  
+  .edit-price-input-wrap input {
+    width: 100%;
+    min-height: 52px;
+    padding: 12px 15px;
+    border: 1px solid #d5e3d8;
+    border-radius: 12px;
+    outline: none;
+    background: #fff;
+    color: #173f33;
+    font-family: inherit;
+    font-size: 17px;
+    font-weight: 800;
+    transition: .2s ease;
+  }
+  
+  .edit-price-input-wrap input:focus {
+    border-color: #43866b;
+    box-shadow: 0 0 0 4px rgba(67, 134, 107, .10);
+  }
+  
+  .edit-free-toggle {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #315744;
+    font-size: 13px;
+    font-weight: 750;
+    cursor: pointer;
+  }
+  
+  .edit-free-toggle input {
+    width: 18px;
+    height: 18px;
+    accent-color: #176044;
+    cursor: pointer;
+  }
+  
+  .edit-price-help {
+    display: block;
+    margin-top: 11px;
+    color: #74867a;
+    font-size: 12px;
+    line-height: 1.8;
+  }
+  
+  /* File fields */
+  
+  .edit-file-field {
+    margin-bottom: 17px;
+  }
+  
+  .edit-file-box {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    min-height: 100px;
+    padding: 18px;
+    border: 1px dashed #b9d0bf;
+    border-radius: 15px;
+    background: #f8fbf8;
+    transition: .2s ease;
+  }
+  
+  .edit-file-box:hover {
+    border-color: #43866b;
+    background: #f1f8f2;
+  }
+  
+  .edit-file-icon {
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    background: #e7f1e9;
+    color: #176044;
+    font-size: 22px;
+  }
+  
+  .edit-files-note {
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 11px;
+    background: #f3f7f3;
+    color: #6d7e72;
+    font-size: 12px;
+    line-height: 1.8;
+  }
+  
+  /* Rejection notice */
+  
+  .edit-rejection-reason {
+    margin: 20px 27px 0;
+    padding: 15px 17px;
+    border: 1px solid #f0d6d1;
+    border-radius: 14px;
+    background: #fff8f6;
+    color: #a3483c;
+    font-size: 13px;
+    line-height: 1.9;
+  }
+  
+  /* Footer */
+  
+  .edit-modal-footer {
+    position: sticky;
+    bottom: 0;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    padding: 19px 27px;
+    border-top: 1px solid #edf1ee;
+    background: rgba(255, 255, 255, .97);
+    backdrop-filter: blur(12px);
+  }
+  
+  .edit-save-button,
+  .edit-cancel-button {
+    min-height: 48px;
+    padding: 0 24px;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: .2s ease;
+  }
+  
+  .edit-save-button {
+    border: 1px solid #123d32;
+    background: #123d32;
+    color: #fff;
+    box-shadow: 0 5px 13px rgba(18, 61, 50, .14);
+  }
+  
+  .edit-save-button:hover {
+    background: #1b5946;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(18, 61, 50, .2);
+  }
+  
+  .edit-cancel-button {
+    border: 1px solid #e1e8e2;
+    background: #fff;
+    color: #65746a;
+  }
+  
+  .edit-cancel-button:hover {
+    background: #f5f7f5;
+    border-color: #cbd8ce;
+  }
+  
+  /* Responsive */
+  
+  @media (max-width: 650px) {
+    #rejectedEditOverlay {
+      align-items: flex-end;
+      padding: 0;
+    }
+  
+    .edit-modal-card {
+      width: 100%;
+      max-height: 94vh;
+      border-radius: 22px 22px 0 0;
+    }
+  
+    .edit-modal-header {
+      padding: 18px;
+    }
+  
+    #rejectedEditTitle {
+      font-size: 19px;
+    }
+  
+    #editModalSubtitle {
+      font-size: 12px;
+    }
+  
+    #rejectedEditForm {
+      padding: 18px;
+    }
+  
+    .edit-form-section {
+      padding: 17px;
+      margin-bottom: 16px;
+      border-radius: 15px;
+    }
+  
+    .edit-section-heading {
+      font-size: 14px;
+    }
+  
+    .edit-modal-footer {
+      padding: 14px 18px;
+      gap: 9px;
+    }
+  
+    .edit-save-button,
+    .edit-cancel-button {
+      flex: 1;
+      padding: 0 10px;
+      font-size: 12px;
+    }
+  
+    .edit-rejection-reason {
+      margin: 16px 18px 0;
+    }
+  }
+  
+  @media (max-width: 380px) {
+    .edit-price-top {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  
+    .edit-file-box {
+      align-items: flex-start;
+    }
+  }
+
+  /* =========================================
+   EDIT CATEGORY - WHITE & GOLD STYLE
+   ========================================= */
+
+#editBookCategory {
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 16px;
+  border: 1px solid #dfe8e1;
+  border-radius: 13px;
+  background-color: #fff;
+  color: #244536;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 650;
+  cursor: pointer;
+  outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+#editBookCategory:hover {
+  border-color: #c9ad66;
+}
+
+#editBookCategory:focus {
+  border-color: #c9a449;
+  box-shadow: 0 0 0 3px rgba(201, 164, 73, .16);
+  background-color: #fff;
+}
+
+#editBookCategory option {
+  padding: 12px;
+  background: #fff;
+  color: #244536;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+#editBookCategory option:checked {
+  background: #f8f3e7;
+  color: #8b6a20;
+  font-weight: 700;
+}
+
+#editBookCategory option:hover {
+  background: #fffaf0;
+  outline: 1px solid #c9a449;
+}
+
+
+/* =========================================
+   CUSTOM EDIT CATEGORY DROPDOWN
+   ========================================= */
+
+   .edit-field {
+    position: relative;
+  }
+  
+  .edit-category-native {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    overflow: hidden !important;
+  }
+  
+  .edit-category-dropdown {
+    position: relative;
+    width: 100%;
+    z-index: 20;
+  }
+  
+  .edit-category-trigger {
+    width: 100%;
+    min-height: 53px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border: 1px solid #dfe8e1;
+    border-radius: 13px;
+    background: #fff;
+    color: #244536;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 650;
+    text-align: right;
+    cursor: pointer;
+    transition: .22s ease;
+  }
+  
+  .edit-category-trigger:hover,
+  .edit-category-trigger[aria-expanded="true"] {
+    border-color: #c9a449;
+    box-shadow: 0 0 0 3px rgba(201, 164, 73, .10);
+  }
+  
+  .edit-category-arrow {
+    color: #a88a42;
+    font-size: 21px;
+    transition: transform .2s ease;
+  }
+  
+  .edit-category-trigger[aria-expanded="true"] .edit-category-arrow {
+    transform: rotate(180deg);
+  }
+  
+  .edit-category-menu {
+    position: absolute;
+    top: calc(100% + 9px);
+    right: 0;
+    left: 0;
+    z-index: 100;
+    max-height: 260px;
+    overflow-y: auto;
+    padding: 8px;
+    border: 1px solid #e8e3d5;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 15px 40px rgba(25, 48, 35, .13);
+    scrollbar-width: thin;
+    scrollbar-color: #d6c18d transparent;
+    animation: categoryMenuEnter .18s ease;
+  }
+  
+  .edit-category-menu[hidden] {
+    display: none !important;
+  }
+  
+  @keyframes categoryMenuEnter {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .edit-category-option {
+    width: 100%;
+    min-height: 45px;
+    padding: 10px 13px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: #fff;
+    color: #40564a;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: right;
+    cursor: pointer;
+    transition: .18s ease;
+  }
+  
+  .edit-category-option:hover {
+    border-color: #d2b66e;
+    background: #fffaf0;
+    color: #806321;
+    transform: translateX(-2px);
+  }
+  
+  .edit-category-option.selected {
+    border-color: #e3d4aa;
+    background: #faf6eb;
+    color: #856b2e;
+    font-weight: 800;
+  }
+  
+  .edit-category-check {
+    width: 23px;
+    height: 23px;
+    flex: 0 0 23px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #f1f3ef;
+    color: transparent;
+    font-size: 12px;
+  }
+  
+  .edit-category-option.selected .edit-category-check {
+    background: #e9dfc3;
+    color: #96752e;
+  }
+  
+  @media (max-width: 600px) {
+    .edit-category-menu {
+      max-height: 220px;
+    }
+  
+    .edit-category-option {
+      min-height: 47px;
+    }
+  }
+
+
+  /* =========================================
+   EDIT PRICE FIELD - CLEAN NUMBER INPUT
+   ========================================= */
+
+/* إخفاء سهمي زيادة وتقليل السعر */
+#editBookPrice::-webkit-inner-spin-button,
+#editBookPrice::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+#editBookPrice {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* شكل السعر عند اختيار مجاني */
+#editBookPrice:disabled {
+  opacity: .45;
+  background: #e9eeea !important;
+  border-color: #dce3dd !important;
+  color: #89958c !important;
+  cursor: not-allowed;
+  box-shadow: none !important;
+  filter: grayscale(.35);
+  transition: all .25s ease;
+}
+
+/* انتقال ناعم عند تفعيل السعر */
+#editBookPrice {
+  transition: all .25s ease;
+}
+
+
+/* =========================================
+   EDIT MODAL - PROFESSIONAL FILE INPUTS
+   ========================================= */
+
+/* إخفاء الشكل التقليدي لزر اختيار الملف */
+#rejectedEditOverlay input[type="file"] {
+  width: 100%;
+  color: #718078;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* تصميم زر اختيار الملف */
+#rejectedEditOverlay input[type="file"]::file-selector-button {
+  margin-right: 20px;
+  padding: 11px 19px;
+  border: 1px solid #d7c18b;
+  border-radius: 10px;
+  background: #fffaf0;
+  color: #846722;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+
+#rejectedEditOverlay input[type="file"]::file-selector-button:hover {
+  background: #f4ead0;
+  border-color: #bd9b4d;
+  color: #6f5318;
+  box-shadow: 0 3px 10px rgba(189, 155, 77, .12);
+}
+
+/* دعم Safari */
+#rejectedEditOverlay input[type="file"]::-webkit-file-upload-button {
+  margin-right: 20px;
+  padding: 11px 19px;
+  border: 1px solid #d7c18b;
+  border-radius: 10px;
+  background: #fffaf0;
+  color: #846722;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+
+#rejectedEditOverlay input[type="file"]::-webkit-file-upload-button:hover {
+  background: #f4ead0;
+  border-color: #bd9b4d;
+  color: #6f5318;
+}
+
+#rejectedEditOverlay input[type="file"] {
+  direction: ltr;
+  text-align: right;
+  padding-left: 5px;
+}
+
+
+/* =========================================
+   GOLD SCROLLBAR - CATEGORY DROPDOWNS
+   ========================================= */
+
+/* Firefox */
+.author-dashboard-page .edit-category-menu {
+  scrollbar-width: thin;
+  scrollbar-color: #d6b56e #f8f6f0;
+}
+
+/* Chrome - Safari - Edge */
+.author-dashboard-page .edit-category-menu::-webkit-scrollbar {
+  width: 10px;
+}
+
+.author-dashboard-page .edit-category-menu::-webkit-scrollbar-track {
+  background: #f8f6f0;
+  border-radius: 20px;
+  margin: 9px 0;
+}
+
+.author-dashboard-page .edit-category-menu::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    #e8c982,
+    #c69a46
+  );
+  border: 1px solid #fff;
+  border-radius: 20px;
+}
+
+.author-dashboard-page .edit-category-menu::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    #dcb96b,
+    #ad8030
+  );
+}
+
+/* =========================================
+   GOLD SCROLLBAR - EDIT MODAL
+   ========================================= */
+
+   .edit-modal-card {
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #c69a46 #f8f6f0;
+  }
+  
+  /* Chrome - Safari - Edge */
+  .edit-modal-card::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  .edit-modal-card::-webkit-scrollbar-track {
+    background: #f8f6f0;
+    border-radius: 20px;
+    margin: 12px 0;
+  }
+  
+  .edit-modal-card::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+      180deg,
+      #e8c982,
+      #c69a46
+    );
+    border: 1px solid #fff;
+    border-radius: 20px;
+  }
+  
+  .edit-modal-card::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(
+      180deg,
+      #dcb96b,
+      #ad8030
+    );
+  }
+
+  /* =========================================
+   FIXED DESCRIPTION TEXTAREA
+   ========================================= */
+
+#bookDescription {
+  height: 200px;
+  min-height: 140px;
+  max-height: 200px;
+  resize: none;
+  overflow-y: auto;
+
+  scrollbar-width: thin;
+  scrollbar-color: #c69a46 #f8f6f0;
+}
+
+/* Chrome - Safari - Edge */
+#bookDescription::-webkit-scrollbar {
+  width: 8px;
+}
+
+#bookDescription::-webkit-scrollbar-track {
+  background: #f8f6f0;
+  border-radius: 20px;
+}
+
+#bookDescription::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    #e8c982,
+    #c69a46
+  );
+  border-radius: 20px;
+}
+
+#bookDescription::-webkit-scrollbar-thumb:hover {
+  background: #ad8030;
+}
+
+
+#editBookDescription {
+  height: 200px;
+  min-height: 140px;
+  max-height: 200px;
+  resize: none;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #c69a46 #f8f6f0;
+}
+
+/* Chrome - Safari - Edge */
+#editBookDescription::-webkit-scrollbar {
+  width: 8px;
+}
+
+#editBookDescription::-webkit-scrollbar-track {
+  background: #f8f6f0;
+  border-radius: 20px;
+}
+
+#editBookDescription::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    #e8c982,
+    #c69a46
+  );
+  border-radius: 20px;
+}
+
+#editBookDescription::-webkit-scrollbar-thumb:hover {
+  background: #ad8030;
+}
+
+/* =========================================
+   EDIT MODAL FOOTER - NORMAL FLOW
+   ========================================= */
+
+   #rejectedEditOverlay .edit-modal-footer {
+    position: static !important;
+    bottom: auto !important;
+    z-index: 1 !important;
+  
+    display: flex !important;
+    align-items: center;
+    justify-content: flex-start;
+  
+    background: #fff !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+
+  /* إخفاء أسهم خانة السعر في إضافة رواية */
+#bookPrice::-webkit-inner-spin-button,
+#bookPrice::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+#bookPrice {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+
+/* عدد مالكي الرواية - نفس تصميم صفحة المكتبة */
+.library-book-owner-count {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 7px;
+  margin: 10px 0 14px;
+  padding: 6px 11px;
+  border: 1px solid rgba(177, 138, 59, 0.28);
+  border-radius: 999px;
+  background: #f8f4e9;
+  color: #123d32;
+  font-size: 13px;
+  font-weight: 700;
+  direction: rtl;
+  width: fit-content;
+}
+
+.library-book-owner-eye {
+  display: inline-flex;
+  align-items: center;
+  color: #b18a3b;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+
+/* =================================
+   PROFESSIONAL BOOK DETAILS MODAL
+================================= */
+
+.details-modal {
+  position: relative;
+  width: min(100%, 680px);
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: 30px;
+  background: #fff;
+  border: 1px solid rgba(177, 138, 59, .18);
+  border-radius: 22px;
+  text-align: right;
+  direction: rtl;
+  box-shadow: 0 28px 90px rgba(0, 0, 0, .24);
+
+  scrollbar-width: thin;
+  scrollbar-color: #b18a3b #f2eee5;
+}
+
+.details-modal::-webkit-scrollbar {
+  width: 9px;
+}
+
+.details-modal::-webkit-scrollbar-track {
+  background: #f2eee5;
+  border-radius: 10px;
+  margin: 18px 0;
+}
+
+.details-modal::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #d4b36b, #98702e);
+  border-radius: 10px;
+  border: 1px solid #f2eee5;
+}
+
+.details-modal::-webkit-scrollbar-thumb:hover {
+  background: #8f692b;
+}
+
+/* Close button */
+
+.details-modal .modal-close {
+  position: sticky;
+  top: 0;
+  float: left;
+  z-index: 5;
+  width: 36px;
+  height: 36px;
+  margin: -8px -8px 0 0;
+  border: 1px solid #eee8dc;
+  border-radius: 11px;
+  background: #faf8f3;
+  color: #123d32;
+  font-size: 23px;
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+.details-modal .modal-close:hover {
+  background: #123d32;
+  color: #fff;
+}
+
+/* Main content */
+
+.details-content {
+  padding-top: 5px;
+}
+
+.details-top-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.details-eyebrow {
+  display: block;
+  margin-bottom: 5px;
+  color: #b18a3b;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .7px;
+}
+
+.details-top-heading h2 {
+  margin: 0;
+  color: #123d32;
+  font-size: 23px;
+  font-weight: 900;
+}
+
+/* Book hero */
+
+.details-hero {
+  display: flex;
+  align-items: center;
+  gap: 23px;
+  padding: 20px;
+  background: linear-gradient(135deg, #f8f6f0, #fff);
+  border: 1px solid #eee8dc;
+  border-radius: 17px;
+}
+
+.details-cover-frame {
+  width: 125px;
+  height: 170px;
+  flex: 0 0 125px;
+  padding: 5px;
+  background: #fff;
+  border: 1px solid rgba(177, 138, 59, .3);
+  border-radius: 11px;
+  box-shadow: 0 8px 22px rgba(18, 61, 50, .1);
+}
+
+.details-cover {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 7px;
+  background: #f0f4ef;
+}
+
+.details-cover-placeholder {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  background: #123d32;
+  color: #d4b36b;
+  border-radius: 7px;
+  font-weight: 900;
+}
+
+.details-book-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.details-book-info h3 {
+  margin: 0 0 16px;
+  color: #123d32;
+  font-size: 21px;
+  font-weight: 900;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.details-book-date {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  color: #7c817d;
+  font-size: 12px;
+  line-height: 2;
+}
+
+.details-book-date strong {
+  color: #394a42;
+}
+
+.details-small-icon {
+  color: #b18a3b;
+  font-size: 19px;
+}
+
+.details-price-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  max-width: 240px;
+  margin-top: 17px;
+  padding: 10px 13px;
+  background: #fff;
+  border: 1px solid #eee8dc;
+  border-radius: 11px;
+}
+
+.details-price-box > span:first-child {
+  color: #7c817d;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.details-price-value {
+  color: #123d32;
+  font-size: 17px;
+  font-weight: 900;
+}
+
+.details-price-free {
+  color: #25805a;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+/* Owner count */
+
+.details-owner-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 20px;
+  padding: 17px 19px;
+  background: linear-gradient(110deg, #123d32, #1c5544);
+  border: 1px solid rgba(177, 138, 59, .5);
+  border-radius: 15px;
+  color: #fff;
+}
+
+.details-owner-icon {
+  width: 46px;
+  height: 46px;
+  flex: 0 0 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  background: rgba(212, 179, 107, .15);
+  color: #d4b36b;
+}
+
+.details-owner-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.details-owner-text strong {
+  color: #e2c47f;
+  font-size: 23px;
+  font-weight: 900;
+}
+
+.details-owner-text span {
+  color: rgba(255, 255, 255, .8);
+  font-size: 12px;
+}
+
+.details-owner-label {
+  padding: 7px 11px;
+  border: 1px solid rgba(212, 179, 107, .35);
+  border-radius: 8px;
+  color: #e2c47f;
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+/* Description */
+
+.details-section {
+  margin-top: 25px;
+}
+
+.details-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 13px;
+}
+
+.details-section-line {
+  width: 4px;
+  height: 23px;
+  border-radius: 5px;
+  background: #b18a3b;
+}
+
+.details-section-heading h3 {
+  margin: 0;
+  color: #123d32;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.details-description {
+  padding: 17px;
+  min-height: 90px;
+  max-height: 230px;
+  overflow-y: auto;
+  background: #faf9f6;
+  border: 1px solid #eee9df;
+  border-radius: 12px;
+  color: #59635d;
+  font-size: 13px;
+  line-height: 2.1;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+
+  scrollbar-width: thin;
+  scrollbar-color: #b18a3b #f2eee5;
+}
+
+.details-description::-webkit-scrollbar {
+  width: 7px;
+}
+
+.details-description::-webkit-scrollbar-track {
+  background: #f2eee5;
+  border-radius: 10px;
+}
+
+.details-description::-webkit-scrollbar-thumb {
+  background: #b18a3b;
+  border-radius: 10px;
+}
+
+/* Rejection */
+
+.details-rejection {
+  margin-top: 18px;
+  padding: 15px;
+  background: #fff6f4;
+  border: 1px solid #f0d5d0;
+  border-radius: 12px;
+  color: #963f3a;
+  font-size: 12px;
+  line-height: 2;
+  overflow-wrap: anywhere;
+}
+
+.details-rejection-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-weight: 900;
+}
+
+.details-rejection-title span {
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #963f3a;
+  color: #fff;
+  font-size: 13px;
+}
+
+.details-rejection p {
+  margin: 9px 0 0;
+}
+
+/* Footer */
+
+.details-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 24px;
+  padding-top: 15px;
+  border-top: 1px solid #eee9df;
+  color: #a49a84;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.details-modal .modal-close {
+  position: sticky;
+  top: 0;
+  left: 0;
+  float: left;
+  z-index: 20;
+  width: 36px;
+  height: 36px;
+  margin: -8px -8px 0 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid #eee8dc;
+  border-radius: 11px;
+  background: #faf8f3;
+  color: #123d32;
+  font-size: 25px;
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+.details-modal .modal-close:hover {
+  background: #123d32;
+  color: #fff;
+}
+
+/* Main details modal */
+
+.details-modal {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+
+  width: min(100%, 680px);
+  max-height: 88vh;
+  padding: 0;
+
+  background: #fff;
+  border: 1px solid rgba(177, 138, 59, .18);
+  border-radius: 22px;
+
+  text-align: right;
+  direction: rtl;
+
+  box-shadow: 0 28px 90px rgba(0, 0, 0, .24);
+  overflow: hidden;
+}
+
+/* Fixed modal header */
+
+.details-modal-header {
+  position: relative;
+  z-index: 10;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+
+  min-height: 82px;
+  padding: 15px 25px;
+
+  background: #fff;
+  border-bottom: 1px solid #eee9df;
+  box-shadow: 0 4px 12px rgba(18, 61, 50, .035);
+}
+
+.details-header-title {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.details-header-title .details-eyebrow {
+  color: #a17b36;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.details-header-title h2 {
+  margin: 0;
+  color: #123d32;
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.details-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+/* Status badge inside header */
+
+#detailsHeaderStatus {
+  display: flex;
+  align-items: center;
+}
+
+/* Close button */
+
+.details-modal-header .modal-close {
+  position: static;
+  float: none;
+
+  display: grid;
+  place-items: center;
+
+  flex-shrink: 0;
+
+  width: 36px;
+  height: 36px;
+  margin: 0;
+
+  border: 1px solid #eee8dc;
+  border-radius: 11px;
+
+  background: #faf8f3;
+  color: #123d32;
+
+  font-size: 25px;
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+.details-modal-header .modal-close:hover {
+  background: #123d32;
+  color: #fff;
+}
+
+/* Scrollable content only */
+
+.details-modal-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+
+  padding: 25px;
+
+  scrollbar-width: thin;
+  scrollbar-color: #b18a3b #f2eee5;
+}
+
+.details-modal-body::-webkit-scrollbar {
+  width: 10px;
+}
+
+.details-modal-body::-webkit-scrollbar-track {
+  background: #f2eee5;
+  border-radius: 10px;
+}
+
+.details-modal-body::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #d4b36b, #98702e);
+  border-radius: 10px;
+  border: 1px solid #f2eee5;
+}
+
+.details-modal-body::-webkit-scrollbar-thumb:hover {
+  background: #8f692b;
+}
+
+/* Content */
+
+.details-content {
+  padding-top: 0;
+}
+
+/* Remove old heading from the scrolling content */
+
+.details-content > .details-top-heading {
+  display: none;
 }

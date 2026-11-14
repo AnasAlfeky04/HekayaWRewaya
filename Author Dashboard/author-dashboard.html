@@ -272,15 +272,59 @@
             >
           </div>
 
-          <select
-            id="statusFilter"
-            aria-label="فلترة الروايات حسب الحالة"
-          >
-            <option value="all">كل الحالات</option>
-            <option value="published">منشورة</option>
-            <option value="pending">قيد المراجعة</option>
-            <option value="rejected">مرفوضة</option>
-          </select>
+          <div class="status-dropdown" id="statusDropdown">
+            <select id="statusFilter" aria-label="فلترة الروايات حسب الحالة" tabindex="-1">
+              <option value="all">كل الحالات</option>
+              <option value="published">منشورة</option>
+              <option value="pending">قيد المراجعة</option>
+              <option value="rejected">مرفوضة</option>
+            </select>
+          
+            <button
+              class="status-dropdown-trigger"
+              id="statusDropdownTrigger"
+              type="button"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+              aria-controls="statusDropdownMenu"
+            >
+              <span class="status-dropdown-caption">تصفية حسب الحالة</span>
+              <span class="status-dropdown-current" id="statusDropdownCurrent">كل الحالات</span>
+              <span class="status-dropdown-arrow" aria-hidden="true">⌄</span>
+            </button>
+          
+            <div
+              class="status-dropdown-menu"
+              id="statusDropdownMenu"
+              role="listbox"
+              aria-label="حالة الرواية"
+              hidden
+            >
+              <button type="button" class="status-dropdown-option is-selected" role="option" aria-selected="true" data-value="all">
+                <span class="status-option-dot"></span>
+                <span>كل الحالات</span>
+                <span class="status-option-check">✓</span>
+              </button>
+          
+              <button type="button" class="status-dropdown-option" role="option" aria-selected="false" data-value="published">
+                <span class="status-option-dot"></span>
+                <span>منشورة</span>
+                <span class="status-option-check">✓</span>
+              </button>
+          
+              <button type="button" class="status-dropdown-option" role="option" aria-selected="false" data-value="pending">
+                <span class="status-option-dot"></span>
+                <span>قيد المراجعة</span>
+                <span class="status-option-check">✓</span>
+              </button>
+          
+              <button type="button" class="status-dropdown-option" role="option" aria-selected="false" data-value="rejected">
+                <span class="status-option-dot"></span>
+                <span>مرفوضة</span>
+                <span class="status-option-check">✓</span>
+              </button>
+            </div>
+          </div>
 
         </div>
 
@@ -342,7 +386,7 @@
         <div class="section-heading">
 
           <div>
-            <span class="section-kicker">حكاية جديدة</span>
+            <span class="section-kicker"> جديدة</span>
             <h2>أضف رواية جديدة</h2>
             <p>جهّز تفاصيل روايتك قبل إرسالها للمراجعة.</p>
           </div>
@@ -367,7 +411,7 @@
                 name="title"
                 type="text"
                 maxlength="180"
-                placeholder="اكتب عنوانًا يعبّر عن حكايتك"
+                placeholder="اكتب عنوان روايتك"
                 required
               >
 
@@ -384,7 +428,7 @@
                 name="description"
                 rows="5"
                 maxlength="10000"
-                placeholder="عرّف القراء بعالم روايتك..."
+                placeholder="اكتب نبذة سريعة عن روايتك..."
                 required
               ></textarea>
 
@@ -631,12 +675,24 @@
     hidden
   >
 
-    <section
-      class="details-modal"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="detailsTitle"
-    >
+
+  <section
+  class="details-modal"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="detailsTitle"
+>
+
+  <div class="details-modal-header">
+
+    <div class="details-header-title">
+      <span class="details-eyebrow">.</span>
+      <h2 id="detailsTitle">تفاصيل الرواية</h2>
+    </div>
+
+    <div class="details-header-actions">
+
+      <div id="detailsHeaderStatus"></div>
 
       <button
         id="closeDetailsBtn"
@@ -647,9 +703,15 @@
         ×
       </button>
 
-      <div id="detailsContent"></div>
+    </div>
 
-    </section>
+  </div>
+
+  <div class="details-modal-body">
+    <div id="detailsContent"></div>
+  </div>
+
+</section>
 
   </div>
 
