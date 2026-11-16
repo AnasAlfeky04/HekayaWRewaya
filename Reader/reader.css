@@ -1158,3 +1158,15 @@ body.dark .reader-app:fullscreen {
   }
 
 }
+
+@media (max-width: 760px) {
+  .toast {
+    top: 50%;
+    bottom: auto;
+    transform: translate(-50%, calc(-50% + 20px));
+  }
+
+  .toast.show {
+    transform: translate(-50%, -50%);
+  }
+}
