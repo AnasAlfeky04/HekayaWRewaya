@@ -11,7 +11,32 @@ let pdfDoc = null, currentPage = 1, zoom = 1, renderToken = 0, toastTimer = null
 const isMobile = () => window.matchMedia("(max-width:760px)").matches;
 function notify(message){ els.toast.textContent=message;els.toast.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>els.toast.classList.remove("show"),2600); }
 function showError(message){els.loading.hidden=false;els.spread.hidden=true;els.message.textContent=message;const spinner=els.loading.querySelector(".spinner");if(spinner)spinner.hidden=true;}
-function bookmarkKey(){return `hikaya-reader-bookmark-${bookId}`;}
+
+function bookmarkKey(){
+  return `hikaya-reader-bookmark-${bookId}`;
+}
+
+function updateBookmarkButton(){
+  const bookmarkBtn = $("bookmarkBtn");
+  if(!bookmarkBtn) return;
+
+  let savedPage = null;
+
+  try {
+    const saved = localStorage.getItem(bookmarkKey());
+    savedPage = saved !== null ? Number(saved) : null;
+  } catch(_) {}
+
+  const isBookmarked = savedPage === currentPage;
+
+  bookmarkBtn.classList.toggle("is-bookmarked", isBookmarked);
+  bookmarkBtn.title = isBookmarked
+    ? "إلغاء العلامة المرجعية"
+    : "حفظ علامة مرجعية";
+
+  bookmarkBtn.setAttribute("aria-pressed", String(isBookmarked));
+}
+
 function savePosition(){try{localStorage.setItem(`hikaya-reader-page-${bookId}`,String(currentPage));}catch(_){}}
 async function getPdfUrl(){
   const {data:sessionData,error:sessionError}=await db.auth.getSession();
@@ -115,6 +140,8 @@ async function renderSpread() {
 
   els.input.value = currentPage;
 
+  updateBookmarkButton();
+
   els.caption.textContent =
     `صفحة ${currentPage.toLocaleString("ar-EG")} من ${pdfDoc.numPages.toLocaleString("ar-EG")}`;
 
@@ -185,7 +212,25 @@ $("zoomOut").addEventListener("click", () => {
 $("fitBtn").addEventListener("click",()=>{zoom=1;renderSpread();});
 $("themeBtn").addEventListener("click",toggleTheme);
 $("fullscreenBtn").addEventListener("click",async()=>{try{if(!document.fullscreenElement)await document.querySelector(".reader-app").requestFullscreen();else await document.exitFullscreen();}catch(_){notify("ملء الشاشة غير متاح في هذا المتصفح.");}});
-$("bookmarkBtn").addEventListener("click",()=>{try{localStorage.setItem(bookmarkKey(),String(currentPage));notify("اتحفظت العلامة عند صفحة "+currentPage.toLocaleString("ar-EG"));}catch(_){notify("تعذر حفظ العلامة على هذا الجهاز.");}});
+
+$("bookmarkBtn").addEventListener("click",()=>{
+  try {
+    const saved = localStorage.getItem(bookmarkKey());
+
+    if(Number(saved) === currentPage && saved !== null){
+      localStorage.removeItem(bookmarkKey());
+      notify("تم إلغاء العلامة المرجعية.");
+    } else {
+      localStorage.setItem(bookmarkKey(),String(currentPage));
+      notify("اتحفظت العلامة عند صفحة "+currentPage.toLocaleString("ar-EG"));
+    }
+
+    updateBookmarkButton();
+  } catch(_) {
+    notify("تعذر تحديث العلامة المرجعية على هذا الجهاز.");
+  }
+});
+
 $("searchToggle").addEventListener("click",()=>{els.searchBox.hidden=!els.searchBox.hidden;if(!els.searchBox.hidden)els.searchInput.focus();});
 $("searchNext").addEventListener("click",()=>searchDocument(1));$("searchPrev").addEventListener("click",()=>searchDocument(-1));
 els.searchInput.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();searchIndex=-1;searchMatches=[];searchDocument(1);}});
