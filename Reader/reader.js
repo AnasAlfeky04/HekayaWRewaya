@@ -43,6 +43,13 @@ async function renderOne(pageNumber,canvas,layer,token){
   const context=canvas.getContext("2d");
   if(pageNumber>pdfDoc.numPages||pageNumber<1){canvas.width=1;canvas.height=1;context.clearRect(0,0,1,1);layer.replaceChildren();return;}
   const page=await pdfDoc.getPage(pageNumber);
+
+  const testText = await page.getTextContent();
+
+console.log("PDF ARABIC TEXT TEST:", 
+  testText.items.slice(0, 15).map(item => item.str)
+);
+
   if(token!==renderToken)return;
   const box=canvas.parentElement;
   const base=page.getViewport({scale:1});
@@ -64,7 +71,15 @@ const viewport = page.getViewport({ scale });
   const dpr=window.devicePixelRatio||1;
   canvas.width=Math.floor(viewport.width*dpr);canvas.height=Math.floor(viewport.height*dpr);
   canvas.style.width=`${viewport.width}px`;canvas.style.height=`${viewport.height}px`;
-  await page.render({canvasContext:context,viewport,transform:dpr!==1?[dpr,0,0,dpr,0,0]:null}).promise;
+  
+  await page.render({
+    canvasContext: context,
+    viewport,
+    transform: dpr !== 1 ? [dpr, 0, 0, dpr, 0, 0] : null
+  }).promise;
+  
+  console.log("PDF RENDER COMPLETE:", pageNumber);
+
   if(token!==renderToken)return;
   layer.replaceChildren();
   try{
