@@ -29,7 +29,13 @@ async function initReader(){
   try{
     if(!window.pdfjsLib)throw new Error("مكتبة عرض الصفحات لم يتم تحميلها. حدّث الصفحة وحاول مرة أخرى.");
     const url=await getPdfUrl();
-    const task=pdfjsLib.getDocument({url,withCredentials:false});
+
+    const task = pdfjsLib.getDocument({
+      url,
+      withCredentials: false,
+      disableFontFace: true
+    });
+
     pdfDoc=await task.promise;
     els.total.textContent=pdfDoc.numPages.toLocaleString("ar-EG");
     els.input.max=pdfDoc.numPages;
