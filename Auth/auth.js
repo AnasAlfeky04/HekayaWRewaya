@@ -16,6 +16,60 @@ const displayName = document.getElementById("displayName");
 const email = document.getElementById("email");
 const password = document.getElementById("password");
 const accountType = document.getElementById("accountType");
+
+const accountDropdown = document.getElementById("accountDropdown");
+const accountDropdownTrigger = document.getElementById("accountDropdownTrigger");
+const accountDropdownMenu = document.getElementById("accountDropdownMenu");
+const accountSelectedTitle = document.getElementById("accountSelectedTitle");
+const accountSelectedDescription = document.getElementById("accountSelectedDescription");
+
+function closeAccountDropdown() {
+  accountDropdown.classList.remove("open");
+  accountDropdownMenu.hidden = true;
+  accountDropdownTrigger.setAttribute("aria-expanded", "false");
+}
+
+accountDropdownTrigger.addEventListener("click", () => {
+  const isOpen = accountDropdown.classList.toggle("open");
+
+  accountDropdownMenu.hidden = !isOpen;
+  accountDropdownTrigger.setAttribute("aria-expanded", String(isOpen));
+});
+
+accountDropdownMenu.querySelectorAll(".account-option").forEach(option => {
+  option.addEventListener("click", () => {
+    const value = option.dataset.value;
+    const title = option.querySelector("strong").textContent;
+    const description = option.querySelector("small").textContent;
+
+    accountType.value = value;
+    accountSelectedTitle.textContent = title;
+    accountSelectedDescription.textContent = description;
+
+    accountDropdownMenu.querySelectorAll(".account-option").forEach(item => {
+      const selected = item === option;
+
+      item.classList.toggle("selected", selected);
+      item.setAttribute("aria-selected", String(selected));
+    });
+
+    closeAccountDropdown();
+  });
+});
+
+document.addEventListener("click", event => {
+  if (!accountDropdown.contains(event.target)) {
+    closeAccountDropdown();
+  }
+});
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") {
+    closeAccountDropdown();
+    accountDropdownTrigger.focus();
+  }
+});
+
 const authTitle = document.getElementById("authTitle");
 const authSubtitle = document.getElementById("authSubtitle");
 const authSubmit = document.getElementById("authSubmit");

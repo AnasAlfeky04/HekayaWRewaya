@@ -306,6 +306,162 @@ footer .logo img {
       color: var(--green);
     }
 
+    /* Custom Account Dropdown */
+
+.account-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.account-dropdown-trigger {
+  width: 100%;
+  min-height: 66px;
+  padding: 10px 13px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: right;
+  direction: rtl;
+  border: 1px solid #e2e5dd;
+  border-radius: 12px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.account-dropdown-trigger:hover,
+.account-dropdown.open .account-dropdown-trigger {
+  border-color: var(--green);
+}
+
+.account-dropdown-trigger:focus-visible,
+.account-option:focus-visible {
+  outline: 3px solid #176b5525;
+  outline-offset: 2px;
+}
+
+.account-selected-icon,
+.account-option-icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  background: #edf5ef;
+  color: #176b55;
+}
+
+.account-selected-icon svg,
+.account-option-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.account-selected-info,
+.account-option-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.account-selected-info strong,
+.account-option-info strong {
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.account-selected-info small,
+.account-option-info small {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.7;
+}
+
+.account-chevron {
+  width: 18px;
+  height: 18px;
+  color: var(--muted);
+  transition: transform .2s;
+}
+
+.account-dropdown.open .account-chevron {
+  transform: rotate(180deg);
+}
+
+.account-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  left: 0;
+  z-index: 100;
+  padding: 7px;
+  border: 1px solid #e5e9e1;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 14px 35px #183c2b18;
+  display: grid;
+  gap: 5px;
+  animation: accountDropdownIn .18s ease;
+}
+
+.account-dropdown-menu[hidden] {
+  display: none;
+}
+
+.account-option {
+  width: 100%;
+  min-height: 64px;
+  padding: 9px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  text-align: right;
+  direction: rtl;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+  transition: background .2s, border-color .2s;
+}
+
+.account-option:hover {
+  background: #f5f8f4;
+}
+
+.account-option.selected {
+  background: #eff6f0;
+  border-color: #dceadf;
+}
+
+.account-option-check {
+  width: 18px;
+  height: 18px;
+  color: #176b55;
+  opacity: 0;
+}
+
+.account-option.selected .account-option-check {
+  opacity: 1;
+}
+
+@keyframes accountDropdownIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
     @media (max-width: 760px) {
 
       .navbar .logo img {
@@ -418,11 +574,83 @@ footer .logo img {
         </div>
 
         <div class="auth-field" id="accountTypeField" hidden>
-          <label for="accountType">نوع مستخدم موقع حكاية ورواية</label>
-          <select id="accountType" name="accountType">
-            <option value="reader">قارئ — أكتشف وأقرأ الكتب</option>
-            <option value="author">كاتب — أشارك كتبي</option>
-          </select>
+          <label>نوع الحساب</label>
+        
+          <div class="account-dropdown" id="accountDropdown">
+        
+            <button
+              type="button"
+              class="account-dropdown-trigger"
+              id="accountDropdownTrigger"
+              aria-expanded="false"
+              aria-haspopup="listbox"
+            >
+              <span class="account-selected-icon">
+                <i data-lucide="book-open"></i>
+              </span>
+        
+              <span class="account-selected-info">
+                <strong id="accountSelectedTitle">قارئ</strong>
+                <small id="accountSelectedDescription">أكتشف وأقرأ الكتب وأتابع مكتبتي.</small>
+              </span>
+        
+              <i data-lucide="chevron-down" class="account-chevron"></i>
+            </button>
+        
+            <div
+              class="account-dropdown-menu"
+              id="accountDropdownMenu"
+              role="listbox"
+              aria-label="اختار نوع الحساب"
+              hidden
+            >
+              <button
+                type="button"
+                class="account-option selected"
+                data-value="reader"
+                role="option"
+                aria-selected="true"
+              >
+                <span class="account-option-icon">
+                  <i data-lucide="book-open"></i>
+                </span>
+        
+                <span class="account-option-info">
+                  <strong>قارئ</strong>
+                  <small>أكتشف وأقرأ الكتب وأتابع مكتبتي.</small>
+                </span>
+        
+                <i data-lucide="check" class="account-option-check"></i>
+              </button>
+        
+              <button
+                type="button"
+                class="account-option"
+                data-value="author"
+                role="option"
+                aria-selected="false"
+              >
+                <span class="account-option-icon">
+                  <i data-lucide="pen-line"></i>
+                </span>
+        
+                <span class="account-option-info">
+                  <strong>كاتب</strong>
+                  <small>أشارك كتبي ورواياتي مع القراء.</small>
+                </span>
+        
+                <i data-lucide="check" class="account-option-check"></i>
+              </button>
+            </div>
+        
+            <input
+              type="hidden"
+              id="accountType"
+              name="accountType"
+              value="reader"
+            >
+        
+          </div>
         </div>
 
         <p id="authStatus" class="auth-status" role="status" aria-live="polite"></p>
