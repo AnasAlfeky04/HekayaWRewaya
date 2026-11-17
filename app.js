@@ -13,8 +13,21 @@
    
    const grid = document.getElementById("bookGrid");
    const emptyMessage = document.getElementById("emptyMessage");
+
+   document.querySelectorAll(".library-tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+      currentLibraryFilter = tab.dataset.filter;
+  
+      document.querySelectorAll(".library-tab").forEach(button => {
+        button.classList.toggle("active", button === tab);
+      });
+  
+      renderBooks();
+    });
+  });
    
    let allBooks = [];
+   let currentLibraryFilter = "all";
    let currentUser = null;
    let currentProfile = null;
    let authBusy = false;
@@ -491,73 +504,103 @@ console.table(
    
 
    function renderBooks() {
-    const featuredBooks = allBooks.slice(0, 4);
+    const filteredBooks = allBooks.filter(book => {
+      const price = Number(book.price ?? 0);
+  
+      if (currentLibraryFilter === "free") return price === 0;
+      if (currentLibraryFilter === "paid") return price > 0;
+  
+      return true;
+    });
+  
+    const featuredBooks = filteredBooks.slice(0, 4);
   
     if (featuredBooks.length === 0) {
       grid.innerHTML = "";
       emptyMessage.hidden = false;
       emptyMessage.textContent =
-        "لسه مفيش روايات منشورة. ارجع لنا قريبًا!";
+        currentLibraryFilter === "free"
+          ? "لا توجد روايات مجانية متاحة حاليًا."
+          : currentLibraryFilter === "paid"
+          ? "لا توجد روايات مدفوعة متاحة حاليًا."
+          : "لسه مفيش روايات منشورة. ارجع لنا قريبًا!";
       return;
     }
   
     emptyMessage.hidden = true;
   
     grid.innerHTML = featuredBooks.map(function (book, index) {
-      const coverClass = "cover-" + ((index % 4) + 1);
-      const safeTitle = escapeHTML(book.title);
-      const safeCategory = escapeHTML(book.categoryName);
-      const safeAuthor = escapeHTML(book.authorName);
+      const safeTitle = escapeHTML(book.title || "رواية بدون عنوان");
+      const safeCategory = escapeHTML(book.categoryName || "رواية");
+      const safeAuthor = escapeHTML(book.authorName || "كاتب");
   
-      const price = Number(book.price);
-      const priceLabel =
-        Number.isFinite(price) && price > 0
-          ? price.toLocaleString("ar-EG", {
-              maximumFractionDigits: 2
-            }) + " ج.م"
-          : "مجاني";
+      const price = Number(book.price ?? 0);
+      const isFree = !Number.isFinite(price) || price <= 0;
+  
+      const priceLabel = isFree
+        ? "مجاني"
+        : price.toLocaleString("ar-EG", {
+            maximumFractionDigits: 2
+          }) + " ج.م";
   
       const cover = book.coverUrl
-        ? `<img src="${escapeHTML(book.coverUrl)}"
-                 alt="غلاف ${safeTitle}"
-                 loading="lazy"
-                 style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`
-        : `<small>مكتبة حكاية ورواية</small>
-           <strong>${safeTitle}</strong>
-           <span>كتاب إلكتروني</span>`;
+        ? `<img
+             src="${escapeHTML(book.coverUrl)}"
+             alt="غلاف ${safeTitle}"
+             loading="lazy"
+           >`
+        : `<div class="premium-cover-placeholder">
+             <span>حكاية ورواية</span>
+             <strong>${safeTitle}</strong>
+             <small>كتاب إلكتروني</small>
+           </div>`;
   
       return `
-      <article
-      class="book-card"
-      role="link"
-      tabindex="0"
-      data-book-id="${encodeURIComponent(book.id)}"
-      aria-label="عرض تفاصيل رواية ${safeTitle}"
-    >
-          <div class="cover ${coverClass}">
+        <article
+          class="book-card premium-book-card"
+          role="link"
+          tabindex="0"
+          data-book-id="${encodeURIComponent(book.id)}"
+          aria-label="عرض تفاصيل رواية ${safeTitle}"
+        >
+          <div class="premium-book-cover">
             ${cover}
+  
+            <div class="premium-cover-shade"></div>
+  
+            <span class="premium-book-category">
+              ${safeCategory}
+            </span>
           </div>
   
-          <div class="book-meta">
-            <h3>${safeTitle}</h3>
-            <p>${safeCategory}</p>
+          <div class="premium-book-info">
+            <h3 class="premium-book-title">${safeTitle}</h3>
   
-            <div class="book-bottom">
-              <span class="book-author">
-                <span class="author-icon" aria-hidden="true">✍</span>
-                ${safeAuthor}
+            <div class="premium-book-author">
+              <span class="premium-author-mark">✦</span>
+              <span>${safeAuthor}</span>
+            </div>
+  
+            <div class="premium-book-divider"></div>
+  
+            <div class="premium-book-footer">
+              <span class="premium-book-price ${isFree ? "is-free" : "is-paid"}">
+                ${isFree ? "✓" : "◆"}
+                ${priceLabel}
               </span>
-              <span class="book-price">${priceLabel}</span>
+  
+              <span class="premium-book-open" aria-hidden="true">
+                ←
+              </span>
             </div>
           </div>
         </article>
       `;
     }).join("");
-
-    grid.querySelectorAll(".book-card").forEach(function (card) {
+  
+    grid.querySelectorAll(".premium-book-card").forEach(function (card) {
       function goToBookDetails() {
         const bookId = card.dataset.bookId;
-  
         if (!bookId) return;
   
         window.location.href =
@@ -573,7 +616,6 @@ console.table(
         }
       });
     });
-
   }
    
    /* ---------- قارئ الكتب ---------- */

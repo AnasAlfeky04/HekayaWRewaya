@@ -7,6 +7,7 @@
   <title>حكاية ورواية | مكتبتك العربية</title>
   <link rel="icon" type="image/png" href="TabLogo.png">
   <link rel="stylesheet" href="styles.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
 
@@ -96,23 +97,44 @@
     </section>
 
     <section class="library" id="library">
-      <div class="section-heading">
-        <div>
-          <span class="tag">اختار حكايتك</span>
-          <h2>استكشف المكتبة</h2>
-          <p>عالم كامل من الروايات المختلفة.</p>
+      <div class="container">
+    
+        <div class="section-heading">
+          <span class="section-tag">مكتبتنا</span>
+          <h2>اكتشف حكايتك القادمة</h2>
+          <p>عالم من الروايات ينتظرك... اختار حكايتك وابدأ القراءة.</p>
         </div>
-      </div>
-      
-      <div class="book-grid" id="bookGrid"></div>
+    
+        <div class="library-tabs" role="tablist" aria-label="تصنيف الروايات">
+          <button class="library-tab active" type="button" data-filter="all">
+            <i data-lucide="library"></i>
+            <span>كل الروايات</span>
+          </button>
+    
+          <button class="library-tab" type="button" data-filter="free">
+            <i data-lucide="gift"></i>
+            <span>الروايات المجانية</span>
+          </button>
+    
+          <button class="library-tab" type="button" data-filter="paid">
+            <i data-lucide="crown"></i>
+            <span>الروايات المدفوعة</span>
+          </button>
+        </div>
+    
+        <div class="book-grid" id="bookGrid"></div>
+    
         <p class="empty-message" id="emptyMessage" hidden>
-          مفيش روايات مطابقة للبحث. جرّب كلمة تانية.
+          لا توجد روايات في هذا القسم حاليًا.
         </p>
-
-      <div class="library-more">
-        <a href="/Library/library.html" class="btn btn-primary btn-large">
-          عرض جميع الروايات ←
-        </a>
+    
+        <div class="library-footer">
+          <a href="/Library/library.html" class="btn btn-outline">
+            استكشف المكتبة كاملة
+            <i data-lucide="arrow-left"></i>
+          </a>
+        </div>
+    
       </div>
     </section>
 
@@ -219,6 +241,9 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="app.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
 
   <div id="global-scrollbar" aria-label="شريط تمرير الصفحة">
     <div class="scrollbar-track">
