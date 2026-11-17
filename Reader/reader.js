@@ -328,7 +328,35 @@ $("zoomOut").addEventListener("click", () => {
 
 $("fitBtn").addEventListener("click",()=>{zoom=1;renderSpread();});
 $("themeBtn").addEventListener("click",toggleTheme);
-$("fullscreenBtn").addEventListener("click",async()=>{try{if(!document.fullscreenElement)await document.querySelector(".reader-app").requestFullscreen();else await document.exitFullscreen();}catch(_){notify("ملء الشاشة غير متاح في هذا المتصفح.");}});
+
+const readerApp = document.querySelector(".reader-app");
+
+$("fullscreenBtn").addEventListener("click", async () => {
+
+  // وضع القراءة الموسّع على الموبايل
+  if (isMobile()) {
+    const active = readerApp.classList.toggle("mobile-reading-mode");
+
+    document.body.classList.toggle(
+      "mobile-reading-mode-active",
+      active
+    );
+
+    setTimeout(renderSpread, 100);
+    return;
+  }
+
+  // ملء الشاشة الأصلي على الكمبيوتر
+  try {
+    if (!document.fullscreenElement) {
+      await readerApp.requestFullscreen();
+    } else {
+      await document.exitFullscreen();
+    }
+  } catch (_) {
+    notify("تعذّر تفعيل ملء الشاشة.");
+  }
+});
 
 $("bookmarkBtn").addEventListener("click",()=>{
   try {
