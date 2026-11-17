@@ -815,6 +815,16 @@ async function startLibrary() {
   await loadMyBookIds();
   await loadBooks();
 
+  // النزول تلقائيًا إلى الروايات بعد اختيار تصنيف من الصفحة الرئيسية
+if (requestedCategorySlug && selectedCategory !== "all") {
+  bookGrid.style.scrollMarginTop = "100px";
+
+  bookGrid.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+}
+
   // فتح رواية محددة لو الرابط يحتوي على book
   const requestedBookId = params.get("book");
 
