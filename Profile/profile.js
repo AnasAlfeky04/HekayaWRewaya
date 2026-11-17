@@ -22,6 +22,8 @@
 let confirmAction = null;
 let confirmPreviousFocus = null;
 
+document.getElementById("year").textContent = new Date().getFullYear();
+
 function openConfirm(options, onConfirm) {
   const overlay = $("confirmOverlay");
 

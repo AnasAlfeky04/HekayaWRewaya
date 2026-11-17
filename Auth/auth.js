@@ -16,12 +16,13 @@ const displayName = document.getElementById("displayName");
 const email = document.getElementById("email");
 const password = document.getElementById("password");
 const accountType = document.getElementById("accountType");
-
 const accountDropdown = document.getElementById("accountDropdown");
 const accountDropdownTrigger = document.getElementById("accountDropdownTrigger");
 const accountDropdownMenu = document.getElementById("accountDropdownMenu");
 const accountSelectedTitle = document.getElementById("accountSelectedTitle");
 const accountSelectedDescription = document.getElementById("accountSelectedDescription");
+document.getElementById("year").textContent = new Date().getFullYear();
+
 
 function closeAccountDropdown() {
   accountDropdown.classList.remove("open");

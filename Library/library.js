@@ -24,22 +24,20 @@ const readerTitle = document.getElementById("readerTitle");
 const readerMessage = document.getElementById("readerMessage");
 const readerFrame = document.getElementById("readerFrame");
 const closeReaderBtn = document.getElementById("closeReader");
-
 const bookDetailsModal = document.getElementById("bookDetailsModal");
 const closeBookDetailsBtn = document.getElementById("closeBookDetails");
-
 const detailsBookCover = document.getElementById("detailsBookCover");
 const detailsCoverPlaceholder = document.getElementById("detailsCoverPlaceholder");
 const detailsBookCategory = document.getElementById("detailsBookCategory");
 const detailsBookTitle = document.getElementById("detailsBookTitle");
 const detailsBookAuthorName = document.getElementById("detailsBookAuthorName");
 const detailsBookPrice = document.getElementById("detailsBookPrice");
-const detailsBookOwnerCountValue = document.getElementById(
-  "detailsBookOwnerCountValue"
-);
+const detailsBookOwnerCountValue = document.getElementById("detailsBookOwnerCountValue");
 const detailsBookDescription = document.getElementById("detailsBookDescription");
 const detailsBookAction = document.getElementById("detailsBookAction");
 const detailsBookMessage = document.getElementById("detailsBookMessage");
+
+document.getElementById("year").textContent = new Date().getFullYear();
 
 let selectedBookForDetails = null;
 

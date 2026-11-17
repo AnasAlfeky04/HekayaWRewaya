@@ -12,6 +12,8 @@ const db = window.supabase.createClient(
   SUPABASE_PUBLISHABLE_KEY
 );
 
+document.getElementById("year").textContent = new Date().getFullYear();
+
 const $ = (id) => document.getElementById(id);
 
 const myLibraryGrid = $("myLibraryGrid");
