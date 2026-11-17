@@ -643,8 +643,9 @@ footer small {
 @media (max-width: 800px) {
 
   .navbar .logo img {
-    width: 155px;
-    height: 70px;
+    padding-left: 50px;
+    width: 130px;
+    height: 50px;
   }
 
   .navbar {
