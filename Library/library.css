@@ -967,8 +967,9 @@ nav a:hover::after {
 @media (max-width: 600px) {
 
   .navbar .logo img {
-    width: 155px;
-    height: 70px;
+    padding-left: 50px;
+    width: 130px;
+    height: 50px;
   }
   
   .library-book-meta {
