@@ -641,6 +641,12 @@ footer small {
 }
 
 @media (max-width: 800px) {
+
+  .navbar .logo img {
+    width: 155px;
+    height: 70px;
+  }
+
   .navbar {
     padding: 15px 18px;
     flex-wrap: wrap;
