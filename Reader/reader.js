@@ -6,8 +6,8 @@ if (window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.clo
 const $ = (id) => document.getElementById(id);
 const params = new URLSearchParams(location.search);
 const bookId = params.get("book") || params.get("book_id");
-const els = { title:$("bookTitle"), message:$("readerMessage"), loading:$("loadingState"), spread:$("pageSpread"), left:$("pageLeft"), right:$("pageRight"), total:$("pageTotal"), input:$("pageInput"), caption:$("pageCaption"), progress:$("progressBar"), toast:$("toast"), searchBox:$("searchBox"), searchInput:$("searchInput"), searchStatus:$("searchStatus") };
-let pdfDoc = null, currentPage = 1, zoom = 1, renderToken = 0, toastTimer = null, searchMatches = [], searchIndex = -1, textCache = new Map();
+const els = { title:$("bookTitle"), message:$("readerMessage"), loading:$("loadingState"), spread:$("pageSpread"), left:$("pageLeft"), right:$("pageRight"), total:$("pageTotal"), input:$("pageInput"), caption:$("pageCaption"), progress:$("progressBar"), toast:$("toast")};
+let pdfDoc = null, currentPage = 1, zoom = 1, renderToken = 0, toastTimer = null;
 const isMobile = () => window.matchMedia("(max-width:760px)").matches;
 function notify(message){ els.toast.textContent=message;els.toast.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>els.toast.classList.remove("show"),2600); }
 function showError(message){els.loading.hidden=false;els.spread.hidden=true;els.message.textContent=message;const spinner=els.loading.querySelector(".spinner");if(spinner)spinner.hidden=true;}
@@ -70,6 +70,7 @@ async function initReader(){
     await renderSpread();
   }catch(error){console.error("Reader init error:",error);showError(error.message||"تعذّر فتح الرواية. تأكد من تسجيل الدخول وحاول مرة أخرى.");}
 }
+
 async function renderOne(pageNumber, canvas, layer, token) {
   const context = canvas.getContext("2d");
 
@@ -225,59 +226,45 @@ function addTextRangeHighlights(div, start, end, layer) {
   );
 
   const layerRect = layer.getBoundingClientRect();
-
-  const scaleX = layer.offsetWidth
-    ? layerRect.width / layer.offsetWidth
-    : 1;
-
-  const scaleY = layer.offsetHeight
-    ? layerRect.height / layer.offsetHeight
-    : 1;
-
   let offset = 0;
   let node;
 
   while ((node = walker.nextNode())) {
     const length = node.nodeValue.length;
-
     const localStart = Math.max(start, offset);
     const localEnd = Math.min(end, offset + length);
 
     if (localStart < localEnd) {
       const range = document.createRange();
+      try {
+        range.setStart(node, localStart - offset);
+        range.setEnd(node, localEnd - offset);
 
-      range.setStart(node, localStart - offset);
-      range.setEnd(node, localEnd - offset);
+        const rects = range.getClientRects();
+        for (const rect of rects) {
+          if (!rect.width || !rect.height) continue;
 
-      const rects = range.getClientRects();
+          const highlight = document.createElement("div");
+          highlight.className = "search-hit-overlay";
 
-      for (const rect of rects) {
-        if (!rect.width || !rect.height) continue;
+          // حساب الإحداثيات بدقة نسبية لطبقة النص بغض النظر عن التمرير أو التكبير
+          const left = rect.left - layerRect.left;
+          const top = rect.top - layerRect.top;
 
-        const highlight = document.createElement("div");
+          highlight.style.left = `${left}px`;
+          highlight.style.top = `${top}px`;
+          highlight.style.width = `${rect.width}px`;
+          highlight.style.height = `${rect.height}px`;
 
-        highlight.className = "search-hit-overlay";
-
-        highlight.style.left =
-          `${(rect.left - layerRect.left) / scaleX}px`;
-
-        highlight.style.top =
-          `${(rect.top - layerRect.top) / scaleY}px`;
-
-        highlight.style.width =
-          `${rect.width / scaleX}px`;
-
-        highlight.style.height =
-          `${rect.height / scaleY}px`;
-
-        layer.appendChild(highlight);
+          layer.appendChild(highlight);
+        }
+      } catch (e) {
+        console.warn("Highlight range error:", e);
       }
     }
-
     offset += length;
   }
 }
-
 
 function applySearchHighlights() {
   const query = els.searchInput.value
@@ -287,32 +274,24 @@ function applySearchHighlights() {
 
   document.querySelectorAll(".page-sheet").forEach(sheet => {
     const layer = sheet.querySelector(".text-layer");
-
     if (!layer) return;
 
-    // إزالة التظليل السابق فقط، دون لمس نص PDF.js
+    // إزالة التظليل السابق
     layer.querySelectorAll(".search-hit-overlay").forEach(
       highlight => highlight.remove()
     );
-
     sheet.classList.remove("search-highlight");
 
     if (!query) return;
 
-    const divs = [
-      ...layer.querySelectorAll("[data-search-text]")
-    ];
-
+    const divs = [...layer.querySelectorAll("[data-search-text]")];
     let fullText = "";
     const records = [];
 
     divs.forEach((div, index) => {
       const original = div.dataset.searchText || "";
-
       if (index > 0) fullText += " ";
-
       const start = fullText.length;
-
       fullText += original.toLocaleLowerCase();
 
       records.push({
@@ -328,14 +307,11 @@ function applySearchHighlights() {
 
     while (true) {
       const found = fullText.indexOf(query, position);
-
       if (found === -1) break;
-
       matches.push({
         start: found,
         end: found + query.length
       });
-
       position = found + query.length;
     }
 
@@ -344,7 +320,7 @@ function applySearchHighlights() {
     let hasHighlight = false;
 
     records.forEach(record => {
-      matches.forEach(match => {
+      matches.matchesFromRecord = matches.forEach(match => {
         const start = Math.max(match.start, record.start);
         const end = Math.min(match.end, record.end);
 
@@ -421,11 +397,6 @@ $("bookmarkBtn").addEventListener("click",()=>{
     notify("تعذر تحديث العلامة المرجعية على هذا الجهاز.");
   }
 });
-
-$("searchToggle").addEventListener("click",()=>{els.searchBox.hidden=!els.searchBox.hidden;if(!els.searchBox.hidden)els.searchInput.focus();});
-$("searchNext").addEventListener("click",()=>searchDocument(1));$("searchPrev").addEventListener("click",()=>searchDocument(-1));
-els.searchInput.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();searchIndex=-1;searchMatches=[];searchDocument(1);}});
-els.searchInput.addEventListener("input",()=>{searchMatches=[];searchIndex=-1;applySearchHighlights();});
 
 document.addEventListener("keydown", e => {
   if (e.target.matches("input")) return;

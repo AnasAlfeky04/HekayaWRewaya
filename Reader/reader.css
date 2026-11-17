@@ -339,10 +339,6 @@
   }
   
   .page-jump input:focus,
-  .search-box input:focus {
-    border-color: var(--gold);
-    box-shadow: 0 0 0 3px #d8b46a20;
-  }
   
   .page-total {
     white-space: nowrap;
@@ -351,42 +347,6 @@
   .go-btn {
     padding-inline: 8px;
     font-size: 12px;
-  }
-  
-  .search-group {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  
-  .search-box {
-    max-width: 100%;
-    padding: 4px 7px;
-  
-    background: var(--app);
-    border: 1px solid var(--line);
-    border-radius: 10px;
-  }
-  
-  .search-box input {
-    width: 190px;
-    max-width: 34vw;
-    height: 30px;
-    padding: 0 8px;
-  
-    color: var(--ink);
-    font-size: 12px;
-  
-    background: transparent;
-    border: 1px solid transparent;
-    border-radius: 6px;
-    outline: none;
-  }
-  
-  .search-status {
-    color: var(--muted);
-    font-size: 11px;
-    white-space: nowrap;
   }
   
   /* 5. منطقة القراءة الرئيسية */
@@ -664,8 +624,7 @@ body.dark .topbar {
   background: #0d2119;
 }
 
-body.dark .toolbar,
-body.dark .search-box {
+body.dark .toolbar {
   color: var(--gold-2);
   background: var(--panel);
   border-color: var(--line);
@@ -688,14 +647,6 @@ body.dark .page-jump input {
   color: var(--gold-2);
   background: #101a16;
   border-color: var(--line);
-}
-
-body.dark .search-box input {
-  color: var(--gold-2);
-}
-
-body.dark .search-box input::placeholder {
-  color: #b8aa83;
 }
 
 body.dark .page-sheet {
@@ -859,20 +810,9 @@ body.dark .reader-app:fullscreen {
     .toolbar-separator {
       height: 24px;
     }
-  
-    .fit-btn span,
-    .search-group > .tool-btn span {
+
+    fit-btn span {
       display: none;
-    }
-  
-    .search-box {
-      flex-basis: 100%;
-      justify-content: center;
-    }
-  
-    .search-box input {
-      width: min(58vw, 250px);
-      max-width: none;
     }
   
     .reading-area {
@@ -995,10 +935,6 @@ body.dark .reader-app:fullscreen {
   
     .top-actions {
       gap: 4px;
-    }
-  
-    .search-status {
-      font-size: 10px;
     }
   }
   
