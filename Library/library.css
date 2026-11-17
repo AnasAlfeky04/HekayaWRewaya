@@ -954,6 +954,15 @@ nav a:hover::after {
   direction: rtl;
 }
 
+
+@media (max-width: 800px) {
+  .navbar .logo img {
+    padding-left: 50px;
+    width: 130px;
+    height: 50px;
+  }
+}
+
 /* مساحة مناسبة للكروت على الشاشات الصغيرة */
 @media (max-width: 600px) {
 
