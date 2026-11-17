@@ -226,6 +226,14 @@ function addTextRangeHighlights(div, start, end, layer) {
 
   const layerRect = layer.getBoundingClientRect();
 
+  const scaleX = layer.offsetWidth
+    ? layerRect.width / layer.offsetWidth
+    : 1;
+
+  const scaleY = layer.offsetHeight
+    ? layerRect.height / layer.offsetHeight
+    : 1;
+
   let offset = 0;
   let node;
 
@@ -251,16 +259,16 @@ function addTextRangeHighlights(div, start, end, layer) {
         highlight.className = "search-hit-overlay";
 
         highlight.style.left =
-          `${rect.left - layerRect.left}px`;
+          `${(rect.left - layerRect.left) / scaleX}px`;
 
         highlight.style.top =
-          `${rect.top - layerRect.top}px`;
+          `${(rect.top - layerRect.top) / scaleY}px`;
 
         highlight.style.width =
-          `${rect.width}px`;
+          `${rect.width / scaleX}px`;
 
         highlight.style.height =
-          `${rect.height}px`;
+          `${rect.height / scaleY}px`;
 
         layer.appendChild(highlight);
       }
