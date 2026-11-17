@@ -41,6 +41,14 @@ accountDropdownMenu.querySelectorAll(".account-option").forEach(option => {
     const value = option.dataset.value;
     const title = option.querySelector("strong").textContent;
     const description = option.querySelector("small").textContent;
+      
+    const selectedIcon = document.querySelector(".account-selected-icon");
+      
+    selectedIcon.innerHTML = value === "author"
+      ? '<i data-lucide="pen-line"></i>'
+      : '<i data-lucide="book-open"></i>';
+      
+    lucide.createIcons();
 
     accountType.value = value;
     accountSelectedTitle.textContent = title;
