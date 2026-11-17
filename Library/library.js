@@ -792,10 +792,30 @@ db.auth.onAuthStateChange(function (_event, session) {
 async function startLibrary() {
   await updateAuthButton();
   await loadCategories();
+
+  const params = new URLSearchParams(window.location.search);
+
+  // تحديد التصنيف القادم من الصفحة الرئيسية
+  const requestedCategorySlug = params.get("category");
+
+  if (requestedCategorySlug) {
+    const requestedCategory = categories.find(function (category) {
+      return (
+        category.slug === requestedCategorySlug ||
+        String(category.id) === requestedCategorySlug
+      );
+    });
+
+    if (requestedCategory) {
+      selectedCategory = String(requestedCategory.id);
+      renderCategories();
+    }
+  }
+
   await loadMyBookIds();
   await loadBooks();
 
-  const params = new URLSearchParams(window.location.search);
+  // فتح رواية محددة لو الرابط يحتوي على book
   const requestedBookId = params.get("book");
 
   if (!requestedBookId) return;

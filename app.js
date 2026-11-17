@@ -414,6 +414,266 @@
      updateAccountButtons();
      showInfo("تم تسجيل الخروج", "خرجت من حسابك بنجاح.");
    }
+
+
+
+   /* =========================================
+   التصنيفات الرئيسية
+========================================= */
+
+const homeCategoryGrid = document.getElementById("homeCategoryGrid");
+
+const categoryArtwork = {
+  romance: `
+    <svg viewBox="0 0 100 100" fill="none">
+      <path d="M50 78S17 58 17 35C17 15 42 12 50 33C58 12 83 15 83 35C83 58 50 78 50 78Z"
+        stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M50 33C46 43 39 49 31 53"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <path d="M76 13C76 18 73 21 68 21C73 21 76 24 76 29C76 24 79 21 84 21C79 21 76 18 76 13Z"
+        fill="#c5a15c"/>
+    </svg>
+  `,
+
+  mystery: `
+    <svg viewBox="0 0 100 100" fill="none">
+      <circle cx="43" cy="42" r="23"
+        stroke="currentColor" stroke-width="3"/>
+      <path d="M60 59L82 81"
+        stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+      <path d="M36 34C36 27 49 27 49 36C49 42 42 43 42 49"
+        stroke="#c5a15c" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="42" cy="56" r="2" fill="#c5a15c"/>
+    </svg>
+  `,
+
+  psychology: `
+    <svg viewBox="0 0 100 100" fill="none">
+      <path d="M59 15C40 12 24 27 24 47C24 66 38 79 56 79H67L76 89V65C83 53 82 36 72 25"
+        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M40 43H49V34H61V46H52V57H65"
+        stroke="#c5a15c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="39" cy="59" r="2" fill="currentColor"/>
+    </svg>
+  `,
+
+  fantasy: `
+    <svg viewBox="0 0 100 100" fill="none">
+      <path d="M25 80V42L37 31V43L50 29L63 43V31L75 42V80H25Z"
+        stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M43 80V61C43 51 57 51 57 61V80"
+        stroke="#c5a15c" stroke-width="2.5"/>
+      <path d="M50 10L53 19L62 22L53 25L50 34L47 25L38 22L47 19L50 10Z"
+        fill="#c5a15c"/>
+      <path d="M18 22V30M14 26H22M82 52V60M78 56H86"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  `,
+
+  science: `
+    <svg viewBox="0 0 100 100" fill="none">
+      <circle cx="50" cy="50" r="12"
+        stroke="#c5a15c" stroke-width="2.5"/>
+      <ellipse cx="50" cy="50" rx="37" ry="15"
+        stroke="currentColor" stroke-width="2.5"
+        transform="rotate(-35 50 50)"/>
+      <ellipse cx="50" cy="50" rx="37" ry="15"
+        stroke="currentColor" stroke-width="2"
+        transform="rotate(55 50 50)"/>
+      <circle cx="77" cy="26" r="4" fill="#c5a15c"/>
+      <circle cx="23" cy="70" r="3" fill="currentColor"/>
+    </svg>
+  `,
+
+  historical: `
+    <svg viewBox="0 0 100 100" fill="none">
+      <path d="M14 39L50 17L86 39H14Z"
+        stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M21 43V76M39 43V76M61 43V76M79 43V76"
+        stroke="currentColor" stroke-width="3"/>
+      <path d="M15 80H85M10 87H90"
+        stroke="#c5a15c" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M45 17V11H55V17"
+        stroke="#c5a15c" stroke-width="2"/>
+    </svg>
+  `,
+
+  social: `
+    <svg viewBox="0 0 100 100" fill="none">
+      <circle cx="35" cy="34" r="10"
+        stroke="currentColor" stroke-width="2.5"/>
+      <circle cx="66" cy="34" r="10"
+        stroke="currentColor" stroke-width="2.5"/>
+      <path d="M15 77C15 60 23 52 35 52C47 52 54 60 54 77"
+        stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M46 77C46 60 54 52 66 52C78 52 85 60 85 77"
+        stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M44 18L50 12L56 18"
+        stroke="#c5a15c" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+  `,
+
+  horror: `
+    <svg viewBox="0 0 100 100" fill="none">
+      <path d="M19 80V45L50 20L81 45V80H19Z"
+        stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M42 80V59C42 48 58 48 58 59V80"
+        stroke="currentColor" stroke-width="2.5"/>
+      <path d="M72 13C65 20 67 31 78 34C70 38 59 31 61 21C62 14 68 10 72 13Z"
+        fill="#c5a15c"/>
+      <path d="M34 47L39 52M66 47L61 52"
+        stroke="#c5a15c" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+  `,
+
+  adventure: `
+    <svg viewBox="0 0 100 100" fill="none">
+      <circle cx="50" cy="50" r="34"
+        stroke="currentColor" stroke-width="2.5"/>
+      <circle cx="50" cy="50" r="25"
+        stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 4"/>
+      <path d="M62 32L55 55L38 68L45 45L62 32Z"
+        fill="#c5a15c" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M50 12V19M50 81V88M12 50H19M81 50H88"
+        stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+  `,
+
+  thriller: `
+    <svg viewBox="0 0 100 100" fill="none">
+      <path d="M56 10L29 53H47L40 89L73 43H54L56 10Z"
+        stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M17 23H31M12 32H24M76 70H88M72 79H84"
+        stroke="#c5a15c" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+  `,
+
+  other: `
+    <svg viewBox="0 0 100 100" fill="none">
+      <rect x="19" y="19" width="62" height="62" rx="15"
+        stroke="currentColor" stroke-width="2.5"/>
+      <circle cx="35" cy="50" r="4" fill="#c5a15c"/>
+      <circle cx="50" cy="50" r="4" fill="currentColor"/>
+      <circle cx="65" cy="50" r="4" fill="#c5a15c"/>
+      <path d="M30 12V19M70 81V88M12 30H19M81 70H88"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  `,
+
+  all: `
+    <svg viewBox="0 0 100 100" fill="none">
+      <path d="M18 25C30 19 41 21 50 29C59 21 70 19 82 25V75C70 69 59 71 50 79C41 71 30 69 18 75V25Z"
+        stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M50 29V79M28 36C35 34 40 36 44 39M28 47C35 45 40 47 44 50M56 39C60 36 65 34 72 36M56 50C60 47 65 45 72 47"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <path d="M76 13V23M71 18H81"
+        stroke="#c5a15c" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  `
+};
+
+function getCategoryArtwork(category) {
+  const artworkBySlug = {
+    "mystery-crime": "mystery",
+    "romance": "romance",
+    "psychological-thriller": "psychology",
+    "fantasy": "fantasy",
+    "science-fiction": "science",
+    "historical-fiction": "historical",
+    "social-drama": "social",
+    "horror": "horror",
+    "adventure": "adventure",
+    "thriller": "thriller",
+    "other": "other"
+  };
+
+  const artworkKey = artworkBySlug[category.slug] || "other";
+
+  return categoryArtwork[artworkKey];
+}
+
+/* تحميل التصنيفات من Supabase */
+async function loadHomeCategories() {
+  if (!homeCategoryGrid) return;
+
+  const result = await db
+    .from("categories")
+    .select("id, name, slug")
+    .order("name");
+
+  if (result.error) {
+    console.error("Home categories error:", result.error);
+    homeCategoryGrid.innerHTML =
+      '<p class="category-loading">تعذر تحميل التصنيفات حاليًا.</p>';
+    return;
+  }
+
+  const categories = result.data || [];
+
+if (!categories.length) {
+  homeCategoryGrid.innerHTML =
+    '<p class="category-loading">لا توجد تصنيفات متاحة حاليًا.</p>';
+  return;
+}
+
+// ترتيب التصنيفات: أخرى في النهاية
+categories.sort(function (a, b) {
+  const aIsOther = String(a.name || "").trim() === "أخرى";
+  const bIsOther = String(b.name || "").trim() === "أخرى";
+
+  if (aIsOther && !bIsOther) return 1;
+  if (!aIsOther && bIsOther) return -1;
+  return String(a.name || "").localeCompare(String(b.name || ""), "ar");
+});
+
+// بطاقة كل الروايات
+const allBooksCard = `
+  <a
+    class="category-card category-all-books"
+    href="/Library/library.html"
+    aria-label="استكشف كل الروايات"
+  >
+    <span class="category-artwork" aria-hidden="true">
+      <svg viewBox="0 0 100 100" fill="none">
+        <path d="M18 25C30 19 41 21 50 29C59 21 70 19 82 25V75C70 69 59 71 50 79C41 71 30 69 18 75V25Z"
+          stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+        <path d="M50 29V79M28 36C35 34 40 36 44 39M28 47C35 45 40 47 44 50M56 39C60 36 65 34 72 36M56 50C60 47 65 45 72 47"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M76 13V23M71 18H81"
+          stroke="#c5a15c" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </span>
+    <span class="category-card-name">كل الروايات</span>
+    <span class="category-card-arrow" aria-hidden="true">←</span>
+  </a>
+`;
+
+const categoryCards = categories.map(function (category, index) {
+  const name = escapeHTML(category.name || "تصنيف");
+  const slug = encodeURIComponent(category.slug || category.id);
+
+  return `
+    <a
+      class="category-card category-tone-${index % 6 + 1}"
+      href="/Library/library.html?category=${slug}"
+      aria-label="استكشف تصنيف ${name}"
+    >
+      <span class="category-artwork" aria-hidden="true">
+        ${getCategoryArtwork(category)}
+      </span>
+
+      <span class="category-card-name">${name}</span>
+
+      <span class="category-card-arrow" aria-hidden="true">←</span>
+    </a>
+  `;
+}).join("");
+
+homeCategoryGrid.innerHTML = allBooksCard + categoryCards;
+}
+
+
+   
    
    /* ---------- تحميل الكتب المنشورة ---------- */
    
@@ -818,10 +1078,14 @@ authorButtons.forEach(function (button) {
     }
   });
    
-   async function startApp() {
-     await refreshProfile();
-     await loadBooks();
-   }
+  async function startApp() {
+    await refreshProfile();
+  
+    await Promise.all([
+      loadBooks(),
+      loadHomeCategories()
+    ]);
+  }
 
    
 /* التمرير السلس لروابط الهيدر فقط */

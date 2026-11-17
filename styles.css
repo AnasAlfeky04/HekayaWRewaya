@@ -2009,3 +2009,332 @@ footer small {
 
   mask-composite: intersect;
 }
+
+/* =========================================
+   CATEGORY EXPLORER — حكاية ورواية
+========================================= */
+
+.category-explorer {
+  position: relative;
+  padding: 90px 24px 100px;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 10% 15%, rgba(197, 161, 92, .10), transparent 34%),
+    radial-gradient(ellipse at 90% 85%, rgba(23, 107, 85, .07), transparent 35%),
+    #fbf9f4;
+}
+
+.category-explorer::before,
+.category-explorer::after {
+  content: "";
+  position: absolute;
+  width: 230px;
+  height: 230px;
+  border: 1px solid rgba(197, 161, 92, .13);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.category-explorer::before {
+  top: -150px;
+  right: -80px;
+}
+
+.category-explorer::after {
+  bottom: -165px;
+  left: -80px;
+}
+
+.category-container {
+  position: relative;
+  z-index: 1;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.category-heading {
+  text-align: center;
+  max-width: 650px;
+  margin: 0 auto 48px;
+}
+
+.category-eyebrow {
+  display: inline-block;
+  margin-bottom: 13px;
+  color: #b18b4e;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.category-heading h2 {
+  margin: 0;
+  color: #104b3d;
+  font-size: clamp(27px, 3.2vw, 38px);
+  font-weight: 900;
+  line-height: 1.5;
+}
+
+.category-heading p {
+  margin: 12px 0 0;
+  color: #737d76;
+  font-size: 15px;
+  line-height: 2;
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 19px;
+}
+
+.category-card {
+  --category-accent: #176b55;
+  --category-tint: rgba(23, 107, 85, .07);
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 205px;
+  padding: 25px 15px 22px;
+  overflow: hidden;
+  text-decoration: none;
+  text-align: center;
+  color: #104b3d;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.96), rgba(250,248,241,.92));
+  border: 1px solid rgba(197, 161, 92, .24);
+  border-radius: 19px;
+  box-shadow:
+    0 5px 18px rgba(31, 54, 43, .035),
+    inset 0 1px 0 rgba(255,255,255,.9);
+  transition:
+    transform .3s ease,
+    box-shadow .3s ease,
+    border-color .3s ease;
+}
+
+.category-card::before {
+  content: "";
+  position: absolute;
+  width: 145px;
+  height: 145px;
+  top: -73px;
+  right: -55px;
+  border-radius: 50%;
+  background: var(--category-tint);
+  transition: transform .35s ease;
+}
+
+.category-card::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 22%;
+  right: 22%;
+  height: 2px;
+  border-radius: 5px 5px 0 0;
+  background: linear-gradient(90deg, transparent, #c5a15c, transparent);
+  opacity: .65;
+  transition: left .3s ease, right .3s ease, opacity .3s ease;
+}
+
+.category-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(197, 161, 92, .58);
+  box-shadow:
+    0 15px 32px rgba(31, 54, 43, .09),
+    0 3px 9px rgba(197, 161, 92, .08);
+}
+
+.category-card:hover::before {
+  transform: scale(1.35);
+}
+
+.category-card:hover::after {
+  left: 12%;
+  right: 12%;
+  opacity: 1;
+}
+
+.category-artwork {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 91px;
+  height: 91px;
+  margin-bottom: 16px;
+  color: var(--category-accent);
+  background:
+    radial-gradient(circle, rgba(255,255,255,.95), var(--category-tint));
+  border: 1px solid rgba(197, 161, 92, .19);
+  border-radius: 50%;
+  transition: transform .3s ease;
+}
+
+.category-artwork svg {
+  display: block;
+  width: 67px;
+  height: 67px;
+  overflow: visible;
+}
+
+.category-card:hover .category-artwork {
+  transform: scale(1.08) rotate(-4deg);
+}
+
+.category-card-name {
+  position: relative;
+  z-index: 1;
+  color: #24483d;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.7;
+}
+
+.category-card-arrow {
+  position: absolute;
+  z-index: 1;
+  bottom: 12px;
+  left: 15px;
+  color: #b18b4e;
+  font-size: 17px;
+  opacity: 0;
+  transform: translateX(5px);
+  transition: .25s ease;
+}
+
+.category-card:hover .category-card-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.category-loading {
+  grid-column: 1 / -1;
+  padding: 35px 15px;
+  color: #737d76;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* ألوان متنوعة للرسومات */
+.category-tone-1 { --category-accent: #9b6c58; --category-tint: rgba(183, 126, 99, .10); }
+.category-tone-2 { --category-accent: #426b78; --category-tint: rgba(66, 107, 120, .10); }
+.category-tone-3 { --category-accent: #94743d; --category-tint: rgba(197, 161, 92, .13); }
+.category-tone-4 { --category-accent: #765b70; --category-tint: rgba(118, 91, 112, .10); }
+.category-tone-5 { --category-accent: #47745d; --category-tint: rgba(71, 116, 93, .10); }
+.category-tone-6 { --category-accent: #8a6547; --category-tint: rgba(138, 101, 71, .10); }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .category-explorer {
+    padding: 75px 22px 80px;
+  }
+
+  .category-grid {
+    gap: 15px;
+  }
+
+  .category-card {
+    min-height: 185px;
+  }
+}
+
+@media (max-width: 650px) {
+  .category-explorer {
+    padding: 65px 17px 70px;
+  }
+
+  .category-heading {
+    margin-bottom: 32px;
+  }
+
+  .category-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 13px;
+  }
+
+  .category-card {
+    min-height: 175px;
+    padding: 19px 10px;
+    border-radius: 16px;
+  }
+
+  .category-artwork {
+    width: 79px;
+    height: 79px;
+    margin-bottom: 12px;
+  }
+
+  .category-artwork svg {
+    width: 59px;
+    height: 59px;
+  }
+
+  .category-card-name {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 360px) {
+  .category-grid {
+    gap: 10px;
+  }
+
+  .category-card {
+    min-height: 158px;
+  }
+
+  .category-artwork {
+    width: 70px;
+    height: 70px;
+  }
+
+  .category-artwork svg {
+    width: 53px;
+    height: 53px;
+  }
+}
+
+/* Gold framed label - Category Explorer */
+
+.category-explorer .category-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 7px 21px;
+  margin: 0 0 17px;
+  border: 1px solid #c5a76b;
+  border-radius: 5px;
+  background: linear-gradient(
+    135deg,
+    #fffdf7,
+    #f6f0e3
+  );
+  color: #96763d;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .5px;
+  line-height: 1.5;
+  box-shadow: 0 2px 9px rgba(160, 128, 68, .07);
+}
+
+.category-explorer .category-eyebrow::before,
+.category-explorer .category-eyebrow::after {
+  content: "✦";
+  display: inline-block;
+  color: #b18d4d;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.category-explorer .category-eyebrow {
+  padding: 6px 17px;
+  margin-bottom: 14px;
+  font-size: 11px;
+}
