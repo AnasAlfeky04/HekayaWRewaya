@@ -107,63 +107,13 @@ async function renderOne(pageNumber, canvas, layer, token) {
   canvas.style.width = `${viewport.width}px`;
   canvas.style.height = `${viewport.height}px`;
 
+  layer.replaceChildren();
+
   await page.render({
     canvasContext: context,
     viewport,
     transform: dpr !== 1 ? [dpr, 0, 0, dpr, 0, 0] : null
   }).promise;
-
-  if (token !== renderToken) return;
-
-  layer.replaceChildren();
-  layer.classList.add("textLayer");
-
-  try {
-    let textContent = textCache.get(pageNumber);
-
-    if (!textContent) {
-      textContent = await page.getTextContent();
-      textCache.set(pageNumber, textContent);
-    }
-
-    // مطابقة موضع طبقة النص مع موضع الـCanvas الفعلي
-    const sheet = canvas.parentElement;
-    const sheetRect = sheet.getBoundingClientRect();
-    const canvasRect = canvas.getBoundingClientRect();
-
-    layer.style.left =
-      `${canvasRect.left - sheetRect.left - sheet.clientLeft + sheet.scrollLeft}px`;
-
-    layer.style.top =
-      `${canvasRect.top - sheetRect.top - sheet.clientTop + sheet.scrollTop}px`;
-
-    layer.style.transform = "none";
-    layer.style.width = `${viewport.width}px`;
-    layer.style.height = `${viewport.height}px`;
-    layer.style.setProperty("--scale-factor", viewport.scale);
-
-    const textDivs = [];
-
-    const textTask = pdfjsLib.renderTextLayer({
-      textContentSource: textContent,
-      container: layer,
-      viewport,
-      textDivs
-    });
-
-    await textTask.promise;
-
-    if (token !== renderToken) return;
-
-    textDivs.forEach(div => {
-      div.dataset.searchText = div.textContent || "";
-    });
-
-    applySearchHighlights();
-
-  } catch (err) {
-    console.warn("Text layer unavailable", err);
-  }
 }
 
 async function renderSpread() {
