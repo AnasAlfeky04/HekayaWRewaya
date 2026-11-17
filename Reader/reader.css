@@ -830,10 +830,9 @@ body.dark .reader-app:fullscreen {
   
     .page-spread {
       width: 100%;
-      height: calc(100vh - 255px);
-      max-height: calc(100vh - 255px);
+      height: calc(100vh - 300px);
+      max-height: calc(100vh - 300px);
       min-height: 0;
-  
       grid-template-columns: minmax(0, 1fr);
     }
   
@@ -1189,4 +1188,13 @@ body.dark .text-layer mark {
   margin: 0;
   border: none;
   box-sizing: border-box;
+}
+
+@media (max-width: 760px) {
+  .page-sheet {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+  }
 }
