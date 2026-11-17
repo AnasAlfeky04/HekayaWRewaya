@@ -476,35 +476,8 @@
       inset 1px 0 #c7bead,
       inset -1px 0 #c7bead;
   }
-  
-  /* طبقة النص المستخدمة للبحث */
-  .text-layer {
-    position: absolute;
-    inset: 0;
-  
-    overflow: hidden;
-    opacity: 0;
-  
-    color: transparent;
-    line-height: 1;
-    user-select: text;
-    pointer-events: none;
-  }
-  
-  .text-layer span {
-    position: absolute;
-    white-space: pre;
-    transform-origin: 0 0;
-    cursor: text;
-  }
-  
-  /* إبراز الصفحات التي تحتوي على نتيجة بحث */
-  .page-sheet.search-highlight .text-layer {
-    opacity: 0.23;
-    color: #8a5b00;
-    background: #f6d77a20;
-  }
-  
+
+
   /* 6. التحميل والأخطاء */
   .loading-state {
     display: flex;
@@ -1193,4 +1166,91 @@ body.dark .reader-app:fullscreen {
 body.dark #bookmarkBtn.is-bookmarked svg path {
   fill: #d8b46a;
   stroke: #d8b46a;
+}
+
+/* منع تلوين الصفحة بالكامل */
+.page-sheet.search-highlight .text-layer {
+  opacity: 1 !important;
+  background: transparent !important;
+}
+
+
+/* طبقة النص المستخدمة للبحث */
+/* طبقة النص والبحث فوق صفحة PDF */
+.page-sheet canvas {
+  position: relative;
+  z-index: 1;
+}
+
+.page-sheet .text-layer {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  right: auto;
+  bottom: auto;
+  transform: translateX(-50%);
+  z-index: 2;
+  overflow: hidden;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: none;
+  color: transparent !important;
+  background: transparent !important;
+  text-align: initial;
+  line-height: 1;
+  transform-origin: 0 0;
+}
+
+body.dark .text-layer .search-hit-overlay {
+  background: rgba(216, 180, 106, 0.55);
+}
+
+.page-sheet .text-layer span {
+  position: absolute;
+  white-space: pre;
+  transform-origin: 0% 0%;
+  color: transparent !important;
+  cursor: text;
+}
+
+.page-sheet .text-layer mark {
+  background: #ffe08a !important;
+  color: #3d2b00 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  border-radius: 3px;
+  padding: 0;
+}
+
+.text-layer span {
+  position: absolute;
+  white-space: pre;
+  transform-origin: 0 0;
+  color: transparent;
+}
+
+/* إبراز نتائج البحث فقط */
+.text-layer mark {
+  background: #ffe08a;
+  color: #3d2b00;
+  border-radius: 3px;
+  padding: 0;
+}
+
+body.dark .text-layer mark {
+  background: #d8b46a;
+  color: #241b0c;
+}
+
+/* تظليل نتائج البحث فوق الحروف الأصلية */
+.page-sheet .text-layer .search-hit-overlay {
+  position: absolute;
+  z-index: 10;
+  pointer-events: none;
+  background: rgba(255, 224, 138, 0.48);
+  border-radius: 2px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  box-sizing: border-box;
 }

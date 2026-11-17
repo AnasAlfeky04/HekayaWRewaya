@@ -70,57 +70,99 @@ async function initReader(){
     await renderSpread();
   }catch(error){console.error("Reader init error:",error);showError(error.message||"تعذّر فتح الرواية. تأكد من تسجيل الدخول وحاول مرة أخرى.");}
 }
-async function renderOne(pageNumber,canvas,layer,token){
-  const context=canvas.getContext("2d");
-  if(pageNumber>pdfDoc.numPages||pageNumber<1){canvas.width=1;canvas.height=1;context.clearRect(0,0,1,1);layer.replaceChildren();return;}
-  const page=await pdfDoc.getPage(pageNumber);
+async function renderOne(pageNumber, canvas, layer, token) {
+  const context = canvas.getContext("2d");
 
-  const testText = await page.getTextContent();
+  if (pageNumber > pdfDoc.numPages || pageNumber < 1) {
+    canvas.width = 1;
+    canvas.height = 1;
+    context.clearRect(0, 0, 1, 1);
+    layer.replaceChildren();
+    return;
+  }
 
-console.log("PDF ARABIC TEXT TEST:", 
-  testText.items.slice(0, 15).map(item => item.str)
-);
+  const page = await pdfDoc.getPage(pageNumber);
 
-  if(token!==renderToken)return;
-  const box=canvas.parentElement;
-  const base=page.getViewport({scale:1});
+  if (token !== renderToken) return;
 
+  const box = canvas.parentElement;
+  const base = page.getViewport({ scale: 1 });
 
   const availableWidth = Math.max(100, box.clientWidth - 18);
   const availableHeight = Math.max(150, box.clientHeight - 18);
 
-// حجم الصفحة الطبيعي يناسب مساحة القارئ، ثم نطبّق نسبة التكبير عليه.
-const fit = Math.min(
-  availableWidth / base.width,
-  availableHeight / base.height
-);
+  const fit = Math.min(
+    availableWidth / base.width,
+    availableHeight / base.height
+  );
 
-const scale = fit * zoom;
-const viewport = page.getViewport({ scale });
+  const scale = fit * zoom;
+  const viewport = page.getViewport({ scale });
 
+  const dpr = window.devicePixelRatio || 1;
 
-  const dpr=window.devicePixelRatio||1;
-  canvas.width=Math.floor(viewport.width*dpr);canvas.height=Math.floor(viewport.height*dpr);
-  canvas.style.width=`${viewport.width}px`;canvas.style.height=`${viewport.height}px`;
-  
+  canvas.width = Math.floor(viewport.width * dpr);
+  canvas.height = Math.floor(viewport.height * dpr);
+  canvas.style.width = `${viewport.width}px`;
+  canvas.style.height = `${viewport.height}px`;
+
   await page.render({
     canvasContext: context,
     viewport,
     transform: dpr !== 1 ? [dpr, 0, 0, dpr, 0, 0] : null
   }).promise;
-  
-  console.log("PDF RENDER COMPLETE:", pageNumber);
 
-  if(token!==renderToken)return;
+  if (token !== renderToken) return;
+
   layer.replaceChildren();
-  try{
-    let textContent=textCache.get(pageNumber);
-    if(!textContent){textContent=await page.getTextContent();textCache.set(pageNumber,textContent);}
-    const frag=document.createDocumentFragment();
-    for(const item of textContent.items){if(!item.str)continue;const span=document.createElement("span");span.textContent=item.str;const tx=pdfjsLib.Util.transform(viewport.transform,item.transform);const angle=Math.atan2(tx[1],tx[0]);const fontHeight=Math.hypot(tx[2],tx[3]);span.style.left=`${tx[4]}px`;span.style.top=`${tx[5]-fontHeight}px`;span.style.fontSize=`${fontHeight}px`;span.style.transform=`rotate(${angle}rad)`;frag.appendChild(span);}
-    layer.style.width=`${viewport.width}px`;layer.style.height=`${viewport.height}px`;layer.appendChild(frag);
+  layer.classList.add("textLayer");
+
+  try {
+    let textContent = textCache.get(pageNumber);
+
+    if (!textContent) {
+      textContent = await page.getTextContent();
+      textCache.set(pageNumber, textContent);
+    }
+
+    // مطابقة موضع طبقة النص مع موضع الـCanvas الفعلي
+    const sheet = canvas.parentElement;
+    const sheetRect = sheet.getBoundingClientRect();
+    const canvasRect = canvas.getBoundingClientRect();
+
+    layer.style.left =
+      `${canvasRect.left - sheetRect.left - sheet.clientLeft + sheet.scrollLeft}px`;
+
+    layer.style.top =
+      `${canvasRect.top - sheetRect.top - sheet.clientTop + sheet.scrollTop}px`;
+
+    layer.style.transform = "none";
+    layer.style.width = `${viewport.width}px`;
+    layer.style.height = `${viewport.height}px`;
+    layer.style.setProperty("--scale-factor", viewport.scale);
+
+    const textDivs = [];
+
+    const textTask = pdfjsLib.renderTextLayer({
+      textContentSource: textContent,
+      container: layer,
+      viewport,
+      textDivs
+    });
+
+    await textTask.promise;
+
+    if (token !== renderToken) return;
+
+    textDivs.forEach(div => {
+      div.dataset.searchText = div.textContent || "";
+    });
+
     applySearchHighlights();
-  }catch(err){console.warn("Text layer unavailable",err);}
+
+  } catch (err) {
+    console.warn("Text layer unavailable", err);
+  }
 }
 
 async function renderSpread() {
@@ -175,7 +217,148 @@ $("nextBtn").disabled =
 
 function goToPage(n){if(!pdfDoc)return;currentPage=Math.max(1,Math.min(pdfDoc.numPages,Math.floor(Number(n)||1)));renderSpread();}
 function toggleTheme(){document.body.classList.toggle("dark");try{localStorage.setItem("hikaya-reader-theme",document.body.classList.contains("dark")?"dark":"light");}catch(_){} }
-function applySearchHighlights(){const q=els.searchInput.value.trim().toLocaleLowerCase();document.querySelectorAll(".page-sheet").forEach(sheet=>{sheet.classList.toggle("search-highlight",!!q&&[...sheet.querySelectorAll(".text-layer span")].some(s=>s.textContent.toLocaleLowerCase().includes(q)));});}
+
+function addTextRangeHighlights(div, start, end, layer) {
+  const walker = document.createTreeWalker(
+    div,
+    NodeFilter.SHOW_TEXT
+  );
+
+  const layerRect = layer.getBoundingClientRect();
+
+  let offset = 0;
+  let node;
+
+  while ((node = walker.nextNode())) {
+    const length = node.nodeValue.length;
+
+    const localStart = Math.max(start, offset);
+    const localEnd = Math.min(end, offset + length);
+
+    if (localStart < localEnd) {
+      const range = document.createRange();
+
+      range.setStart(node, localStart - offset);
+      range.setEnd(node, localEnd - offset);
+
+      const rects = range.getClientRects();
+
+      for (const rect of rects) {
+        if (!rect.width || !rect.height) continue;
+
+        const highlight = document.createElement("div");
+
+        highlight.className = "search-hit-overlay";
+
+        highlight.style.left =
+          `${rect.left - layerRect.left}px`;
+
+        highlight.style.top =
+          `${rect.top - layerRect.top}px`;
+
+        highlight.style.width =
+          `${rect.width}px`;
+
+        highlight.style.height =
+          `${rect.height}px`;
+
+        layer.appendChild(highlight);
+      }
+    }
+
+    offset += length;
+  }
+}
+
+
+function applySearchHighlights() {
+  const query = els.searchInput.value
+    .trim()
+    .replace(/\s+/g, " ")
+    .toLocaleLowerCase();
+
+  document.querySelectorAll(".page-sheet").forEach(sheet => {
+    const layer = sheet.querySelector(".text-layer");
+
+    if (!layer) return;
+
+    // إزالة التظليل السابق فقط، دون لمس نص PDF.js
+    layer.querySelectorAll(".search-hit-overlay").forEach(
+      highlight => highlight.remove()
+    );
+
+    sheet.classList.remove("search-highlight");
+
+    if (!query) return;
+
+    const divs = [
+      ...layer.querySelectorAll("[data-search-text]")
+    ];
+
+    let fullText = "";
+    const records = [];
+
+    divs.forEach((div, index) => {
+      const original = div.dataset.searchText || "";
+
+      if (index > 0) fullText += " ";
+
+      const start = fullText.length;
+
+      fullText += original.toLocaleLowerCase();
+
+      records.push({
+        div,
+        original,
+        start,
+        end: fullText.length
+      });
+    });
+
+    const matches = [];
+    let position = 0;
+
+    while (true) {
+      const found = fullText.indexOf(query, position);
+
+      if (found === -1) break;
+
+      matches.push({
+        start: found,
+        end: found + query.length
+      });
+
+      position = found + query.length;
+    }
+
+    if (!matches.length) return;
+
+    let hasHighlight = false;
+
+    records.forEach(record => {
+      matches.forEach(match => {
+        const start = Math.max(match.start, record.start);
+        const end = Math.min(match.end, record.end);
+
+        if (start >= end) return;
+
+        addTextRangeHighlights(
+          record.div,
+          start - record.start,
+          end - record.start,
+          layer
+        );
+
+        hasHighlight = true;
+      });
+    });
+
+    if (hasHighlight) {
+      sheet.classList.add("search-highlight");
+    }
+  });
+}
+
 async function searchDocument(direction=1){
   const query=els.searchInput.value.trim().toLocaleLowerCase();if(!query){els.searchStatus.textContent="اكتب كلمة";return;}
   if(!searchMatches.length||searchMatches.query!==query){els.searchStatus.textContent="جاري البحث...";searchMatches=[];searchMatches.query=query;
