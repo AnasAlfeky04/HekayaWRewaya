@@ -1213,7 +1213,7 @@ function initLatestOrbit() {
 
     if (!isDragging && time >= resumeAt) {
       // سرعة ثابتة واتجاه الحركة من اليسار إلى اليمين
-      phase += delta * 0.24;
+      phase += delta * 0.15;
     }
 
     positionCards();
