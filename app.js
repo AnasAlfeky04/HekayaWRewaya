@@ -983,24 +983,37 @@ function renderLatestBooks() {
     `;
   }).join("");
 
-  stage.querySelectorAll(".latest-orbit-card").forEach(function (card) {
-    function openDetails() {
+  // فتح الرواية عند الضغط عليها
+stage.onclick = function (event) {
+  const card =
+    stage._latestOrbitPressedCard ||
+    event.target.closest(".latest-orbit-card");
+
+  stage._latestOrbitPressedCard = null;
+
+  if (!card || !stage.contains(card)) return;
+
+  const bookId = card.dataset.bookId;
+  if (!bookId) return;
+
+  window.location.href =
+    "/Library/library.html?book=" + encodeURIComponent(bookId);
+};
+
+// دعم فتح الرواية بلوحة المفاتيح
+stage.querySelectorAll(".latest-orbit-card").forEach(function (card) {
+  card.addEventListener("keydown", function (event) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+
       const bookId = card.dataset.bookId;
       if (!bookId) return;
 
       window.location.href =
         "/Library/library.html?book=" + encodeURIComponent(bookId);
     }
-
-    card.addEventListener("click", openDetails);
-
-    card.addEventListener("keydown", function (event) {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        openDetails();
-      }
-    });
   });
+});
 
   initLatestOrbit();
 }
@@ -1046,7 +1059,13 @@ function initLatestOrbit() {
   ).matches;
 
   function getRadiusX() {
-    return Math.max(1, Math.min(stage.clientWidth * 0.43, 470));
+    const width = stage.clientWidth;
+  
+    if (window.innerWidth <= 700) {
+      return Math.max(width * 0.62, 210);
+    }
+  
+    return Math.max(1, Math.min(width * 0.43, 470));
   }
 
   function positionCards() {
@@ -1063,7 +1082,9 @@ function initLatestOrbit() {
       const scale = 0.70 + ((depth + 1) / 2) * 0.30;
       const opacity = 0.48 + ((depth + 1) / 2) * 0.52;
 
-      const tilt = -Math.sin(angle) * 24;
+      const tilt = -Math.sin(angle) * (
+        window.innerWidth <= 700 ? 24 : 24
+      );
 
       card.style.zIndex = String(
         Math.round((depth + 1) * 100)
@@ -1080,26 +1101,35 @@ function initLatestOrbit() {
   }
 
   /* بداية السحب */
-  stage.onpointerdown = function (event) {
+  function startDragging(event) {
     if (!event.isPrimary) return;
     if (event.pointerType === "mouse" && event.button !== 0) return;
-
+  
+    // الاحتفاظ بالرواية التي بدأ المستخدم الضغط عليها
+    stage._latestOrbitPressedCard =
+      event.currentTarget.closest(".latest-orbit-card");
+  
     activePointerId = event.pointerId;
-
+  
     dragStartX = event.clientX;
     lastPointerX = event.clientX;
-
+  
     isDragging = true;
     hasDragged = false;
-
+  
     stage._latestOrbitSuppressClick = false;
-
+  
     try {
       stage.setPointerCapture(event.pointerId);
     } catch (error) {
       console.warn("Pointer capture unavailable:", error);
     }
-  };
+  }
+  
+  // استقبال الضغط مباشرة من كل كارت
+  cards.forEach(function (card) {
+    card.onpointerdown = startDragging;
+  });
 
   /* تحريك الروايات مع الماوس أو الإصبع */
   stage.onpointermove = function (event) {
