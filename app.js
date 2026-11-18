@@ -758,6 +758,7 @@ console.table(
     });
   
     renderBooks();
+    renderLatestBooks();
   }
    
    /* ---------- البحث والتصنيفات ---------- */
@@ -877,6 +878,338 @@ console.table(
       });
     });
   }
+
+
+
+
+/* =========================================
+   LATEST RELEASES - 3D CIRCULAR ORBIT
+========================================= */
+
+function renderLatestBooks() {
+  const stage = document.getElementById("latestOrbitStage");
+
+  if (!stage) return;
+
+  const latestBooks = allBooks
+    .slice()
+    .sort(function (a, b) {
+      return new Date(b.created_at || 0) -
+             new Date(a.created_at || 0);
+    })
+    .slice(0, 8);
+
+  if (!latestBooks.length) {
+    stage.innerHTML = `
+      <p style="
+        position:absolute;
+        top:50%;
+        left:50%;
+        transform:translate(-50%,-50%);
+        color:#737d76;
+        white-space:nowrap;
+        direction:rtl;
+      ">
+        لا توجد روايات منشورة حاليًا.
+      </p>
+    `;
+    return;
+  }
+
+  stage.innerHTML = latestBooks.map(function (book) {
+    const safeTitle = escapeHTML(book.title || "رواية بدون عنوان");
+    const safeCategory = escapeHTML(book.categoryName || "رواية");
+    const safeAuthor = escapeHTML(book.authorName || "كاتب");
+
+    const price = Number(book.price ?? 0);
+    const isFree = Number.isFinite(price) && price <= 0;
+
+    const priceLabel = isFree
+      ? "مجاني"
+      : price.toLocaleString("ar-EG", {
+          maximumFractionDigits: 2
+        }) + " ج.م";
+
+    const cover = book.coverUrl
+      ? `<img
+           src="${escapeHTML(book.coverUrl)}"
+           alt="غلاف ${safeTitle}"
+           loading="eager"
+         >`
+      : `<div class="latest-orbit-placeholder">
+           <span>حكاية ورواية</span>
+           <strong>${safeTitle}</strong>
+           <small>كتاب إلكتروني</small>
+         </div>`;
+
+    return `
+      <article
+        class="latest-orbit-card"
+        role="link"
+        tabindex="0"
+        data-book-id="${encodeURIComponent(book.id)}"
+        aria-label="عرض رواية ${safeTitle}"
+      >
+        <div class="latest-orbit-cover">
+          ${cover}
+
+          <div class="latest-orbit-cover-shade"></div>
+
+          <span class="latest-orbit-category">
+            ${safeCategory}
+          </span>
+        </div>
+
+        <div class="latest-orbit-info">
+          <h3 class="latest-orbit-title">${safeTitle}</h3>
+
+          <div class="latest-orbit-author">
+            <span class="latest-orbit-author-mark">✦</span>
+            <span>${safeAuthor}</span>
+          </div>
+
+          <div class="latest-orbit-divider"></div>
+
+          <div class="latest-orbit-footer">
+            <span class="latest-orbit-price ${isFree ? "is-free" : "is-paid"}">
+              ${isFree ? "✓" : "◆"}
+              ${priceLabel}
+            </span>
+
+            <span class="latest-orbit-open" aria-hidden="true">←</span>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join("");
+
+  stage.querySelectorAll(".latest-orbit-card").forEach(function (card) {
+    function openDetails() {
+      const bookId = card.dataset.bookId;
+      if (!bookId) return;
+
+      window.location.href =
+        "/Library/library.html?book=" + encodeURIComponent(bookId);
+    }
+
+    card.addEventListener("click", openDetails);
+
+    card.addEventListener("keydown", function (event) {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openDetails();
+      }
+    });
+  });
+
+  initLatestOrbit();
+}
+
+
+
+/* الحركة الدائرية ثلاثية الأبعاد مع التحكم بالسحب */
+function initLatestOrbit() {
+  const stage = document.getElementById("latestOrbitStage");
+
+  if (!stage) return;
+
+  if (stage._latestOrbitFrame) {
+    cancelAnimationFrame(stage._latestOrbitFrame);
+  }
+
+  if (stage._latestOrbitObserver) {
+    stage._latestOrbitObserver.disconnect();
+  }
+
+  const cards = Array.from(
+    stage.querySelectorAll(".latest-orbit-card")
+  );
+
+  const count = cards.length;
+
+  if (!count) return;
+
+  let phase = 0;
+  let lastTime = 0;
+  let animationFrame = null;
+
+  // حالات السحب
+  let isDragging = false;
+  let hasDragged = false;
+  let dragStartX = 0;
+  let lastPointerX = 0;
+  let activePointerId = null;
+  let resumeAt = 0;
+
+  const reducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
+
+  function getRadiusX() {
+    return Math.max(1, Math.min(stage.clientWidth * 0.43, 470));
+  }
+
+  function positionCards() {
+    const radiusX = getRadiusX();
+
+    cards.forEach(function (card, index) {
+      const angle =
+        phase + (index * Math.PI * 2 / count);
+
+      const depth = Math.cos(angle);
+      const x = Math.sin(angle) * radiusX;
+      const y = 0;
+
+      const scale = 0.70 + ((depth + 1) / 2) * 0.30;
+      const opacity = 0.48 + ((depth + 1) / 2) * 0.52;
+
+      const tilt = -Math.sin(angle) * 24;
+
+      card.style.zIndex = String(
+        Math.round((depth + 1) * 100)
+      );
+
+      card.style.opacity = opacity;
+
+      card.style.transform =
+        `translate(-50%, -50%) ` +
+        `translate3d(${x}px, ${y}px, ${depth * 120}px) ` +
+        `rotateY(${tilt}deg) ` +
+        `scale(${scale})`;
+    });
+  }
+
+  /* بداية السحب */
+  stage.onpointerdown = function (event) {
+    if (!event.isPrimary) return;
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+
+    activePointerId = event.pointerId;
+
+    dragStartX = event.clientX;
+    lastPointerX = event.clientX;
+
+    isDragging = true;
+    hasDragged = false;
+
+    stage._latestOrbitSuppressClick = false;
+
+    try {
+      stage.setPointerCapture(event.pointerId);
+    } catch (error) {
+      console.warn("Pointer capture unavailable:", error);
+    }
+  };
+
+  /* تحريك الروايات مع الماوس أو الإصبع */
+  stage.onpointermove = function (event) {
+    if (!isDragging || event.pointerId !== activePointerId) return;
+
+    const deltaX = event.clientX - lastPointerX;
+    lastPointerX = event.clientX;
+
+    if (!hasDragged) {
+      const totalDelta = event.clientX - dragStartX;
+
+      if (Math.abs(totalDelta) <= 6) return;
+
+      hasDragged = true;
+      stage.classList.add("is-dragging");
+
+      phase += totalDelta / getRadiusX();
+      positionCards();
+
+      return;
+    }
+
+    phase += deltaX / getRadiusX();
+    positionCards();
+  };
+
+  /* انتهاء السحب */
+  function finishDragging(event) {
+    if (!isDragging) return;
+    if (event.pointerId !== activePointerId) return;
+
+    isDragging = false;
+
+    stage.classList.remove("is-dragging");
+
+    stage._latestOrbitSuppressClick = hasDragged;
+
+    // لو المستخدم سحب، نستنى ثانيتين قبل استئناف الدوران
+    resumeAt = hasDragged
+      ? performance.now() + 2000
+      : performance.now();
+
+    activePointerId = null;
+    hasDragged = false;
+  }
+
+  stage.onpointerup = finishDragging;
+  stage.onpointercancel = finishDragging;
+
+  /* منع فتح الرواية بالخطأ بعد السحب */
+  if (stage._latestOrbitClickGuard) {
+    stage.removeEventListener(
+      "click",
+      stage._latestOrbitClickGuard,
+      true
+    );
+  }
+
+  stage._latestOrbitClickGuard = function (event) {
+    if (!stage._latestOrbitSuppressClick) return;
+
+    stage._latestOrbitSuppressClick = false;
+
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+  };
+
+  stage.addEventListener(
+    "click",
+    stage._latestOrbitClickGuard,
+    true
+  );
+
+  /* الحركة التلقائية */
+  function animate(time) {
+    if (!lastTime) lastTime = time;
+
+    const delta = Math.min((time - lastTime) / 1000, 0.04);
+    lastTime = time;
+
+    if (!isDragging && time >= resumeAt) {
+      // سرعة ثابتة واتجاه الحركة من اليسار إلى اليمين
+      phase += delta * 0.24;
+    }
+
+    positionCards();
+
+    animationFrame = requestAnimationFrame(animate);
+    stage._latestOrbitFrame = animationFrame;
+  }
+
+  positionCards();
+
+  const resizeObserver = new ResizeObserver(function () {
+    positionCards();
+  });
+
+  resizeObserver.observe(stage);
+  stage._latestOrbitObserver = resizeObserver;
+
+  if (!reducedMotion) {
+    animationFrame = requestAnimationFrame(animate);
+    stage._latestOrbitFrame = animationFrame;
+  }
+}
+
+
+
+
    
    /* ---------- قارئ الكتب ---------- */
    

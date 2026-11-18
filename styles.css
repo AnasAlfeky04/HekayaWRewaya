@@ -2591,3 +2591,394 @@ footer small {
     display: none;
   }
 }
+
+
+/* =========================================
+   LATEST RELEASES - 3D ORBIT CAROUSEL
+========================================= */
+
+.latest-releases {
+  position: relative;
+  padding: 85px 0 75px;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      ellipse at 50% 55%,
+      rgba(197, 161, 92, 0.075),
+      transparent 65%
+    );
+}
+
+
+/* =========================================
+   LATEST RELEASES - PREMIUM SECTION HEADING
+========================================= */
+
+.latest-releases .section-heading {
+  position: relative;
+  z-index: 2;
+  max-width: 760px;
+  margin: 0 auto 25px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* الإطار الذهبي لعبارة وصلت حديثًا */
+.latest-releases .section-heading .section-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 7px 21px;
+  margin: 0 0 17px;
+  border: 1px solid #c5a76b;
+  border-radius: 5px;
+  background: linear-gradient(135deg, #fffdf7, #f6f0e3);
+  color: #96763d;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .5px;
+  line-height: 1.5;
+  box-shadow: 0 2px 9px rgba(160, 128, 68, .07);
+}
+
+.latest-releases .section-heading .section-tag::before,
+.latest-releases .section-heading .section-tag::after {
+  content: "✦";
+  display: inline-block;
+  color: #b18d4d;
+  font-size: 12px;
+  line-height: 1;
+}
+
+/* العنوان الرئيسي */
+.latest-releases .section-heading h2 {
+  margin: 0;
+  color: #153e32;
+  font-size: clamp(31px, 4.2vw, 43px);
+  font-weight: 900;
+  line-height: 1.65;
+  letter-spacing: -.8px;
+}
+
+/* الوصف أسفل العنوان */
+.latest-releases .section-heading p {
+  max-width: 500px;
+  margin: 8px auto 0;
+  color: #85847d;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 2;
+  letter-spacing: .1px;
+}
+
+/* الخط الذهبي أسفل الوصف */
+.latest-releases .section-heading p::after {
+  content: "";
+  display: block;
+  width: 35px;
+  height: 2px;
+  margin: 17px auto 0;
+  border-radius: 5px;
+  background: #b99a60;
+}
+
+/* ضبط الموبايل */
+@media (max-width: 600px) {
+  .latest-releases .section-heading {
+    margin-bottom: 20px;
+    padding: 0 10px;
+  }
+
+  .latest-releases .section-heading .section-tag {
+    padding: 6px 17px;
+    margin-bottom: 14px;
+    font-size: 11px;
+  }
+
+  .latest-releases .section-heading h2 {
+    font-size: 29px;
+    line-height: 1.6;
+  }
+
+  .latest-releases .section-heading p {
+    font-size: 12px;
+  }
+}
+
+
+.latest-orbit-window {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  direction: ltr;
+  perspective: 1400px;
+  -webkit-perspective: 1400px;
+}
+
+
+/* التحكم في دوران أحدث الروايات بالسحب */
+.latest-orbit-stage {
+  cursor: grab;
+  touch-action: pan-y pinch-zoom;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.latest-orbit-stage.is-dragging {
+  cursor: grabbing;
+}
+
+.latest-orbit-stage img {
+  -webkit-user-drag: none;
+  user-drag: none;
+}
+
+
+.latest-orbit-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: clamp(150px, 18vw, 215px);
+  overflow: hidden;
+  border: 1px solid rgba(197, 161, 92, 0.32);
+  border-radius: 17px;
+  background: #fffdf8;
+  box-shadow:
+    0 15px 40px rgba(16, 55, 43, 0.17),
+    0 3px 10px rgba(0, 0, 0, 0.07);
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  cursor: pointer;
+  will-change: transform, opacity;
+  user-select: none;
+}
+
+.latest-orbit-card:focus-visible {
+  outline: 3px solid #c5a15c;
+  outline-offset: 5px;
+}
+
+.latest-orbit-cover {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: #e9e6dc;
+}
+
+.latest-orbit-cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.latest-orbit-cover-shade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.48),
+    transparent 45%
+  );
+}
+
+.latest-orbit-category {
+  position: absolute;
+  bottom: 11px;
+  right: 10px;
+  max-width: calc(100% - 20px);
+  padding: 5px 10px;
+  border: 1px solid rgba(255,255,255,.3);
+  border-radius: 20px;
+  color: white;
+  background: rgba(16, 55, 43, .78);
+  font-size: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.latest-orbit-placeholder {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-height: 190px;
+  padding: 15px;
+  box-sizing: border-box;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: #fffaf0;
+  text-align: center;
+  background:
+    radial-gradient(circle at 50% 35%, #39715e, #104b3d 75%);
+}
+
+.latest-orbit-placeholder span {
+  color: #d7bd83;
+  font-size: 11px;
+}
+
+.latest-orbit-placeholder strong {
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.latest-orbit-placeholder small {
+  color: rgba(255,255,255,.7);
+  font-size: 10px;
+}
+
+.latest-orbit-info {
+  padding: 12px 13px 13px;
+  direction: rtl;
+  text-align: right;
+}
+
+.latest-orbit-title {
+  min-height: 42px;
+  margin: 0 0 7px;
+  overflow: hidden;
+  color: #26382d;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.55;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.latest-orbit-author {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  color: #7a8179;
+  font-size: 11px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.latest-orbit-author-mark {
+  flex: 0 0 auto;
+  color: #c5a15c;
+}
+
+.latest-orbit-divider {
+  height: 1px;
+  margin: 11px 0;
+  background: #ece9df;
+}
+
+.latest-orbit-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.latest-orbit-price {
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.latest-orbit-price.is-free {
+  color: #23805b;
+}
+
+.latest-orbit-price.is-paid {
+  color: #a77d35;
+}
+
+.latest-orbit-open {
+  display: flex;
+  width: 27px;
+  height: 27px;
+  flex: 0 0 27px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: white;
+  background: #176b55;
+  font-size: 15px;
+}
+
+.latest-releases-footer {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.latest-releases-footer a {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 22px;
+  border: 1px solid rgba(197, 161, 92, .55);
+  border-radius: 30px;
+  color: #176b55;
+  background: rgba(255,255,255,.65);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: .25s ease;
+}
+
+.latest-releases-footer a:hover {
+  color: white;
+  background: #176b55;
+  border-color: #176b55;
+  transform: translateY(-2px);
+}
+
+.latest-releases-footer a span {
+  font-size: 18px;
+}
+
+@media (max-width: 700px) {
+  .latest-releases {
+    padding: 65px 0 55px;
+  }
+
+  .latest-orbit-stage {
+    height: 430px;
+  }
+
+  .latest-orbit-card {
+    width: clamp(140px, 34vw, 175px);
+    border-radius: 14px;
+  }
+
+  .latest-orbit-info {
+    padding: 10px;
+  }
+
+  .latest-orbit-title {
+    font-size: 12px;
+    min-height: 38px;
+  }
+
+  .latest-orbit-author {
+    font-size: 10px;
+  }
+
+  .latest-orbit-price {
+    font-size: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .latest-orbit-card {
+    will-change: auto;
+  }
+}
