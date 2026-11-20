@@ -1854,3 +1854,343 @@ body.book-details-open #global-scrollbar {
   visibility: hidden !important;
   pointer-events: none !important;
 }
+
+
+/* ===== Professional Category Dropdown ===== */
+
+.library-categories {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 24px;
+}
+
+.custom-category {
+  position: relative;
+  width: 240px;
+  z-index: 20;
+}
+
+.category-trigger {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  border: 1px solid rgba(112, 47, 59, 0.25);
+  border-radius: 12px;
+  background: #fff;
+  color: #54212B;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+
+  transition: 0.25s ease;
+}
+
+.category-trigger:hover,
+.custom-category.open .category-trigger {
+  border-color: #702F3B;
+  box-shadow: 0 4px 14px rgba(112, 47, 59, 0.10);
+}
+
+.category-trigger svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: #702F3B;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.25s ease;
+  flex-shrink: 0;
+}
+
+.custom-category.open .category-trigger svg {
+  transform: rotate(180deg);
+}
+
+.category-options {
+  position: absolute;
+  top: calc(100% + 9px);
+  right: 0;
+  left: 0;
+
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 7px;
+
+  background: #fff;
+  border: 1px solid rgba(112, 47, 59, 0.14);
+  border-radius: 12px;
+
+  box-shadow: 0 12px 30px rgba(35, 25, 25, 0.13);
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-7px);
+  transition: 0.2s ease;
+}
+
+.custom-category.open .category-options {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.category-option {
+  width: 100%;
+  padding: 11px 12px;
+  display: block;
+
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+
+  color: #4d554f;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: right;
+
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.category-option:hover {
+  background: #FAF4F4;
+  color: #702F3B;
+}
+
+.category-option.active {
+  background: #F3E7E9;
+  color: #702F3B;
+  font-weight: 800;
+}
+
+.category-options::-webkit-scrollbar {
+  width: 5px;
+}
+
+.category-options::-webkit-scrollbar-thumb {
+  background: #C5A15C;
+  border-radius: 10px;
+}
+
+.category-options::-webkit-scrollbar-track {
+  background: #f7f4ef;
+  border-radius: 10px;
+}
+
+@media (max-width: 600px) {
+  .custom-category {
+      width: 100%;
+      max-width: 100%;
+  }
+}
+
+
+
+/* ===== Perfect Category & Sort Alignment ===== */
+
+.library-section-heading {
+  position: relative;
+  margin-bottom: 0 !important;
+}
+
+/* التصنيفات */
+#libraryCategories {
+  position: relative;
+  margin-top: 0 !important;
+  display: flex;
+  align-items: center;
+}
+
+/* الترتيب بجانب التصنيفات */
+.library-section-heading .custom-sort {
+  position: absolute;
+  top: 100%;
+  right: 252px;
+  width: 240px;
+  height: 48px;
+  margin: 0 !important;
+}
+
+/* توحيد ارتفاع الزرين */
+.category-trigger,
+.sort-trigger {
+  box-sizing: border-box;
+  width: 100%;
+  height: 48px;
+  min-height: 48px;
+  padding: 0 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border: 1px solid rgba(112, 47, 59, 0.25);
+  border-radius: 12px;
+
+  background: #fff;
+  color: #54212B;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+
+  transition: 0.25s ease;
+}
+
+/* نفس تأثير التفاعل */
+.category-trigger:hover,
+.sort-trigger:hover {
+  border-color: #702F3B;
+  box-shadow: 0 4px 14px rgba(112, 47, 59, 0.10);
+}
+
+/* سهم الترتيب */
+.sort-chevron {
+  color: #702F3B;
+}
+
+/* قائمة خيارات الترتيب */
+.sort-options {
+  background: #fff;
+  border: 1px solid rgba(112, 47, 59, 0.14);
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(35, 25, 25, 0.13);
+}
+
+/* الاختيار عند المرور */
+.sort-option:hover {
+  background: #FAF4F4;
+  color: #702F3B;
+}
+
+/* الاختيار النشط */
+.sort-option.is-selected {
+  background: #F3E7E9;
+  color: #702F3B;
+  font-weight: 800;
+}
+
+@media (max-width: 600px) {
+  .library-section-heading .custom-sort {
+      right: 0;
+      top: calc(100% + 10px);
+      width: 100%;
+  }
+
+  #libraryCategories {
+      margin-top: 58px !important;
+      width: 100%;
+  }
+}
+
+
+/* ===== Final Sort Dropdown Fix ===== */
+
+/* محاذاة الترتيب مع التصنيفات */
+.library-section-heading {
+  position: relative;
+  margin-bottom: 0 !important;
+}
+
+.library-section-heading .custom-sort {
+  position: absolute;
+  top: 100%;
+  right: 252px;
+  width: 240px;
+  height: 48px;
+  margin: 0 !important;
+  z-index: 30;
+}
+
+#libraryCategories {
+  margin-top: 0 !important;
+  display: flex;
+  align-items: center;
+}
+
+/* توحيد شكل الزرين */
+.category-trigger,
+#sortTrigger {
+  height: 48px !important;
+  min-height: 48px !important;
+  box-sizing: border-box;
+  background: #fff !important;
+  color: #54212B !important;
+  border: 1px solid rgba(112, 47, 59, 0.25) !important;
+  border-radius: 12px !important;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: none;
+}
+
+.category-trigger:hover,
+#sortTrigger:hover {
+  border-color: #702F3B !important;
+  box-shadow: 0 4px 14px rgba(112, 47, 59, 0.10) !important;
+}
+
+/* سهم الترتيب */
+#sortTrigger .sort-chevron {
+  color: #702F3B !important;
+}
+
+/* خيارات الترتيب */
+#sortOptions {
+  background: #fff !important;
+  border: 1px solid rgba(112, 47, 59, 0.14) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 12px 30px rgba(35, 25, 25, 0.13) !important;
+  z-index: 50;
+}
+
+#sortOptions .sort-option:hover {
+  background: #FAF4F4 !important;
+  color: #702F3B !important;
+}
+
+#sortOptions .sort-option.is-selected {
+  background: #F3E7E9 !important;
+  color: #702F3B !important;
+  font-weight: 800;
+}
+
+@media (max-width: 600px) {
+  .library-section-heading .custom-sort {
+      right: 0;
+      top: calc(100% + 10px);
+      width: 100%;
+  }
+
+  #libraryCategories {
+      margin-top: 58px !important;
+      width: 100%;
+  }
+}
+
+/* Sort dropdown text colors */
+
+#sortOptions .sort-option {
+  color: #292D2A !important;
+  background: transparent;
+  transition: 0.2s ease;
+}
+
+#sortOptions .sort-option:hover {
+  color: #702F3B !important;
+  background: #FAF4F4 !important;
+}
+
+#sortOptions .sort-option.is-selected {
+  color: #702F3B !important;
+  background: #F3E7E9 !important;
+}

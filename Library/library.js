@@ -9,6 +9,10 @@ const db = window.supabase.createClient(
 
 const bookGrid = document.getElementById("libraryBookGrid");
 const categoryBox = document.getElementById("libraryCategories");
+const customCategory = document.getElementById("customCategory");
+const categoryTrigger = document.getElementById("categoryTrigger");
+const categoryOptions = document.getElementById("categoryOptions");
+const selectedCategoryLabel = document.getElementById("selectedCategoryLabel");
 const searchInput = document.getElementById("librarySearch");
 const clearSearchBtn = document.getElementById("clearSearch");
 const sortSelect = document.getElementById("librarySort");
@@ -228,36 +232,39 @@ async function loadCategories() {
 
 
   function renderCategories() {
-    categoryBox.innerHTML = "";
-  
-    // زر عرض جميع الروايات
-    const allButton = document.createElement("button");
-  
-    allButton.className =
-      "library-category" +
-      (selectedCategory === "all" ? " active" : "");
-  
-    allButton.dataset.category = "all";
-    allButton.textContent = "كل الروايات";
-  
-    categoryBox.appendChild(allButton);
-  
-    // التصنيفات تُحمّل من قاعدة البيانات
-    categories.forEach(function (category) {
-      const button = document.createElement("button");
-  
-      button.className =
-        "library-category" +
-        (String(selectedCategory) === String(category.id)
-          ? " active"
-          : "");
-  
-      button.dataset.category = category.id;
-      button.textContent = category.name;
-  
-      categoryBox.appendChild(button);
+    categoryOptions.innerHTML = "";
+
+    const allOption = document.createElement("button");
+    allOption.type = "button";
+    allOption.className = `category-option ${selectedCategory === "all" ? "active" : ""}`;
+    allOption.dataset.category = "all";
+    allOption.textContent = "كل التصنيفات";
+
+    categoryOptions.appendChild(allOption);
+
+    categories.forEach(category => {
+        const option = document.createElement("button");
+
+        option.type = "button";
+        option.className = `category-option ${
+            String(selectedCategory) === String(category.id) ? "active" : ""
+        }`;
+
+        option.dataset.category = category.id;
+        option.textContent = category.name;
+
+        categoryOptions.appendChild(option);
     });
-  }  
+
+    const currentCategory = categories.find(
+        category => String(category.id) === String(selectedCategory)
+    );
+
+    selectedCategoryLabel.textContent =
+        selectedCategory === "all"
+            ? "كل التصنيفات"
+            : currentCategory?.name || "كل التصنيفات";
+}
 
 async function loadBooks() {
   showMessage("جاري تحميل الروايات...");
@@ -743,20 +750,44 @@ document.addEventListener("keydown", function (event) {
   }
 });
 
-categoryBox.addEventListener("click", function (event) {
-  const button = event.target.closest("[data-category]");
+// فتح وإغلاق قائمة التصنيفات
+categoryTrigger.addEventListener("click", () => {
+  const isOpen = customCategory.classList.toggle("open");
 
-  if (!button) {
-    return;
-  }
+  categoryTrigger.setAttribute("aria-expanded", isOpen);
+});
 
-  selectedCategory = button.dataset.category === "all"
-    ? "all"
-    : button.dataset.category;
+// اختيار تصنيف
+categoryOptions.addEventListener("click", (e) => {
+  const option = e.target.closest(".category-option");
+
+  if (!option) return;
+
+  selectedCategory = option.dataset.category;
 
   currentPage = 1;
+
+  customCategory.classList.remove("open");
+  categoryTrigger.setAttribute("aria-expanded", "false");
+
   renderCategories();
   renderBooks();
+});
+
+// إغلاق القائمة عند الضغط خارجها
+document.addEventListener("click", (e) => {
+  if (!customCategory.contains(e.target)) {
+      customCategory.classList.remove("open");
+      categoryTrigger.setAttribute("aria-expanded", "false");
+  }
+});
+
+// إغلاق القائمة بزر Escape
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+      customCategory.classList.remove("open");
+      categoryTrigger.setAttribute("aria-expanded", "false");
+  }
 });
 
 searchInput.addEventListener("input", function () {

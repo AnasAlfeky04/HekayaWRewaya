@@ -97,9 +97,19 @@
       </div>
 
       <div id="libraryCategories" class="library-categories">
-        <button class="library-category active" data-category="all">
-          كل الروايات
-        </button>
+        <div class="custom-category" id="customCategory">
+            <button class="category-trigger" id="categoryTrigger" type="button"
+                aria-expanded="false">
+                <span id="selectedCategoryLabel">كل التصنيفات</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="m6 9 6 6 6-6"/>
+                </svg>
+            </button>
+    
+            <div class="category-options" id="categoryOptions">
+                <!-- التصنيفات هتظهر هنا تلقائيًا -->
+            </div>
+        </div>
       </div>
 
       <div class="library-results">
