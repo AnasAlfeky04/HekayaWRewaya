@@ -1533,13 +1533,14 @@ function initFloatingStatsLogos() {
     const isMobile = window.innerWidth <= 600;
 
     const baseX = isMobile ? -50 : 0;
+    const baseY = isMobile ? -10 : 0;
 
     const x = Math.sin(elapsed * 0.7) * 5;
     const y = Math.sin(elapsed * 0.9 + 1.2) * 5;
     const rotation = Math.sin(elapsed * 0.6) * 2;
 
     logo.style.transform = `
-      translate3d(${baseX + x}px, ${y}px, 0)
+      translate3d(${baseX + x}px, ${baseY + y}px, 0)
       rotate(${rotation}deg)
     `;
 
