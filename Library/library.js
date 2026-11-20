@@ -520,8 +520,6 @@ function renderBooks() {
           }
         });
   
-        bookGrid.appendChild(card);
-  
       bookGrid.appendChild(card);
     });
   

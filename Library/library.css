@@ -2197,10 +2197,6 @@ body.book-details-open #global-scrollbar {
 
 @media (max-width: 600px) {
   .library-section-heading .custom-sort {
-      top: calc(100% + 10px) !important;
-  }
-
-  #libraryCategories {
-      margin-top: 75px !important;
+      margin-bottom: 12px !important;
   }
 }
