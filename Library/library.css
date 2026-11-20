@@ -1133,3 +1133,724 @@ nav a:hover::after {
     transition: none;
   }
 }
+
+
+
+/* =====================================================
+   HIKAYA & REWAYA - LIBRARY BURGUNDY COLOR IDENTITY
+   احذف هذه الكتلة بالكامل للعودة إلى الألوان السابقة
+===================================================== */
+
+:root {
+  --library-burgundy: #702F3B;
+  --library-burgundy-dark: #54212B;
+  --library-burgundy-light: #8A4653;
+  --library-burgundy-soft: #F3E7E9;
+  --library-burgundy-pale: #FAF4F4;
+
+  --library-green: #176B55;
+  --library-green-dark: #104B3D;
+
+  --library-gold: #C5A15C;
+  --library-gold-dark: #96763D;
+
+  --library-paper: #FBF9F4;
+  --library-ink: #292D2A;
+  --library-muted: #737D76;
+}
+
+
+
+/* ================================
+   القسم الرئيسي - Hero
+================================ */
+
+.library-main {
+  background: var(--library-paper);
+}
+
+.library-hero {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      ellipse at 12% 15%,
+      rgba(112, 47, 59, 0.10),
+      transparent 42%
+    ),
+    radial-gradient(
+      ellipse at 88% 85%,
+      rgba(197, 161, 92, 0.13),
+      transparent 40%
+    ),
+    linear-gradient(
+      135deg,
+      #F8EEEE 0%,
+      #FBF6F0 48%,
+      #F4F0E7 100%
+    );
+  border-bottom: 1px solid rgba(112, 47, 59, 0.10);
+}
+
+.library-eyebrow {
+  display: inline-block;
+  color: var(--library-burgundy);
+  font-weight: 800;
+  letter-spacing: 0.2px;
+}
+
+.library-hero h1 {
+  color: var(--library-burgundy-dark);
+}
+
+.library-hero h1 span {
+  color: var(--library-green);
+}
+
+.library-hero p {
+  color: #71666A;
+}
+
+.library-search {
+  border: 1px solid rgba(112, 47, 59, 0.20);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow:
+    0 9px 28px rgba(84, 33, 43, 0.07),
+    0 2px 5px rgba(197, 161, 92, 0.06);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.library-search:focus-within {
+  border-color: var(--library-burgundy-light);
+  box-shadow:
+    0 0 0 3px rgba(112, 47, 59, 0.08),
+    0 10px 28px rgba(84, 33, 43, 0.09);
+}
+
+.library-search span {
+  color: var(--library-burgundy);
+}
+
+.library-search input {
+  color: var(--library-ink);
+}
+
+.library-search input::placeholder {
+  color: #A49A9A;
+}
+
+.library-search button {
+  color: var(--library-burgundy);
+}
+
+.library-search button:hover {
+  color: var(--library-burgundy-dark);
+}
+
+/* ================================
+   عنوان قسم المكتبة
+================================ */
+
+.library-section-heading h2 {
+  color: var(--library-burgundy-dark);
+}
+
+.library-section-heading .library-eyebrow {
+  color: var(--library-burgundy);
+}
+
+.library-sort {
+  color: #71666A;
+}
+
+.library-sort select {
+  border-color: rgba(112, 47, 59, 0.20);
+  color: var(--library-burgundy-dark);
+  background: #fffdfb;
+}
+
+.library-sort select:focus {
+  outline: none;
+  border-color: var(--library-burgundy);
+  box-shadow: 0 0 0 3px rgba(112, 47, 59, 0.08);
+}
+
+/* ================================
+   التصنيفات
+================================ */
+
+.library-category {
+  border-color: #E8DADD;
+  background: #fffdfb;
+  color: #685C60;
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.library-category:hover {
+  background: var(--library-burgundy-soft);
+  border-color: rgba(112, 47, 59, 0.35);
+  color: var(--library-burgundy);
+  transform: translateY(-1px);
+}
+
+.library-category.active {
+  background: linear-gradient(
+    135deg,
+    var(--library-burgundy-light),
+    var(--library-burgundy-dark)
+  );
+  border-color: var(--library-burgundy-dark);
+  color: #fffaf5;
+  box-shadow: 0 4px 12px rgba(112, 47, 59, 0.17);
+}
+
+.library-results {
+  color: var(--library-muted);
+}
+
+/* ================================
+   كروت الروايات
+================================ */
+
+.library-book-card {
+  border: 1px solid #EAE2E0;
+  background: #fffefa;
+  box-shadow: 0 5px 20px rgba(84, 33, 43, 0.045);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.library-book-card:hover {
+  border-color: rgba(112, 47, 59, 0.30);
+  box-shadow:
+    0 13px 30px rgba(84, 33, 43, 0.10),
+    0 3px 9px rgba(197, 161, 92, 0.07);
+}
+
+.library-book-cover {
+  background: #F3E9E8;
+}
+
+.library-book-category {
+  color: var(--library-burgundy);
+}
+
+.library-book-info h3 {
+  color: var(--library-burgundy-dark);
+}
+
+.library-book-description {
+  color: #74706E;
+}
+
+.library-book-author {
+  color: #626D66;
+}
+
+.library-book-author-icon {
+  color: var(--library-gold-dark);
+}
+
+/* عداد امتلاك الرواية */
+
+.library-book-owner-count {
+  border-color: rgba(197, 161, 92, 0.35);
+  background: linear-gradient(
+    135deg,
+    #FBF5E8,
+    #F6EEDC
+  );
+  color: var(--library-green-dark);
+}
+
+.library-book-owner-eye {
+  color: var(--library-burgundy);
+}
+
+/* سعر الرواية */
+
+.library-book-price {
+  border-color: rgba(197, 161, 92, 0.65);
+  background: linear-gradient(
+    135deg,
+    #FBF4DF,
+    #F1E4BE
+  );
+  color: #76581C;
+}
+
+/* ================================
+   أزرار الروايات
+================================ */
+
+.library-read-btn {
+  background: linear-gradient(
+    135deg,
+    var(--library-burgundy-light),
+    var(--library-burgundy-dark)
+  );
+  border: 1px solid rgba(197, 161, 92, 0.55);
+  color: #fffaf5;
+  box-shadow: 0 4px 12px rgba(112, 47, 59, 0.12);
+  transition:
+    background 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.library-read-btn:hover {
+  background: linear-gradient(
+    135deg,
+    var(--library-burgundy),
+    var(--library-burgundy-dark)
+  );
+  box-shadow: 0 7px 17px rgba(112, 47, 59, 0.20);
+  transform: translateY(-1px);
+}
+
+/* ================================
+   رسائل المكتبة
+================================ */
+
+.library-message {
+  color: #786B6D;
+}
+
+/* ================================
+   ترقيم الصفحات
+================================ */
+
+.library-page-btn {
+  border-color: #E8DADD;
+  background: #fffdfb;
+  color: var(--library-burgundy);
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.library-page-btn:hover {
+  background: var(--library-burgundy-soft);
+  border-color: var(--library-burgundy);
+  transform: translateY(-1px);
+}
+
+.library-page-btn.active {
+  background: linear-gradient(
+    135deg,
+    var(--library-burgundy-light),
+    var(--library-burgundy-dark)
+  );
+  border-color: var(--library-burgundy-dark);
+  color: #fffaf5;
+  box-shadow: 0 4px 11px rgba(112, 47, 59, 0.16);
+}
+
+/* ================================
+   الفوتر
+================================ */
+
+.library-footer {
+  background:
+    radial-gradient(
+      ellipse at 50% 0%,
+      rgba(138, 70, 83, 0.35),
+      transparent 65%
+    ),
+    linear-gradient(
+      135deg,
+      var(--library-burgundy-dark),
+      #48202A
+    );
+  border-top: 2px solid var(--library-gold);
+  color: #F2E8E5;
+}
+
+.library-footer a {
+  color: #DCC38B;
+  transition: color 0.2s ease;
+}
+
+.library-footer a:hover {
+  color: #F3DDA6;
+}
+
+/* ================================
+   نافذة تفاصيل الرواية
+================================ */
+
+.book-details-modal:not([hidden]) {
+  background: rgba(35, 18, 23, 0.78);
+}
+
+.book-details-panel {
+  background: #FFFCF8;
+  border: 1px solid rgba(197, 161, 92, 0.70);
+  box-shadow:
+    0 25px 80px rgba(0, 0, 0, 0.30),
+    0 0 0 1px rgba(112, 47, 59, 0.08);
+}
+
+.book-details-close {
+  border-color: #E5D6D8;
+  background: #FCF5F4;
+  color: var(--library-burgundy);
+}
+
+.book-details-close:hover {
+  background: var(--library-burgundy);
+  border-color: var(--library-burgundy);
+  color: #fffaf5;
+}
+
+.book-details-cover-wrap {
+  background: linear-gradient(
+    145deg,
+    #F8EEEE,
+    #F5F0E7
+  );
+  border-color: #E8D9D7;
+}
+
+.book-details-cover-placeholder {
+  color: var(--library-burgundy);
+}
+
+.book-details-info h2 {
+  color: var(--library-burgundy-dark);
+}
+
+.book-details-price {
+  border: 1px solid rgba(197, 161, 92, 0.65);
+  background: linear-gradient(
+    135deg,
+    #FBF4DF,
+    #F2E5BD
+  );
+  color: #76581C;
+}
+
+.book-details-divider {
+  background: linear-gradient(
+    to left,
+    transparent,
+    var(--library-gold) 20%,
+    #E8D6B0 80%,
+    transparent
+  );
+}
+
+.book-details-info h3 {
+  color: var(--library-burgundy-dark);
+}
+
+.book-details-info h3::before {
+  background: linear-gradient(
+    to bottom,
+    var(--library-burgundy-light),
+    var(--library-gold)
+  );
+}
+
+.book-details-description {
+  color: #625D5B;
+}
+
+/* اسم الكاتب داخل نافذة التفاصيل */
+
+.details-book-author {
+  border-color: rgba(112, 47, 59, 0.22);
+  background: linear-gradient(
+    135deg,
+    #F8EEEE,
+    #F7F0E8
+  );
+  color: var(--library-burgundy-dark);
+}
+
+.details-book-author .library-book-author-icon {
+  color: var(--library-gold-dark);
+}
+
+/* عداد المالكين داخل التفاصيل */
+
+.details-book-owner-count {
+  border-color: rgba(197, 161, 92, 0.40);
+}
+
+/* زر الإجراء الرئيسي داخل التفاصيل */
+
+.book-details-action {
+  border: 1px solid rgba(197, 161, 92, 0.65);
+  background: linear-gradient(
+    135deg,
+    var(--library-burgundy-light),
+    var(--library-burgundy-dark)
+  );
+  color: #fffaf5;
+  box-shadow: 0 5px 15px rgba(112, 47, 59, 0.17);
+}
+
+.book-details-action:hover {
+  background: linear-gradient(
+    135deg,
+    var(--library-burgundy),
+    var(--library-burgundy-dark)
+  );
+  box-shadow: 0 9px 24px rgba(112, 47, 59, 0.25);
+}
+
+.book-details-action:disabled {
+  border-color: #D7C9B9;
+  background: #EAE2DC;
+  color: #827773;
+}
+
+.book-details-message {
+  color: var(--library-green-dark);
+}
+
+/* ================================
+   قائمة الترتيب المخصصة
+================================ */
+
+.custom-sort .sort-trigger {
+  border-color: rgba(197, 161, 92, 0.65);
+  background: linear-gradient(
+    135deg,
+    var(--library-burgundy),
+    var(--library-burgundy-dark)
+  );
+  color: #FFF9F3;
+  box-shadow: 0 5px 16px rgba(84, 33, 43, 0.13);
+}
+
+.custom-sort .sort-trigger:hover,
+.custom-sort.is-open .sort-trigger {
+  border-color: var(--library-gold);
+  box-shadow:
+    0 0 0 3px rgba(197, 161, 92, 0.13),
+    0 8px 22px rgba(84, 33, 43, 0.17);
+}
+
+.custom-sort .sort-chevron {
+  color: #E5C98D;
+}
+
+.custom-sort .sort-options {
+  border-color: rgba(197, 161, 92, 0.50);
+  background: linear-gradient(
+    145deg,
+    #702F3B,
+    #54212B
+  );
+  box-shadow:
+    0 14px 32px rgba(55, 23, 30, 0.25),
+    0 0 18px rgba(197, 161, 92, 0.08);
+}
+
+.custom-sort .sort-option {
+  color: #F8EFEC;
+}
+
+.custom-sort .sort-option:hover {
+  background: rgba(197, 161, 92, 0.14);
+  border-color: rgba(197, 161, 92, 0.25);
+  color: #F0D9A7;
+}
+
+.custom-sort .sort-option.is-selected {
+  background: linear-gradient(
+    100deg,
+    rgba(197, 161, 92, 0.22),
+    rgba(197, 161, 92, 0.07)
+  );
+  color: #F0D9A7;
+  border-color: rgba(197, 161, 92, 0.35);
+}
+
+.custom-sort .sort-check {
+  color: #E5C98D;
+}
+
+/* ================================
+   قارئ الروايات
+================================ */
+
+.reader-modal:not([hidden]) {
+  background: rgba(39, 19, 25, 0.88);
+}
+
+.reader-panel {
+  border: 1px solid rgba(197, 161, 92, 0.55);
+  background: #FFFCF8;
+  box-shadow: 0 20px 65px rgba(0, 0, 0, 0.28);
+}
+
+.reader-toolbar {
+  background: linear-gradient(
+    135deg,
+    var(--library-burgundy),
+    var(--library-burgundy-dark)
+  );
+  border-bottom: 2px solid var(--library-gold);
+  color: #FFF9F3;
+}
+
+.reader-toolbar h2 {
+  color: #FFF9F3;
+}
+
+.reader-toolbar button {
+  color: #E8D4A8;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.reader-toolbar button:hover {
+  color: #FFFFFF;
+  transform: scale(1.08);
+}
+
+.reader-message {
+  color: #6D6262;
+}
+
+/* ================================
+   تحسينات التركيز وإمكانية الاستخدام
+================================ */
+
+.library-category:focus-visible,
+.library-page-btn:focus-visible,
+.library-read-btn:focus-visible,
+.book-details-action:focus-visible,
+.book-details-close:focus-visible,
+.library-auth-btn:focus-visible {
+  outline: 2px solid var(--library-gold);
+  outline-offset: 3px;
+}
+
+.library-book-card:focus-visible {
+  outline: 2px solid var(--library-burgundy);
+  outline-offset: 4px;
+}
+
+/* ================================
+   تحسينات الشاشات الصغيرة
+================================ */
+
+@media (max-width: 600px) {
+  .library-hero {
+    background:
+      radial-gradient(
+        ellipse at 10% 10%,
+        rgba(112, 47, 59, 0.09),
+        transparent 48%
+      ),
+      linear-gradient(
+        145deg,
+        #F8EEEE,
+        #FBF6F0 65%,
+        #F4F0E7
+      );
+  }
+
+  .library-section-heading h2 {
+    color: var(--library-burgundy-dark);
+  }
+
+  .library-category.active {
+    box-shadow: 0 3px 9px rgba(112, 47, 59, 0.15);
+  }
+
+  .library-book-card {
+    box-shadow: 0 4px 14px rgba(84, 33, 43, 0.045);
+  }
+
+  .book-details-panel {
+    border-color: rgba(197, 161, 92, 0.75);
+  }
+
+  .custom-sort {
+    width: 100%;
+  }
+}
+
+/* =====================================================
+   END OF LIBRARY BURGUNDY COLOR IDENTITY
+===================================================== */
+
+
+
+
+/* =========================================
+   PROFESSIONAL BOOK DETAILS SCROLLBAR
+========================================= */
+
+/* نافذة تفاصيل الرواية */
+.book-details-modal {
+  overflow: hidden;
+}
+
+/* التمرير الداخلي لنافذة التفاصيل */
+.book-details-panel {
+  max-height: 88vh;
+  max-height: 88dvh;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #b18a3b #f2eee5;
+
+  scroll-behavior: smooth;
+}
+
+/* Chrome - Edge - Safari */
+.book-details-panel::-webkit-scrollbar {
+  width: 11px;
+}
+
+.book-details-panel::-webkit-scrollbar-track {
+  background: #f2eee5;
+  border-radius: 20px;
+  margin: 12px 0;
+}
+
+.book-details-panel::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    #d4b36b 0%,
+    #b18a3b 55%,
+    #98702e 100%
+  );
+  border-radius: 20px;
+  border: 2px solid #f2eee5;
+}
+
+.book-details-panel::-webkit-scrollbar-thumb:hover {
+  background: #8f692b;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .book-details-panel {
+    max-height: 91vh;
+    max-height: 91dvh;
+  }
+}
+
+/* إخفاء شريط تمرير الصفحة أثناء فتح تفاصيل الرواية */
+body.book-details-open #global-scrollbar {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}

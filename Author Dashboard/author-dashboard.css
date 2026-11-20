@@ -3761,3 +3761,337 @@ textarea {
 .details-content > .details-top-heading {
   display: none;
 }
+
+
+
+
+
+
+
+
+/*
+  حكاية ورواية | Author Dashboard Brand Overrides
+  الهوية اللونية: الأخضر + الذهبي + البرغندي.
+  CSS فقط - دون تغيير الأبعاد أو الوظائف.
+  لا يستهدف Sidebar أو Topbar أو Footer.
+*/
+
+.author-dashboard-page {
+  --brand-green: #176B55;
+  --brand-green-dark: #104B3D;
+  --brand-green-soft: #E8F3EC;
+
+  --brand-gold: #C5A15C;
+  --brand-gold-dark: #96763D;
+  --brand-gold-soft: #FBF1E3;
+
+  --brand-burgundy: #702F3B;
+  --brand-burgundy-dark: #54212B;
+  --brand-burgundy-mid: #8A4653;
+  --brand-burgundy-soft: #F3E7E9;
+  --brand-burgundy-pale: #FAF4F4;
+}
+
+/* =========================================
+   1. تاب نظرة عامة
+   ========================================= */
+
+/* بانر الترحيب */
+.author-dashboard-page .welcome-banner {
+  background:
+    radial-gradient(circle at 86% 18%, rgba(197, 161, 92, .23), transparent 27%),
+    radial-gradient(circle at 12% 90%, rgba(112, 47, 59, .34), transparent 34%),
+    linear-gradient(115deg, #104B3D 20%, #176B55 45%, #702F3B 100%);
+}
+
+.author-dashboard-page .welcome-banner .eyebrow,
+.author-dashboard-page .welcome-banner .heading-sparkle,
+.author-dashboard-page .welcome-banner .art-star {
+  color: #E5D3A0;
+}
+
+.author-dashboard-page .welcome-banner .banner-link {
+  border-color: rgba(229, 211, 160, .72);
+  color: #F5E8C8;
+}
+
+.author-dashboard-page .welcome-banner .banner-link:hover {
+  background: rgba(197, 161, 92, .16);
+  border-color: #E5D3A0;
+}
+
+/* بطاقات الإحصائيات */
+.author-dashboard-page .stats-grid .stat-card {
+  border-color: rgba(112, 47, 59, .16);
+  box-shadow: inset 0 3px 0 rgba(112, 47, 59, .65);
+}
+
+.author-dashboard-page .stats-grid .stat-card:nth-child(even) {
+  box-shadow: inset 0 3px 0 var(--brand-green);
+}
+
+.author-dashboard-page .stats-grid .stat-card:nth-child(odd) .stat-icon {
+  color: var(--brand-burgundy);
+  background: var(--brand-burgundy-soft);
+}
+
+.author-dashboard-page .stats-grid .stat-card:nth-child(even) .stat-icon {
+  color: var(--brand-green);
+  background: var(--brand-green-soft);
+}
+
+.author-dashboard-page .stats-grid .stat-value {
+  color: var(--brand-burgundy-dark);
+}
+
+.author-dashboard-page .stats-grid .stat-card:nth-child(even) .stat-value {
+  color: var(--brand-green-dark);
+}
+
+/* عناوين الأقسام */
+.author-dashboard-page .section-kicker {
+  color: var(--brand-burgundy);
+}
+
+.author-dashboard-page .section-kicker::before,
+.author-dashboard-page .section-kicker::after {
+  background-color: var(--brand-gold);
+}
+
+/* =========================================
+   2. تاب مكتبتي
+   ========================================= */
+
+/* شريط أدوات المكتبة */
+.author-dashboard-page .library-toolbar {
+  border-color: rgba(112, 47, 59, .18);
+}
+
+.author-dashboard-page .library-toolbar input:focus,
+.author-dashboard-page .library-toolbar select:focus {
+  border-color: var(--brand-gold);
+  box-shadow: 0 0 0 3px rgba(197, 161, 92, .15);
+}
+
+/* بطاقات الروايات */
+.author-dashboard-page .books-grid .book-card {
+  border-color: rgba(112, 47, 59, .20);
+  box-shadow: inset 0 3px 0 rgba(112, 47, 59, .65);
+}
+
+.author-dashboard-page .books-grid .book-card:nth-child(even) {
+  box-shadow: inset 0 3px 0 var(--brand-green);
+}
+
+.author-dashboard-page .book-card .book-title {
+  color: var(--brand-green-dark);
+}
+
+.author-dashboard-page .book-card:nth-child(odd) .book-title {
+  color: var(--brand-burgundy-dark);
+}
+
+.author-dashboard-page .book-card .book-meta {
+  color: var(--brand-burgundy-mid);
+}
+
+.author-dashboard-page .book-card .book-cover-wrap {
+  border-color: rgba(197, 161, 92, .42);
+}
+
+/* أزرار التعامل مع الروايات */
+.author-dashboard-page .book-actions .book-action {
+  border-color: rgba(112, 47, 59, .22);
+}
+
+.author-dashboard-page .book-actions .book-action:hover {
+  color: var(--brand-burgundy);
+  border-color: var(--brand-burgundy);
+  background: var(--brand-burgundy-soft);
+}
+
+/* حالات الروايات */
+.author-dashboard-page .icon-rejected {
+  color: var(--brand-burgundy);
+  background: var(--brand-burgundy-soft);
+}
+
+.author-dashboard-page .status-rejected,
+.author-dashboard-page .book-status.status-rejected {
+  color: var(--brand-burgundy-dark);
+  background: var(--brand-burgundy-soft);
+  border-color: rgba(112, 47, 59, .18);
+}
+
+/* أسباب الرفض */
+.author-dashboard-page .rejection-note,
+.author-dashboard-page .details-rejection,
+.author-dashboard-page .edit-rejection-reason {
+  color: var(--brand-burgundy-dark);
+  background: linear-gradient(135deg, #FAF4F4, #F3E7E9);
+  border-color: rgba(112, 47, 59, .22);
+}
+
+.author-dashboard-page .rejection-note strong,
+.author-dashboard-page .details-rejection-title,
+.author-dashboard-page .details-rejection-title span {
+  color: var(--brand-burgundy);
+}
+
+/* إجراءات الحذف */
+.author-dashboard-page .book-action.delete-action,
+.author-dashboard-page .danger-btn {
+  color: var(--brand-burgundy);
+  border-color: rgba(112, 47, 59, .28);
+}
+
+.author-dashboard-page .book-action.delete-action:hover,
+.author-dashboard-page .danger-btn:hover {
+  color: #fff;
+  background: var(--brand-burgundy);
+  border-color: var(--brand-burgundy);
+}
+
+/* =========================================
+   3. تاب إضافة رواية
+   ========================================= */
+
+/* إطار قسم الإضافة */
+.author-dashboard-page .upload-section {
+  border-color: rgba(112, 47, 59, .20);
+}
+
+/* أيقونات عناوين النموذج */
+.author-dashboard-page .upload-heading-icon {
+  color: var(--brand-burgundy);
+  background: var(--brand-burgundy-soft);
+  border-color: rgba(112, 47, 59, .14);
+}
+
+.author-dashboard-page .edit-section-number {
+  color: var(--brand-burgundy);
+  background: var(--brand-burgundy-soft);
+  border-color: rgba(112, 47, 59, .16);
+}
+
+/* النموذج */
+.author-dashboard-page .upload-form {
+  border-color: rgba(197, 161, 92, .30);
+}
+
+.author-dashboard-page .upload-form .form-field label {
+  color: var(--brand-burgundy-dark);
+}
+
+/* التركيز على الحقول */
+.author-dashboard-page .form-field input:focus,
+.author-dashboard-page .form-field select:focus,
+.author-dashboard-page .form-field textarea:focus,
+.author-dashboard-page .edit-field input:focus,
+.author-dashboard-page .edit-field select:focus,
+.author-dashboard-page .edit-field textarea:focus {
+  border-color: var(--brand-gold);
+  box-shadow: 0 0 0 3px rgba(197, 161, 92, .16);
+}
+
+/* مناطق رفع الملفات */
+.author-dashboard-page .file-drop {
+  border-color: rgba(112, 47, 59, .42);
+  background: var(--brand-burgundy-pale);
+}
+
+.author-dashboard-page .file-drop:hover {
+  border-color: var(--brand-burgundy);
+  background: var(--brand-burgundy-soft);
+}
+
+.author-dashboard-page .file-drop i,
+.author-dashboard-page .file-drop svg {
+  color: var(--brand-burgundy);
+}
+
+/* التنبيهات داخل نموذج الإضافة */
+.author-dashboard-page .form-notice {
+  border-color: rgba(112, 47, 59, .22);
+  background: var(--brand-burgundy-pale);
+  color: var(--brand-burgundy-dark);
+}
+
+/* بطاقات التسعير */
+.author-dashboard-page .price-panel,
+.author-dashboard-page .edit-price-card {
+  border-color: rgba(197, 161, 92, .42);
+}
+
+.author-dashboard-page .price-currency,
+.author-dashboard-page .edit-price-currency {
+  color: var(--brand-gold-dark);
+}
+
+/* أزرار الحفظ والإضافة تظل خضراء */
+.author-dashboard-page .primary-btn,
+.author-dashboard-page .submit-book-btn,
+.author-dashboard-page .edit-save-button {
+  background-color: var(--brand-green);
+  border-color: var(--brand-green);
+}
+
+.author-dashboard-page .primary-btn:hover,
+.author-dashboard-page .submit-book-btn:hover,
+.author-dashboard-page .edit-save-button:hover {
+  background-color: var(--brand-green-dark);
+  border-color: var(--brand-green-dark);
+}
+
+/* الاختيارات */
+.author-dashboard-page .free-toggle-box,
+.author-dashboard-page .edit-free-check {
+  border-color: var(--brand-gold);
+}
+
+.author-dashboard-page .free-toggle input:checked + .free-toggle-box,
+.author-dashboard-page .edit-free-toggle input:checked + .edit-free-check {
+  background: var(--brand-gold);
+  border-color: var(--brand-gold);
+}
+
+/* أزرار الإلغاء */
+.author-dashboard-page .edit-cancel-button:hover,
+.author-dashboard-page .secondary-btn:hover {
+  border-color: var(--brand-gold);
+  color: var(--brand-gold-dark);
+}
+
+/* =========================================
+   4. التفاصيل المشتركة والنوافذ
+   ========================================= */
+
+.author-dashboard-page .details-section-line {
+  background: linear-gradient(
+    90deg,
+    var(--brand-gold),
+    var(--brand-burgundy)
+  );
+}
+
+.author-dashboard-page .details-price-box {
+  border-color: rgba(197, 161, 92, .38);
+}
+
+.author-dashboard-page .details-price-value,
+.author-dashboard-page .details-price-free {
+  color: var(--brand-green-dark);
+}
+
+.author-dashboard-page .details-category-icon,
+.author-dashboard-page .details-small-icon {
+  color: var(--brand-gold-dark);
+}
+
+/* تحديد النص */
+.author-dashboard-page ::selection {
+  color: #fff;
+  background: var(--brand-burgundy);
+}
+
+/* لا تغييرات على Sidebar أو Topbar أو Footer */

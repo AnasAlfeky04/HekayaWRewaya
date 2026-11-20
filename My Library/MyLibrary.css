@@ -1050,3 +1050,577 @@
     font-size: 10px;
     color: #6b786e;
   }
+
+
+
+
+
+  
+
+
+/* =========================================
+   HIKAYA & REWAYA
+   MY LIBRARY - BURGUNDY COLOR IDENTITY
+   Header & Footer are intentionally untouched
+========================================= */
+
+/* Burgundy color palette */
+
+.my-library-page {
+  --ml-burgundy: #702F3B;
+  --ml-burgundy-dark: #54212B;
+  --ml-burgundy-light: #8A4653;
+  --ml-burgundy-soft: #F3E7E9;
+  --ml-burgundy-pale: #FAF4F4;
+}
+
+/* =========================================
+   HERO
+========================================= */
+
+.my-library-hero {
+  border-color: rgba(197, 161, 92, 0.55);
+
+  background:
+    radial-gradient(
+      circle at 12% 15%,
+      rgba(197, 161, 92, 0.16),
+      transparent 30%
+    ),
+    linear-gradient(
+      120deg,
+      #854451,
+      #54212B
+    );
+
+  box-shadow: 0 15px 35px rgba(84, 33, 43, 0.15);
+}
+
+.my-library-hero::before {
+  border-color: rgba(229, 211, 160, 0.2);
+}
+
+.my-library-eyebrow,
+.my-library-section-eyebrow {
+  color: #DCC18A;
+}
+
+.my-library-eyebrow {
+  border-color: rgba(229, 211, 160, 0.4);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.my-library-hero h1 span {
+  color: #E5D3A0;
+}
+
+.my-library-stat {
+  border-color: rgba(229, 211, 160, 0.35);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.my-library-stat span {
+  color: #E5D3A0;
+}
+
+/* Hero decoration */
+
+.my-library-decoration-line {
+  border-color: rgba(229, 211, 160, 0.42);
+}
+
+.my-library-decoration-line::before,
+.my-library-decoration-line::after {
+  border-color: rgba(229, 211, 160, 0.3);
+}
+
+.my-library-decoration-book {
+  border-color: #E5D3A0;
+  background: linear-gradient(145deg, #E5D3A0, #B18D4D);
+  color: #54212B;
+}
+
+.my-library-decoration-star {
+  color: #E5D3A0;
+}
+
+/* =========================================
+   SECTION HEADINGS
+========================================= */
+
+.my-library-section-heading h2 {
+  color: var(--ml-burgundy);
+}
+
+.my-library-section-eyebrow {
+  color: var(--ml-burgundy-light);
+}
+
+/* Browse link */
+
+.my-library-browse-link {
+  border-color: #D8BFC3;
+  color: var(--ml-burgundy);
+  background: #FFFCFA;
+}
+
+.my-library-browse-link:hover {
+  border-color: var(--ml-burgundy-light);
+  background: var(--ml-burgundy-soft);
+}
+
+.my-library-browse-link span {
+  color: var(--ml-burgundy);
+}
+
+/* =========================================
+   SEARCH
+========================================= */
+
+.my-library-search:focus-within {
+  border-color: var(--ml-burgundy-light);
+  box-shadow: 0 0 0 3px rgba(112, 47, 59, 0.1);
+}
+
+.my-library-search > span {
+  color: var(--ml-burgundy-light);
+}
+
+.my-library-search input {
+  caret-color: var(--ml-burgundy);
+}
+
+/* =========================================
+   CUSTOM SORT DROPDOWN
+========================================= */
+
+.my-library-sort-trigger:hover,
+.my-library-sort-trigger[aria-expanded="true"] {
+  border-color: var(--ml-burgundy-light);
+  box-shadow: 0 4px 14px rgba(112, 47, 59, 0.08);
+}
+
+.my-library-sort-arrow {
+  color: var(--ml-burgundy);
+}
+
+.my-library-sort-menu {
+  border-color: #E6D5D8;
+  box-shadow: 0 12px 30px rgba(84, 33, 43, 0.12);
+}
+
+.my-library-sort-option:hover {
+  background: var(--ml-burgundy-soft);
+  color: var(--ml-burgundy-dark);
+}
+
+.my-library-sort-option.active {
+  background: linear-gradient(
+    135deg,
+    var(--ml-burgundy-light),
+    var(--ml-burgundy-dark)
+  );
+  color: #fff;
+}
+
+/* =========================================
+   BOOK CARDS
+========================================= */
+
+.my-library-book-card {
+  border-color: #E5D6D8;
+  background: linear-gradient(
+    145deg,
+    #FFFEFC,
+    #FBF5F5
+  );
+}
+
+.my-library-book-card::before {
+  background: linear-gradient(
+    to bottom,
+    #E5D3A0,
+    #B18D4D,
+    #702F3B
+  );
+}
+
+.my-library-book-card:hover {
+  border-color: #CBAEB3;
+  box-shadow: 0 12px 28px rgba(84, 33, 43, 0.09);
+}
+
+.my-library-book-title {
+  color: var(--ml-burgundy);
+}
+
+/* Book category */
+
+.my-library-book-category {
+  border-color: #E8D4D8;
+  background: #F7EBED;
+  color: var(--ml-burgundy);
+}
+
+.my-library-book-category::before {
+  background: var(--ml-burgundy-light);
+}
+
+/* Author icon */
+
+.my-library-author-icon {
+  border-color: #E5D3D8;
+  background: #F7EBED;
+  color: var(--ml-burgundy);
+}
+
+/* =========================================
+   READ BUTTON
+========================================= */
+
+.my-library-read-btn {
+  border-color: var(--ml-burgundy-dark);
+
+  background: linear-gradient(
+    135deg,
+    var(--ml-burgundy-light),
+    var(--ml-burgundy-dark)
+  );
+
+  color: #FFFAF8;
+
+  box-shadow: 0 4px 12px rgba(112, 47, 59, 0.16);
+}
+
+.my-library-read-btn:hover {
+  background: linear-gradient(
+    135deg,
+    #965663,
+    #702F3B
+  );
+
+  box-shadow: 0 7px 18px rgba(112, 47, 59, 0.22);
+}
+
+.my-library-read-btn:focus-visible,
+.my-library-browse-link:focus-visible,
+.my-library-primary-link:focus-visible {
+  outline-color: rgba(112, 47, 59, 0.4);
+}
+
+/* =========================================
+   BOOK COVERS
+========================================= */
+
+.my-library-book-cover-wrap {
+  border-color: #E3CDD1;
+  background: #F5EAEC;
+}
+
+.my-library-book-cover-placeholder {
+  color: var(--ml-burgundy);
+}
+
+/* =========================================
+   EMPTY LIBRARY
+========================================= */
+
+.my-library-empty {
+  border-color: #D8BFC3;
+  background: rgba(250, 244, 244, 0.8);
+}
+
+.my-library-empty-icon {
+  border-color: #E3C9CE;
+  background: var(--ml-burgundy-soft);
+  color: var(--ml-burgundy);
+}
+
+.my-library-empty h3 {
+  color: var(--ml-burgundy);
+}
+
+/* Browse books button */
+
+.my-library-primary-link {
+  border-color: var(--ml-burgundy-dark);
+
+  background: linear-gradient(
+    135deg,
+    var(--ml-burgundy-light),
+    var(--ml-burgundy-dark)
+  );
+
+  color: #FFFAF8;
+}
+
+.my-library-primary-link:hover {
+  background: linear-gradient(
+    135deg,
+    #965663,
+    #702F3B
+  );
+
+  filter: none;
+  box-shadow: 0 6px 16px rgba(112, 47, 59, 0.17);
+}
+
+/* =========================================
+   FOCUS & ACCESSIBILITY
+========================================= */
+
+.my-library-search input:focus {
+  outline: none;
+}
+
+.my-library-sort-trigger:focus-visible,
+.my-library-sort-option:focus-visible {
+  outline: 2px solid var(--ml-burgundy-light);
+  outline-offset: 3px;
+}
+
+
+
+/* =========================================
+   MY LIBRARY - COLOR BALANCE REFINEMENT
+   Green + Burgundy + Premium Gold
+   Header & Footer untouched
+========================================= */
+
+/* Hero: Green and Burgundy together */
+
+.my-library-hero {
+  background:
+    radial-gradient(
+      circle at 12% 15%,
+      rgba(197, 161, 92, 0.2),
+      transparent 30%
+    ),
+    linear-gradient(
+      115deg,
+      #176B55 10%,
+      #104B3D 25%,
+      #702F3B 100%
+    );
+}
+
+/* Keep the main section heading green */
+
+.my-library-section-heading h2 {
+  color: var(--ml-green);
+}
+
+/* Book titles return to green */
+
+.my-library-book-title {
+  color: var(--ml-green);
+}
+
+/* Gold details in the hero */
+
+.my-library-eyebrow,
+.my-library-section-eyebrow {
+  color: #DCC18A;
+}
+
+.my-library-stat span {
+  color: #E5D3A0;
+}
+
+.my-library-decoration-book {
+  border-color: #E5D3A0;
+  background: linear-gradient(
+    145deg,
+    #E5D3A0,
+    #B18D4D
+  );
+  color: #104B3D;
+}
+
+.my-library-decoration-star {
+  color: #E5D3A0;
+}
+
+/* Browse link: Green with clear gold details */
+
+.my-library-browse-link {
+  border-color: #C5A15C;
+  color: var(--ml-green);
+  background: #FFFCF5;
+}
+
+.my-library-browse-link:hover {
+  border-color: #B18D4D;
+  background: #F6EEDC;
+}
+
+.my-library-browse-link span {
+  color: #B18D4D;
+}
+
+/* Search: Gold focus with green identity */
+
+.my-library-search:focus-within {
+  border-color: #B18D4D;
+  box-shadow: 0 0 0 3px rgba(197, 161, 92, 0.17);
+}
+
+.my-library-search > span {
+  color: #B18D4D;
+}
+
+/* Sorting: Green active option, Burgundy hover */
+
+.my-library-sort-option:hover {
+  background: var(--ml-burgundy-soft);
+  color: var(--ml-burgundy-dark);
+}
+
+.my-library-sort-option.active {
+  background: linear-gradient(
+    135deg,
+    #176B55,
+    #104B3D
+  );
+  color: #fff;
+}
+
+.my-library-sort-arrow {
+  color: #B18D4D;
+}
+
+/* Book cards: Gold and Burgundy side decoration */
+
+.my-library-book-card {
+  border-color: #E5DCC9;
+  background: linear-gradient(
+    145deg,
+    #FFFEFC,
+    #FBF8F1
+  );
+}
+
+.my-library-book-card::before {
+  background: linear-gradient(
+    to bottom,
+    #E5D3A0 0%,
+    #C5A15C 45%,
+    #702F3B 100%
+  );
+}
+
+.my-library-book-card:hover {
+  border-color: #C5A15C;
+  box-shadow: 0 12px 28px rgba(29, 49, 35, 0.09);
+}
+
+/* Category: Burgundy with golden detail */
+
+.my-library-book-category {
+  border-color: #E5D3A0;
+  background: #F7EBED;
+  color: #702F3B;
+}
+
+.my-library-book-category::before {
+  background: #C5A15C;
+}
+
+/* Author icon: Premium gold */
+
+.my-library-author-icon {
+  border-color: #DCC58F;
+  background: #F8F0DC;
+  color: #96763D;
+}
+
+/* Read button: Gold is back as a prominent color */
+
+.my-library-read-btn {
+  border-color: #B18D4D;
+  background: linear-gradient(
+    135deg,
+    #E5D3A0,
+    #C5A15C
+  );
+  color: #104B3D;
+  box-shadow: 0 4px 13px rgba(163, 125, 45, 0.2);
+}
+
+.my-library-read-btn:hover {
+  border-color: #96763D;
+  background: linear-gradient(
+    135deg,
+    #F0DFAF,
+    #D0AF60
+  );
+  color: #104B3D;
+  box-shadow: 0 7px 18px rgba(163, 125, 45, 0.25);
+}
+
+/* Book covers */
+
+.my-library-book-cover-wrap {
+  border-color: #DCC58F;
+  background: #F5F0E3;
+}
+
+.my-library-book-cover-placeholder {
+  color: #96763D;
+}
+
+/* Empty library: Gold icon and green heading */
+
+.my-library-empty {
+  border-color: #D8C69C;
+  background: rgba(255, 254, 250, 0.8);
+}
+
+.my-library-empty-icon {
+  border-color: #DCC58F;
+  background: #F8F0DC;
+  color: #96763D;
+}
+
+.my-library-empty h3 {
+  color: var(--ml-green);
+}
+
+/* Empty state button: Gold */
+
+.my-library-primary-link {
+  border-color: #B18D4D;
+  background: linear-gradient(
+    135deg,
+    #E5D3A0,
+    #C5A15C
+  );
+  color: #104B3D;
+}
+
+.my-library-primary-link:hover {
+  background: linear-gradient(
+    135deg,
+    #F0DFAF,
+    #D0AF60
+  );
+  color: #104B3D;
+  box-shadow: 0 6px 16px rgba(163, 125, 45, 0.2);
+}
+
+/* Gold focus details */
+
+.my-library-search input {
+  caret-color: #176B55;
+}
+
+.my-library-sort-trigger:focus-visible,
+.my-library-sort-option:focus-visible {
+  outline-color: #C5A15C;
+}
+
+.my-library-read-btn:focus-visible,
+.my-library-browse-link:focus-visible,
+.my-library-primary-link:focus-visible {
+  outline-color: rgba(197, 161, 92, 0.65);
+}

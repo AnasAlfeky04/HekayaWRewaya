@@ -94,11 +94,13 @@ function openBookDetails(book) {
 
   bookDetailsModal.hidden = false;
   document.body.style.overflow = "hidden";
+  document.body.classList.add("book-details-open");
 }
 
 function closeBookDetails() {
   bookDetailsModal.hidden = true;
   document.body.style.overflow = "";
+  document.body.classList.remove("book-details-open");
   selectedBookForDetails = null;
 }
 

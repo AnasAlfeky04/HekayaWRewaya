@@ -167,7 +167,40 @@ $("nextBtn").disabled =
 }
 
 function goToPage(n){if(!pdfDoc)return;currentPage=Math.max(1,Math.min(pdfDoc.numPages,Math.floor(Number(n)||1)));renderSpread();}
-function toggleTheme(){document.body.classList.toggle("dark");try{localStorage.setItem("hikaya-reader-theme",document.body.classList.contains("dark")?"dark":"light");}catch(_){} }
+
+// تحديث أيقونة الوضع الليلي والنهاري
+function updateThemeButton() {
+  const btn = $("themeBtn");
+  if (!btn) return;
+
+  const isDark = document.body.classList.contains("dark");
+
+  btn.innerHTML = isDark
+  ? `<svg viewBox="0 0 24 24">
+       <circle cx="12" cy="12" r="4"/>
+       <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/>
+     </svg>`
+  : `<svg viewBox="0 0 24 24">
+       <path d="M20.5 15.2A8.5 8.5 0 0 1 8.8 3.5 8.5 8.5 0 1 0 20.5 15.2Z"/>
+     </svg>`;
+
+  btn.title = isDark ? "الوضع النهاري" : "الوضع الليلي";
+  btn.setAttribute("aria-label", isDark ? "تبديل إلى الوضع النهاري" : "تبديل إلى الوضع الليلي");
+}
+
+// تبديل الوضع
+function toggleTheme() {
+  document.body.classList.toggle("dark");
+
+  try {
+    localStorage.setItem(
+      "hikaya-reader-theme",
+      document.body.classList.contains("dark") ? "dark" : "light"
+    );
+  } catch (_) {}
+
+  updateThemeButton();
+}
 
 function addTextRangeHighlights(div, start, end, layer) {
   const walker = document.createTreeWalker(
@@ -440,4 +473,25 @@ document.querySelectorAll(".page-sheet").forEach((sheet) => {
 let resizeTimer;
 window.addEventListener("resize",()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(renderSpread,160);});
 try{if(localStorage.getItem("hikaya-reader-theme")==="dark")document.body.classList.add("dark");}catch(_){}
+
+// تغيير أيقونة Fullscreen حسب حالة الشاشة
+document.addEventListener("fullscreenchange", () => {
+  const btn = $("fullscreenBtn");
+  if (!btn) return;
+
+  const isFullscreen = !!document.fullscreenElement;
+
+  btn.innerHTML = isFullscreen
+    ? `<svg viewBox="0 0 24 24">
+         <path d="M8 3v5H3M16 3v5h5M3 16h5v5M21 16h-5v5"/>
+       </svg>`
+    : `<svg viewBox="0 0 24 24">
+         <path d="M8 3H3v5M16 3h5v5M3 16v5h5M21 16v5h-5"/>
+       </svg>`;
+
+  btn.title = isFullscreen ? "الخروج من ملء الشاشة" : "ملء الشاشة";
+  btn.setAttribute("aria-label", btn.title);
+});
+
+
 initReader();

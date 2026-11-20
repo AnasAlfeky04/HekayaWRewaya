@@ -3903,3 +3903,758 @@
 .user-details-dialog::-webkit-scrollbar-thumb:hover {
   background: #92702d;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   حكاية ورواية | BURGUNDY BRAND IDENTITY
+   Green + Gold + Burgundy
+   CSS Override — Admin Dashboard
+   ========================================================= */
+
+:root {
+  --burgundy: #702f3b;
+  --burgundy-dark: #54212b;
+  --burgundy-light: #8a4653;
+  --burgundy-soft: #f3e7e9;
+  --burgundy-pale: #faf4f4;
+  --burgundy-line: #e8d5d9;
+
+  --gold-soft: #f8f1e5;
+  --gold-line: #e8d8b9;
+}
+
+/* =========================================
+   1. SIDEBAR & NAVIGATION
+========================================= */
+
+/* نحافظ على الأخضر كلون أساسي للسايدبار */
+.sidebar {
+  background: linear-gradient(
+    160deg,
+    #123d32 0%,
+    #174f40 65%,
+    #54212b 150%
+  );
+}
+
+.nav-item {
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.nav-item:hover {
+  background: rgba(138, 70, 83, 0.22);
+  color: #fff;
+}
+
+.nav-item.active {
+  background: linear-gradient(
+    100deg,
+    rgba(112, 47, 59, 0.95),
+    rgba(84, 33, 43, 0.82)
+  );
+  color: #fff;
+  box-shadow:
+    inset 3px 0 0 #d5b56f,
+    0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+.nav-item.active .nav-icon,
+.nav-item.active i {
+  color: #e5c987;
+}
+
+/* =========================================
+   2. TOPBAR & GENERAL ACCENTS
+========================================= */
+
+.breadcrumb span:last-child,
+.breadcrumb strong {
+  color: var(--burgundy);
+}
+
+.admin-chip {
+  border-color: var(--burgundy-line);
+  background: var(--burgundy-pale);
+  color: var(--burgundy);
+}
+
+.back-link:hover {
+  color: var(--burgundy);
+}
+
+/* =========================================
+   3. BUTTONS
+========================================= */
+
+.btn-primary {
+  background: linear-gradient(
+    135deg,
+    var(--green2),
+    var(--green)
+  );
+  border-color: var(--green);
+  box-shadow: 0 4px 12px rgba(23, 79, 64, 0.13);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(
+    135deg,
+    var(--burgundy-light),
+    var(--burgundy-dark)
+  );
+  border-color: var(--burgundy);
+  box-shadow: 0 5px 15px rgba(112, 47, 59, 0.2);
+}
+
+.btn-light:hover {
+  color: var(--burgundy);
+  border-color: var(--burgundy-line);
+  background: var(--burgundy-pale);
+}
+
+.text-btn {
+  color: var(--burgundy);
+}
+
+.text-btn:hover {
+  color: var(--burgundy-dark);
+}
+
+/* =========================================
+   4. WELCOME BANNER
+========================================= */
+
+.welcome-banner {
+  background: linear-gradient(
+    115deg,
+    #123d32 15%,
+    #174f40 32%,
+    #702f3b 100%
+  );
+  box-shadow: 0 12px 30px rgba(84, 33, 43, 0.12);
+}
+
+.welcome-banner .eyebrow {
+  color: #e5c987;
+}
+
+.welcome-banner .banner-meta {
+  border-color: rgba(229, 201, 135, 0.28);
+}
+
+/* =========================================
+   5. SECTION HEADINGS
+========================================= */
+
+.section-heading h2,
+.surface-heading h2 {
+  color: var(--ink);
+}
+
+.section-heading h2::after {
+  background: linear-gradient(
+    90deg,
+    var(--burgundy),
+    var(--gold)
+  );
+}
+
+/* =========================================
+   6. STATISTICS CARDS
+========================================= */
+
+.stat-card {
+  border-color: #e9e4df;
+  box-shadow: 0 5px 18px rgba(84, 33, 43, 0.035);
+}
+
+.stat-card:hover {
+  border-color: var(--burgundy-line);
+  box-shadow: 0 9px 24px rgba(112, 47, 59, 0.08);
+}
+
+.stat-icon.purple {
+  background: var(--burgundy-soft);
+  color: var(--burgundy);
+}
+
+.stat-icon.amber {
+  background: var(--gold-soft);
+  color: #98743b;
+}
+
+/* =========================================
+   7. QUICK ACTIONS
+========================================= */
+
+.quick-action {
+  border-color: #e9e3df;
+}
+
+.quick-action:hover {
+  border-color: var(--burgundy-line);
+  background: var(--burgundy-pale);
+  box-shadow: 0 7px 20px rgba(112, 47, 59, 0.07);
+}
+
+.quick-icon {
+  background: var(--burgundy-soft);
+  color: var(--burgundy);
+}
+
+.quick-action:hover .quick-icon {
+  background: var(--burgundy);
+  color: #fff;
+}
+
+/* =========================================
+   8. CONTENT SURFACES & RECENT ITEMS
+========================================= */
+
+.surface {
+  border-color: #e9e3df;
+}
+
+.surface-heading {
+  border-bottom-color: #eee5e4;
+}
+
+.recent-row:hover {
+  background: var(--burgundy-pale);
+}
+
+.mini-cover {
+  border-color: var(--burgundy-line);
+}
+
+/* =========================================
+   9. BOOK CARDS
+========================================= */
+
+.book-card {
+  border-color: #e9e3df;
+}
+
+.book-card:hover {
+  border-color: var(--burgundy-line);
+  box-shadow: 0 10px 26px rgba(112, 47, 59, 0.09);
+}
+
+.book-title {
+  color: var(--burgundy-dark);
+}
+
+.book-card .book-actions .btn-light:hover {
+  background: var(--burgundy-soft);
+  color: var(--burgundy);
+  border-color: var(--burgundy-line);
+}
+
+/* =========================================
+   10. TABS & COUNTERS
+========================================= */
+
+.count-pill {
+  background: var(--burgundy-soft);
+  color: var(--burgundy);
+  border-color: var(--burgundy-line);
+}
+
+/* =========================================
+   11. FILTERS & SEARCH
+========================================= */
+
+.search-box:focus-within {
+  border-color: var(--burgundy-light);
+  box-shadow: 0 0 0 3px rgba(112, 47, 59, 0.09);
+}
+
+.filter-select:focus {
+  border-color: var(--burgundy-light);
+  outline-color: rgba(112, 47, 59, 0.15);
+}
+
+/* =========================================
+   12. TABLES
+========================================= */
+
+.data-table th {
+  background: #f8f3f3;
+  color: var(--burgundy-dark);
+}
+
+.data-table tbody tr:hover td {
+  background: var(--burgundy-pale);
+}
+
+.table-action:hover {
+  border-color: var(--burgundy-line);
+  background: var(--burgundy-soft);
+  color: var(--burgundy);
+}
+
+/* =========================================
+   13. STATUS COLORS
+========================================= */
+
+.status-rejected {
+  border-color: #e6cbd1;
+  background: var(--burgundy-soft);
+  color: var(--burgundy);
+}
+
+.role-admin {
+  border-color: var(--burgundy-line);
+  background: var(--burgundy-soft);
+  color: var(--burgundy);
+}
+
+/* =========================================
+   14. CHARTS & STATISTICS
+========================================= */
+
+.bar-fill.rejected {
+  background: linear-gradient(
+    90deg,
+    var(--burgundy-light),
+    var(--burgundy-dark)
+  );
+}
+
+.legend-rejected {
+  color: var(--burgundy);
+}
+
+/* =========================================
+   15. REVISION CARDS
+========================================= */
+
+.revision-card {
+  border-color: #e9dfe0;
+}
+
+.revision-card:hover {
+  border-color: var(--burgundy-light);
+  box-shadow: 0 7px 20px rgba(112, 47, 59, 0.09);
+}
+
+.revision-open-hint {
+  color: var(--burgundy);
+}
+
+.revision-count {
+  background: var(--burgundy-soft);
+  color: var(--burgundy);
+  border: 1px solid var(--burgundy-line);
+}
+
+/* النسخة المقترحة */
+.revision-version.proposed {
+  border-color: var(--burgundy-line);
+  background: var(--burgundy-pale);
+}
+
+.revision-version.proposed h4 {
+  color: var(--burgundy);
+}
+
+/* حالة الملف */
+.revision-file-state {
+  background: #f0f5ef;
+  color: var(--green2);
+}
+
+/* سبب الرفض */
+.revision-rejection-reason {
+  border-color: var(--burgundy-line);
+  background: var(--burgundy-pale);
+  color: var(--burgundy);
+}
+
+/* =========================================
+   16. REVISION COMPARISON
+========================================= */
+
+.revision-details-header {
+  border-bottom-color: var(--burgundy-line);
+}
+
+.revision-details-header h2 {
+  color: var(--burgundy-dark);
+}
+
+.revision-legend-dot.proposed {
+  background: var(--burgundy);
+}
+
+.revision-comparison-table-wrap {
+  border-color: var(--burgundy-line);
+}
+
+.revision-comparison-table th {
+  background: var(--burgundy-soft);
+  color: var(--burgundy-dark);
+}
+
+.revision-comparison-table th + th,
+.revision-comparison-table td + td {
+  border-right-color: var(--burgundy-line);
+}
+
+.revision-comparison-table tbody tr:nth-child(even) td {
+  background: #fcf8f8;
+}
+
+/* إبراز التعديلات الجديدة */
+.revision-comparison-table tbody tr.revision-row-changed td {
+  background: #faf0ed !important;
+}
+
+.revision-comparison-table tbody tr.revision-row-changed td:first-child {
+  border-right-color: var(--gold);
+}
+
+.revision-comparison-table tbody tr.revision-row-changed td:last-child {
+  border-left-color: var(--gold);
+}
+
+.revision-comparison-table tbody tr.revision-row-changed .revision-field-label {
+  color: var(--burgundy);
+}
+
+/* =========================================
+   17. REVISION MODALS
+========================================= */
+
+.revision-modal-dialog,
+.revision-details-dialog {
+  border-color: var(--burgundy-line);
+}
+
+.revision-modal-dialog h2 {
+  color: var(--burgundy-dark);
+}
+
+.revision-modal-dialog textarea:focus {
+  outline-color: var(--burgundy);
+}
+
+#revisionDetailsContent {
+  scrollbar-color: var(--burgundy-light) #f3e9e9;
+}
+
+#revisionDetailsContent::-webkit-scrollbar-track {
+  background: #f3e9e9;
+}
+
+#revisionDetailsContent::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    #a96a76,
+    var(--burgundy-dark)
+  );
+  border-color: #f3e9e9;
+}
+
+#revisionDetailsContent::-webkit-scrollbar-thumb:hover {
+  background: var(--gold);
+}
+
+/* =========================================
+   18. STATUS FILTER DROPDOWN
+========================================= */
+
+.status-filter-trigger {
+  border-color: #e5d9d9;
+  color: var(--burgundy-dark);
+}
+
+.status-filter-trigger:hover,
+.status-filter-dropdown.open .status-filter-trigger {
+  border-color: var(--burgundy-light);
+  box-shadow: 0 0 0 3px rgba(112, 47, 59, 0.09);
+}
+
+.status-filter-arrow {
+  color: var(--burgundy);
+}
+
+.status-filter-menu {
+  background: linear-gradient(
+    145deg,
+    var(--burgundy),
+    var(--burgundy-dark)
+  );
+  border-color: rgba(213, 181, 111, 0.5);
+}
+
+.status-filter-option.active {
+  background: rgba(229, 201, 135, 0.16);
+  border-color: rgba(229, 201, 135, 0.55);
+  color: #f0d69d;
+}
+
+/* =========================================
+   19. ROLE FILTER DROPDOWN
+========================================= */
+
+.role-filter-trigger {
+  border-color: #e5d9d9;
+  color: var(--burgundy-dark);
+}
+
+.role-filter-trigger:hover,
+.role-filter-dropdown.open .role-filter-trigger {
+  border-color: var(--burgundy-light);
+  box-shadow: 0 0 0 3px rgba(112, 47, 59, 0.09);
+}
+
+.role-filter-arrow {
+  color: var(--burgundy);
+}
+
+.role-filter-option:hover {
+  background: var(--burgundy-pale);
+  border-color: var(--burgundy-line);
+  color: var(--burgundy);
+}
+
+.role-filter-option.active {
+  background: var(--burgundy-soft);
+  border-color: var(--burgundy-line);
+  color: var(--burgundy-dark);
+}
+
+.role-option-check {
+  background: var(--burgundy);
+}
+
+/* =========================================
+   20. USERS TABLE
+========================================= */
+
+#panel-users .table-wrap {
+  border-color: #e9dfe0;
+}
+
+#panel-users .data-table th {
+  background: #f8f1f2;
+  color: var(--burgundy-dark);
+}
+
+#panel-users .data-table tbody tr:hover td {
+  background: #fcf7f7;
+}
+
+.user-table-profile {
+  border-color: #eee3e4;
+}
+
+#panel-users .data-table tbody tr:hover .user-table-profile {
+  border-color: var(--burgundy-line);
+  background: var(--burgundy-pale);
+}
+
+.user-table-name {
+  color: var(--burgundy-dark);
+}
+
+.user-table-stat-value {
+  color: var(--burgundy);
+}
+
+#panel-users .table-action {
+  border-color: var(--burgundy-line);
+  background: var(--burgundy-pale);
+  color: var(--burgundy);
+}
+
+#panel-users .table-action:hover {
+  border-color: var(--gold);
+  background: var(--gold-soft);
+  color: #8a682e;
+  box-shadow: 0 3px 10px rgba(196, 154, 74, 0.1);
+}
+
+/* =========================================
+   21. USER DETAILS MODAL
+========================================= */
+
+.user-details-dialog {
+  scrollbar-color: var(--burgundy-light) #f3e9e9;
+}
+
+.user-details-dialog::-webkit-scrollbar-track {
+  background: #f3e9e9;
+}
+
+.user-details-dialog::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    #b47b85,
+    var(--burgundy)
+  );
+  border-color: #f3e9e9;
+}
+
+.user-details-dialog::-webkit-scrollbar-thumb:hover {
+  background: var(--gold);
+}
+
+/* =========================================
+   22. USER LIBRARY TABS
+========================================= */
+
+.user-library-tabs {
+  background: #f8f2f3;
+  border-color: var(--burgundy-line);
+}
+
+.user-library-tab:hover {
+  color: var(--burgundy);
+  background: #fff;
+}
+
+.user-library-tab.active {
+  color: var(--burgundy);
+  border-color: var(--burgundy-line);
+  box-shadow: 0 3px 12px rgba(112, 47, 59, 0.08);
+}
+
+.user-library-tab span {
+  background: var(--burgundy-soft);
+  color: var(--burgundy);
+}
+
+.user-library-tab.active span {
+  background: var(--burgundy);
+  color: #fff;
+}
+
+.user-library-tab:focus-visible {
+  outline-color: rgba(112, 47, 59, 0.3);
+}
+
+/* =========================================
+   23. USER LIBRARY BOOK CARDS
+========================================= */
+
+.user-library-book-card {
+  border-color: #eadfe0;
+}
+
+.user-library-book-card:hover {
+  border-color: var(--burgundy-light);
+  box-shadow: 0 10px 25px rgba(112, 47, 59, 0.09);
+}
+
+.user-library-book-card .book-title {
+  color: var(--burgundy-dark);
+}
+
+.user-library-book-category {
+  background: #faf5f5;
+  border-color: #eee3e4;
+}
+
+.user-library-book-category strong {
+  color: var(--burgundy);
+}
+
+.user-library-book-price {
+  border-color: var(--burgundy-line);
+  background: var(--burgundy-soft);
+  color: var(--burgundy);
+}
+
+/* =========================================
+   24. CLICKABLE USER ROWS
+========================================= */
+
+.user-clickable-row:hover {
+  background: var(--burgundy-pale);
+}
+
+.user-clickable-row:focus-visible {
+  outline-color: var(--burgundy);
+}
+
+.user-clickable-row:hover .user-table-name {
+  color: var(--burgundy);
+}
+
+/* =========================================
+   25. MODALS & NOTIFICATIONS
+========================================= */
+
+.confirm-dialog,
+.user-details-dialog,
+.book-details-dialog,
+.rejection-dialog {
+  border-color: var(--burgundy-line);
+}
+
+.modal-symbol {
+  background: var(--burgundy-soft);
+  color: var(--burgundy);
+}
+
+.book-details-eyebrow,
+.user-modal-eyebrow {
+  color: var(--burgundy);
+}
+
+.book-details-title,
+.user-modal-header h2 {
+  color: var(--burgundy-dark);
+}
+
+.notice.info {
+  border-color: var(--burgundy-line);
+  background: var(--burgundy-pale);
+  color: var(--burgundy);
+}
+
+/* =========================================
+   26. FOCUS STATES
+========================================= */
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline-color: var(--burgundy-light);
+}
+
+/* =========================================
+   27. GOLD DETAILS
+========================================= */
+
+.revision-details-actions .btn-primary,
+.revision-card-actions .btn-primary {
+  box-shadow: 0 4px 12px rgba(23, 79, 64, 0.13);
+}
+
+.revision-details-header .revision-details-eyebrow {
+  color: var(--gold);
+}
+
+/* =========================================
+   END — BURGUNDY BRAND IDENTITY
+========================================= */

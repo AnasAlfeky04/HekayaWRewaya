@@ -2662,7 +2662,7 @@ footer small {
 .latest-releases .section-heading p {
   max-width: 500px;
   margin: 8px auto 0;
-  color: #85847d;
+  color: var(--green);
   font-size: 13px;
   font-weight: 400;
   line-height: 2;
@@ -3053,21 +3053,27 @@ footer small {
   /* ==================================================
      5. LATEST RELEASES
      ================================================== */
-  
+
+
   .latest-releases {
     background:
-      linear-gradient(
-        135deg,
-        white 30%,
-        rgba(112, 47, 59, 0.6) 60%,
-        rgba(84, 33, 43, 0.8) 80%
-      );
+      radial-gradient(
+        ellipse 50% 50% at 50% 50%,
+        rgba(105, 35, 57, 0.95) 0%,
+        rgba(125, 57, 77, 0.82) 25%,
+        rgba(157, 105, 117, 0.48) 40%,
+        rgba(220, 196, 196, 0.20) 60%,
+        rgba(248, 246, 240, 0) 100%
+      ),
+      #f8f6f0;
   }
+
+
   
 
   
   .latest-releases .section-heading .section-tag {
-    color: #e8d3a5;
+    color: var(--burgundy);
     border-color: rgba(197, 161, 92, 0.55);
     background: rgba(255, 255, 255, 0.07);
   }
@@ -3153,8 +3159,8 @@ footer small {
     background:
       linear-gradient(
         120deg,
-        #104b3d 10%,
-        #123d32 30%,
+        #104b3d 5%,
+        #123d32 20%,
         #702F3B 100%
       );
   }
@@ -3197,3 +3203,43 @@ footer small {
      END OF THREE-COLOR IDENTITY
      ================================================== */
   
+
+
+
+
+/* =========================================
+   HOME STATS - SINGLE FLOATING LOGO
+========================================= */
+
+.stats-floating-logo:not(:first-child) {
+  display: none !important;
+}
+
+.stats-floating-logo:first-child {
+  position: absolute !important;
+  top: 18px !important;
+  left: 60px !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: 175px;
+  height: 175px;
+  animation: none !important;
+  will-change: transform;
+}
+
+@keyframes statsLogoGentleFloat {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) rotate(-1deg);
+  }
+
+  50% {
+    transform: translate3d(0, -4px, 0) rotate(1deg);
+  }
+}
+
+@media (max-width: 600px) {
+  .stats-floating-logo:first-child {
+    width: 115px;
+    height: 115px;
+  }
+}

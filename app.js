@@ -1508,258 +1508,44 @@ document.querySelectorAll('.navbar nav a[href^="#"]').forEach(function (link) {
 });
 
 
-/* =========================================
-   FLOATING LOGOS - COLLISION PHYSICS
-========================================= */
 
 function initFloatingStatsLogos() {
   const container = document.querySelector(".stats-floating-logos");
 
   if (!container) return;
 
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    return;
-  }
+  const logos = container.querySelectorAll(".stats-floating-logo");
 
-  const elements = [
-    ...container.querySelectorAll(".stats-floating-logo")
-  ];
-
-  const speed = 85;
-  const separation = 18;
-  const items = [];
-
-  let animationFrame;
-  let lastTime = 0;
-  let isVisible = true;
-
-  function getBounds(item) {
-    return {
-      maxX: Math.max(0, container.clientWidth - item.width),
-      maxY: Math.max(0, container.clientHeight - item.height)
-    };
-  }
-
-  // إنشاء أماكن بداية عشوائية ومتباعدة
-  function createStartingPositions() {
-    items.forEach((item, index) => {
-      const bounds = getBounds(item);
-      let placed = false;
-
-      for (let attempt = 0; attempt < 300; attempt++) {
-        const x = Math.random() * bounds.maxX;
-        const y = Math.random() * bounds.maxY;
-
-        const centerX = x + item.width / 2;
-        const centerY = y + item.height / 2;
-
-        const overlaps = items.slice(0, index).some(other => {
-          const otherX = other.x + other.width / 2;
-          const otherY = other.y + other.height / 2;
-
-          const distance = Math.hypot(
-            centerX - otherX,
-            centerY - otherY
-          );
-
-          return distance < item.radius + other.radius + separation;
-        });
-
-        if (!overlaps) {
-          item.x = x;
-          item.y = y;
-          placed = true;
-          break;
-        }
-      }
-
-      if (!placed) {
-        item.x = Math.random() * bounds.maxX;
-        item.y = Math.random() * bounds.maxY;
-      }
-
-      const angle = Math.random() * Math.PI * 2;
-      item.vx = Math.cos(angle) * item.speed;
-      item.vy = Math.sin(angle) * item.speed;
-    });
-  }
-
-  elements.forEach(element => {
-    const width = element.offsetWidth;
-    const height = element.offsetHeight;
-
-    items.push({
-      element,
-      width,
-      height,
-      radius: Math.max(width, height) / 2,
-      speed: speed * (0.8 + Math.random() * 0.4),
-      x: 0,
-      y: 0,
-      vx: 0,
-      vy: 0,
-      rotation: Math.random() * 360,
-      rotationSpeed: (Math.random() > 0.5 ? 1 : -1) *
-        (35 + Math.random() * 45)
-    });
+  logos.forEach((logo, index) => {
+    if (index !== 0) logo.remove();
   });
 
-  createStartingPositions();
+  const logo = logos[0];
+  if (!logo) return;
 
-  // ارتداد اللوجوهات عن بعضها
-  function resolveCollisions() {
-    for (let i = 0; i < items.length; i++) {
-      for (let j = i + 1; j < items.length; j++) {
-        const a = items[i];
-        const b = items[j];
-
-        const ax = a.x + a.width / 2;
-        const ay = a.y + a.height / 2;
-        const bx = b.x + b.width / 2;
-        const by = b.y + b.height / 2;
-
-        let dx = bx - ax;
-        let dy = by - ay;
-
-        let distance = Math.hypot(dx, dy);
-
-        const minDistance = a.radius + b.radius + separation;
-
-        if (distance >= minDistance) continue;
-
-        if (distance === 0) {
-          dx = 1;
-          dy = 0;
-          distance = 1;
-        }
-
-        const nx = dx / distance;
-        const ny = dy / distance;
-
-        // إبعاد اللوجوهات عن بعضها
-        const overlap = minDistance - distance;
-        const totalMass = a.radius + b.radius;
-
-        a.x -= nx * overlap * (b.radius / totalMass);
-        a.y -= ny * overlap * (b.radius / totalMass);
-
-        b.x += nx * overlap * (a.radius / totalMass);
-        b.y += ny * overlap * (a.radius / totalMass);
-
-        // حساب سرعة الاقتراب على محور التصادم
-        const relativeVelocity =
-          (b.vx - a.vx) * nx +
-          (b.vy - a.vy) * ny;
-
-        if (relativeVelocity < 0) {
-          const impulse = -relativeVelocity * 0.95;
-
-          a.vx -= impulse * nx;
-          a.vy -= impulse * ny;
-
-          b.vx += impulse * nx;
-          b.vy += impulse * ny;
-        }
-      }
-    }
-  }
-
-  function updateMovement(delta) {
-    items.forEach(item => {
-      item.x += item.vx * delta;
-      item.y += item.vy * delta;
-
-      const bounds = getBounds(item);
-
-      if (item.x < 0) {
-        item.x = 0;
-        item.vx = Math.abs(item.vx);
-      } else if (item.x > bounds.maxX) {
-        item.x = bounds.maxX;
-        item.vx = -Math.abs(item.vx);
-      }
-
-      if (item.y < 0) {
-        item.y = 0;
-        item.vy = Math.abs(item.vy);
-      } else if (item.y > bounds.maxY) {
-        item.y = bounds.maxY;
-        item.vy = -Math.abs(item.vy);
-      }
-    });
-
-    resolveCollisions();
-
-    // التأكد من عدم خروج أي لوجو بعد التصادم
-    items.forEach(item => {
-      const bounds = getBounds(item);
-
-      item.x = Math.max(0, Math.min(item.x, bounds.maxX));
-      item.y = Math.max(0, Math.min(item.y, bounds.maxY));
-
-      // الحفاظ على سرعة الحركة
-      const currentSpeed = Math.hypot(item.vx, item.vy);
-
-      if (currentSpeed > 0) {
-        item.vx = item.vx / currentSpeed * item.speed;
-        item.vy = item.vy / currentSpeed * item.speed;
-      }
-
-      item.rotation += item.rotationSpeed * (delta * 1);
-    });
-  }
+  let startTime = null;
 
   function animate(time) {
-    if (!isVisible) return;
+    if (!startTime) startTime = time;
 
-    if (!lastTime) lastTime = time;
+    const elapsed = (time - startTime) / 1000;
 
-    const delta = Math.min((time - lastTime) / 1000, 0.025);
-    lastTime = time;
+    const x = Math.sin(elapsed * 0.7) * 5;
+    const y = Math.sin(elapsed * 0.9 + 1.2) * 5;
+    const rotation = Math.sin(elapsed * 0.6) * 2;
 
-    updateMovement(delta);
+    logo.style.transform = `
+      translate3d(${x}px, ${y}px, 0)
+      rotate(${rotation}deg)
+    `;
 
-    items.forEach(item => {
-      item.element.style.transform =
-        `translate3d(${item.x}px, ${item.y}px, 0) rotate(${item.rotation}deg)`;
-    });
-
-    animationFrame = requestAnimationFrame(animate);
+    requestAnimationFrame(animate);
   }
 
-  function start() {
-    lastTime = 0;
-    isVisible = true;
-    cancelAnimationFrame(animationFrame);
-    animationFrame = requestAnimationFrame(animate);
-  }
-
-  function stop() {
-    isVisible = false;
-    cancelAnimationFrame(animationFrame);
-  }
-
-  const resizeObserver = new ResizeObserver(() => {
-    items.forEach(item => {
-      item.width = item.element.offsetWidth;
-      item.height = item.element.offsetHeight;
-      item.radius = Math.max(item.width, item.height) / 2;
-
-      const bounds = getBounds(item);
-      item.x = Math.min(item.x, bounds.maxX);
-      item.y = Math.min(item.y, bounds.maxY);
-    });
-  });
-
-  resizeObserver.observe(container);
-
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden) stop();
-    else start();
-  });
-
-  start();
+  requestAnimationFrame(animate);
 }
+
+
 
 initFloatingStatsLogos();
 

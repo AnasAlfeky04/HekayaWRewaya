@@ -1224,3 +1224,340 @@ body.dark .text-layer mark {
   }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   حكاية ورواية | Reader Burgundy Identity
+   Light Mode + Dark Mode
+   إضافة مستقلة - يمكن حذفها بالكامل للتراجع
+   ========================================================= */
+
+/* 1. درجات البرغندي */
+:root {
+  --reader-burgundy: #702f3b;
+  --reader-burgundy-dark: #54212b;
+  --reader-burgundy-light: #8a4653;
+
+  --reader-burgundy-soft: #f5ebed;
+  --reader-burgundy-pale: #fbf6f7;
+  --reader-burgundy-line: #e9d9dc;
+
+  --reader-gold-soft: #f8f1e5;
+}
+
+/* =========================================================
+   2. Light Mode
+   ========================================================= */
+
+/* التركيز */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline-color: var(--reader-burgundy-light);
+}
+
+/* الشريط العلوي */
+.brand-mark {
+  border-color: #8a465380;
+}
+
+.icon-btn:hover {
+  border-color: #8a4653a0;
+  color: var(--gold-2);
+}
+
+.back-link {
+  border-color: #8a465380;
+}
+
+/* شريط أدوات القراءة */
+.toolbar {
+  border-bottom-color: var(--reader-burgundy-line);
+}
+
+.tool-btn {
+  color: var(--reader-burgundy);
+}
+
+.tool-btn:hover {
+  color: var(--reader-burgundy-dark);
+  background: var(--reader-burgundy-soft);
+}
+
+.mini-btn {
+  color: var(--reader-burgundy);
+  border-color: var(--reader-burgundy-line);
+}
+
+.mini-btn:hover {
+  color: var(--reader-burgundy-dark);
+  background: var(--reader-burgundy-soft);
+  border-color: var(--reader-burgundy-light);
+}
+
+/* حقل الانتقال بين الصفحات */
+.page-jump input {
+  border-color: var(--reader-burgundy-line);
+}
+
+.page-jump input:focus {
+  border-color: var(--reader-burgundy-light);
+  box-shadow: 0 0 0 3px #702f3b12;
+}
+
+/* أزرار تقليب الصفحات */
+.turn-btn {
+  color: var(--reader-burgundy);
+  border-color: var(--reader-burgundy-line);
+}
+
+.turn-btn:hover:not(:disabled) {
+  color: #fff;
+  background: var(--reader-burgundy);
+  border-color: var(--reader-burgundy);
+}
+
+/* مؤشر التحميل */
+.spinner {
+  border-color: #702f3b25;
+  border-top-color: var(--reader-burgundy);
+}
+
+/* شريط تقدم القراءة */
+.reading-progress {
+  background: #e8dfe0;
+}
+
+.reading-progress span {
+  background: linear-gradient(
+    90deg,
+    var(--green),
+    var(--reader-burgundy),
+    var(--gold)
+  );
+}
+
+/* أيقونة القراءة الآمنة */
+.secure-note svg {
+  color: var(--reader-burgundy);
+}
+
+/* العلامة المرجعية المحفوظة */
+#bookmarkBtn.is-bookmarked {
+  color: var(--reader-burgundy);
+  background: var(--reader-burgundy-soft);
+}
+
+#bookmarkBtn.is-bookmarked svg path {
+  fill: var(--reader-burgundy);
+  stroke: var(--reader-burgundy);
+}
+
+/* رسائل التنبيه */
+.toast {
+  background: var(--reader-burgundy);
+  border-color: #d8b46a85;
+}
+
+/* =========================================================
+   3. Dark Mode
+   ========================================================= */
+
+body.dark {
+  --reader-burgundy: #633440;
+  --reader-burgundy-dark: #47232c;
+  --reader-burgundy-light: #a66b78;
+
+  --reader-burgundy-soft: #302229;
+  --reader-burgundy-pale: #251c21;
+  --reader-burgundy-line: #49323a;
+
+  --reader-gold-soft: #332c20;
+}
+
+/* الشريط العلوي */
+body.dark .brand-mark {
+  border-color: #a66b7860;
+}
+
+body.dark .icon-btn:hover {
+  background: #63344055;
+  border-color: #a66b7880;
+}
+
+body.dark .back-link {
+  border-color: #a66b7860;
+}
+
+body.dark .back-link:hover {
+  background: #63344040;
+}
+
+/* شريط الأدوات */
+body.dark .toolbar {
+  border-bottom-color: var(--reader-burgundy-line);
+}
+
+body.dark .tool-btn {
+  color: #e4c4ca;
+}
+
+body.dark .tool-btn:hover {
+  color: #f3dfe3;
+  background: var(--reader-burgundy-soft);
+}
+
+/* أزرار التكبير والانتقال */
+body.dark .mini-btn {
+  color: #e4c4ca;
+  border-color: var(--reader-burgundy-line);
+}
+
+body.dark .mini-btn:hover {
+  color: #f3dfe3;
+  background: var(--reader-burgundy-soft);
+  border-color: var(--reader-burgundy-light);
+}
+
+/* حقل الانتقال بين الصفحات */
+body.dark .page-jump input {
+  border-color: var(--reader-burgundy-line);
+}
+
+body.dark .page-jump input:focus {
+  border-color: var(--reader-burgundy-light);
+  box-shadow: 0 0 0 3px #a66b7820;
+}
+
+/* أزرار تقليب الصفحات */
+body.dark .turn-btn {
+  color: #e4c4ca;
+  border-color: var(--reader-burgundy-line);
+}
+
+body.dark .turn-btn:hover:not(:disabled) {
+  color: #fff;
+  background: var(--reader-burgundy);
+  border-color: var(--reader-burgundy-light);
+}
+
+/* مؤشر التحميل */
+body.dark .spinner {
+  border-color: #a66b7830;
+  border-top-color: #c28b97;
+}
+
+/* شريط تقدم القراءة */
+body.dark .reading-progress {
+  background: #3a3034;
+}
+
+body.dark .reading-progress span {
+  background: linear-gradient(
+    90deg,
+    var(--green-2),
+    #a66b78,
+    var(--gold)
+  );
+}
+
+/* أيقونة القراءة الآمنة */
+body.dark .secure-note svg {
+  color: #c28b97;
+}
+
+/* العلامة المرجعية المحفوظة */
+body.dark #bookmarkBtn.is-bookmarked {
+  color: #e3bbc4;
+  background: var(--reader-burgundy-soft);
+}
+
+body.dark #bookmarkBtn.is-bookmarked svg path {
+  fill: #d49aa6;
+  stroke: #d49aa6;
+}
+
+/* رسائل التنبيه */
+body.dark .toast {
+  color: #f0dfe2;
+  background: #35232a;
+  border-color: #a66b78;
+}
+
+/* تحسين حدود التركيز في الوضع الداكن */
+body.dark button:focus-visible,
+body.dark a:focus-visible,
+body.dark input:focus-visible {
+  outline-color: #c28b97;
+}
+
+/* =========================================================
+   4. الحفاظ على راحة القراءة
+   لا نغير ألوان صفحات PDF أو النص الأصلي
+   ========================================================= */
+
+/* الحفاظ على خلفية صفحات الرواية */
+.page-sheet {
+  background: var(--paper);
+}
+
+/* عدم تغيير ألوان النص أو نتائج البحث */
+.page-sheet canvas,
+.page-sheet .text-layer,
+.page-sheet .text-layer mark {
+  /* تظل الألوان كما هي في التصميم الأصلي */
+}
+
+
+
+/* إخفاء أسهم خانة الانتقال لرقم الصفحة */
+#pageInput::-webkit-inner-spin-button,
+#pageInput::-webkit-outer-spin-button {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  margin: 0 !important;
+  display: none !important;
+}
+
+#pageInput {
+  -moz-appearance: textfield !important;
+  appearance: textfield !important;
+}
+
+
+
+
+
+
+
+/* =========================================
+   إخفاء Scrollbars في وضع Fullscreen
+   مع الحفاظ على إمكانية تحريك الصفحات
+   ========================================= */
+
+   .reader-app:fullscreen .book-stage,
+   .reader-app:fullscreen .page-sheet {
+     scrollbar-width: none !important;
+     -ms-overflow-style: none !important;
+   }
+   
+   .reader-app:fullscreen .book-stage::-webkit-scrollbar,
+   .reader-app:fullscreen .page-sheet::-webkit-scrollbar {
+     display: none !important;
+     width: 0 !important;
+     height: 0 !important;
+     background: transparent !important;
+   }
