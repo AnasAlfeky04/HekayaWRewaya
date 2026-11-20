@@ -3055,18 +3055,44 @@ footer small {
      ================================================== */
 
 
-  .latest-releases {
+     .latest-releases {
+      background:
+        radial-gradient(
+          circle 420px at 50% 50%,
+          rgba(105, 35, 57, 0.95) 0%,
+          rgba(125, 57, 77, 0.82) 25%,
+          rgba(157, 105, 117, 0.48) 40%,
+          rgba(220, 196, 196, 0.20) 60%,
+          rgba(248, 246, 240, 0) 100%
+        ),
+        #f8f6f0;
+    }
+    
+    @media (max-width: 600px) {
+      .latest-releases {
+        background:
+          radial-gradient(
+            circle 260px at 50% 50%,
+            rgba(105, 35, 57, 0.95) 0%,
+            rgba(125, 57, 77, 0.82) 25%,
+            rgba(157, 105, 117, 0.48) 40%,
+            rgba(220, 196, 196, 0.20) 60%,
+            rgba(248, 246, 240, 0) 100%
+          ),
+          #f8f6f0;
+      }
+    }
+
+
+  /* .latest-releases {
     background:
-      radial-gradient(
-        ellipse 50% 50% at 50% 50%,
-        rgba(105, 35, 57, 0.95) 0%,
-        rgba(125, 57, 77, 0.82) 25%,
-        rgba(157, 105, 117, 0.48) 40%,
-        rgba(220, 196, 196, 0.20) 60%,
-        rgba(248, 246, 240, 0) 100%
-      ),
-      #f8f6f0;
-  }
+      linear-gradient(
+        135deg,
+        white 40%,
+        #702F3B 60%,
+        #54212B 80%
+      );
+  } */
 
 
   
@@ -3241,5 +3267,6 @@ footer small {
   .stats-floating-logo:first-child {
     width: 115px;
     height: 115px;
+    left: 20px;
   }
 }
