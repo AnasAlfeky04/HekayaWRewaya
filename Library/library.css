@@ -2194,3 +2194,9 @@ body.book-details-open #global-scrollbar {
   color: #702F3B !important;
   background: #F3E7E9 !important;
 }
+
+@media (max-width: 600px) {
+  .library-section-heading .custom-sort {
+      margin-bottom: 12px !important;
+  }
+}
