@@ -1533,7 +1533,7 @@ function initFloatingStatsLogos() {
     const isMobile = window.innerWidth <= 600;
 
     const baseX = isMobile ? -50 : 0;
-    const baseY = isMobile ? -10 : 0;
+    const baseY = isMobile ? -15 : 0;
 
     const x = Math.sin(elapsed * 0.7) * 5;
     const y = Math.sin(elapsed * 0.9 + 1.2) * 5;
