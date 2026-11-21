@@ -4094,4 +4094,1825 @@ textarea {
   background: var(--brand-burgundy);
 }
 
-/* لا تغييرات على Sidebar أو Topbar أو Footer */
+
+
+/* =========================================
+   حساب السحب - Author Payout Account
+========================================= */
+
+.author-dashboard-page .payout-section {
+  margin-top: 0;
+}
+
+.payout-heading-icon {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  background: var(--ad-gold-light);
+  color: #a46b2c;
+  font-size: 25px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.payout-summary {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 21px;
+  margin-bottom: 22px;
+  border: 1px solid #e7e9df;
+  border-radius: 17px;
+  background: linear-gradient(115deg, #fffdf8, #f7faf5);
+}
+
+.payout-summary-icon {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: #e8f3ec;
+  color: #176b55;
+  font-size: 23px;
+  font-weight: 900;
+}
+
+.payout-summary > div:nth-child(2) {
+  flex: 1;
+  min-width: 0;
+}
+
+.payout-summary strong {
+  display: block;
+  font-size: 14px;
+  color: var(--ad-ink);
+}
+
+.payout-summary p {
+  margin: 5px 0 0;
+  color: var(--ad-muted);
+  font-size: 11px;
+  line-height: 1.9;
+}
+
+.payout-rates {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+
+.payout-rates span {
+  color: var(--ad-muted);
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.payout-rates strong {
+  color: #176b55;
+  font-size: 18px;
+}
+
+.payout-rates span:last-child strong {
+  color: #96763d;
+}
+
+.payout-form {
+  padding: 25px;
+  background: #fff;
+  border: 1px solid var(--ad-line);
+  border-radius: 18px;
+  box-shadow: 0 5px 20px rgba(24, 54, 41, .025);
+}
+
+.payout-form-heading {
+  padding-bottom: 19px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid var(--ad-line);
+}
+
+.payout-form-heading h3 {
+  margin: 0 0 6px;
+  font-size: 16px;
+}
+
+.payout-form-heading p {
+  margin: 0;
+  color: var(--ad-muted);
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+.payout-field {
+  margin-bottom: 22px;
+  min-width: 0;
+}
+
+.payout-field > label {
+  display: block;
+  margin-bottom: 9px;
+  color: #39483f;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.payout-field input,
+.payout-field select {
+  width: 100%;
+  min-height: 49px;
+  padding: 12px 14px;
+  border: 1px solid #e1e7e1;
+  border-radius: 11px;
+  background: #fdfefd;
+  color: var(--ad-ink);
+  outline: none;
+  font-size: 12px;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.payout-field input:focus,
+.payout-field select:focus {
+  border-color: var(--ad-green-2);
+  box-shadow: 0 0 0 3px rgba(33, 134, 106, .09);
+}
+
+.payout-field input:disabled,
+.payout-field select:disabled {
+  background: #f1f4f0;
+  color: #89948c;
+  cursor: not-allowed;
+}
+
+.payout-field > small {
+  display: block;
+  margin-top: 7px;
+  color: var(--ad-muted);
+  font-size: 10px;
+}
+
+.payout-methods {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 13px;
+}
+
+.payout-method {
+  display: block;
+  cursor: pointer;
+}
+
+.payout-method > input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.payout-method-card {
+  min-height: 83px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid #e3e9e2;
+  border-radius: 13px;
+  background: #fff;
+  transition: .2s ease;
+}
+
+.payout-method-card:hover {
+  border-color: #b7cdbd;
+  background: #fbfdfb;
+}
+
+.payout-method > input:checked + .payout-method-card {
+  border-color: var(--ad-green-2);
+  background: #f1f8f3;
+  box-shadow: inset 0 0 0 1px var(--ad-green-2);
+}
+
+.payout-method > input:focus-visible + .payout-method-card {
+  outline: 3px solid rgba(33, 134, 106, .2);
+  outline-offset: 3px;
+}
+
+.payout-method-icon {
+  width: 39px;
+  height: 39px;
+  flex: 0 0 39px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  background: var(--ad-gold-light);
+  color: #946a32;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.payout-method-card > span:nth-child(2) {
+  flex: 1;
+  min-width: 0;
+}
+
+.payout-method-card strong,
+.payout-method-card small {
+  display: block;
+}
+
+.payout-method-card strong {
+  font-size: 12px;
+  color: var(--ad-ink);
+}
+
+.payout-method-card small {
+  margin-top: 4px;
+  color: var(--ad-muted);
+  font-size: 9px;
+  line-height: 1.7;
+}
+
+.payout-method-check {
+  color: var(--ad-green-2);
+  opacity: 0;
+  font-weight: 900;
+}
+
+.payout-method > input:checked + .payout-method-card .payout-method-check {
+  opacity: 1;
+}
+
+.payout-method-fields {
+  padding: 19px;
+  margin-bottom: 22px;
+  border: 1px solid #e8ece7;
+  border-radius: 13px;
+  background: #fafcf9;
+}
+
+.payout-method-fields[hidden] {
+  display: none !important;
+}
+
+.payout-method-fields .payout-field:last-child {
+  margin-bottom: 0;
+}
+
+.payout-terms {
+  padding: 15px;
+  margin-top: 5px;
+  border: 1px solid #e7e9df;
+  border-radius: 12px;
+  background: #fffdf8;
+}
+
+.payout-terms label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.payout-terms input {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 17px;
+  margin-top: 3px;
+  accent-color: var(--ad-green-2);
+}
+
+.payout-terms span {
+  color: #59675e;
+  font-size: 11px;
+  line-height: 1.9;
+}
+
+.payout-security-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 17px;
+  padding: 13px 15px;
+  border-radius: 11px;
+  background: #f0f5fa;
+  color: #42627e;
+}
+
+.payout-security-note > span {
+  font-size: 17px;
+}
+
+.payout-security-note p {
+  margin: 0;
+  font-size: 10px;
+  line-height: 1.9;
+}
+
+.payout-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-top: 23px;
+}
+
+.payout-actions small {
+  color: var(--ad-muted);
+  font-size: 10px;
+}
+
+@media (max-width: 650px) {
+  .payout-summary {
+    flex-wrap: wrap;
+    padding: 16px;
+  }
+
+  .payout-rates {
+    width: 100%;
+    justify-content: space-between;
+    padding-top: 13px;
+    border-top: 1px solid #e8ece7;
+  }
+
+  .payout-form {
+    padding: 17px;
+  }
+
+  .payout-methods {
+    grid-template-columns: 1fr;
+  }
+
+  .payout-method-card {
+    min-height: 72px;
+  }
+
+  .payout-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .payout-actions .primary-btn {
+    width: 100%;
+  }
+}
+
+
+.payout-method-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.payout-method-card {
+  position: relative;
+  cursor: pointer;
+}
+
+.payout-method-card input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.payout-method-content {
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid #e3e7e4;
+  border-radius: 14px;
+  background: #fff;
+  color: #222;
+  font-weight: 700;
+  transition: .2s ease;
+}
+
+.payout-method-content img {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+}
+
+.payout-method-card input:checked + .payout-method-content {
+  border-color: #104b3d;
+  background: #f1f7f4;
+  box-shadow: 0 0 0 2px rgba(16, 75, 61, .10);
+}
+
+.payout-method-card:hover .payout-method-content {
+  border-color: #104b3d;
+}
+
+@media (max-width: 480px) {
+  .payout-method-options {
+    gap: 9px;
+  }
+
+  .payout-method-content {
+    min-height: 90px;
+    padding: 12px 8px;
+  }
+}
+
+
+/* Payout Wallet Custom Dropdown */
+
+.payout-wallet-dropdown {
+  position: relative;
+  width: 100%;
+  isolation: isolate;
+}
+
+.payout-wallet-trigger {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  background: #fff;
+  border: 1px solid #e5dfd2;
+  border-radius: 12px;
+
+  color: #252525;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: right;
+
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+.payout-wallet-trigger:hover,
+.payout-wallet-dropdown.is-open .payout-wallet-trigger {
+  border-color: #c49a4a;
+  box-shadow: 0 0 0 3px rgba(196, 154, 74, .10);
+}
+
+.payout-wallet-arrow {
+  font-size: 20px;
+  color: #174f40;
+  transition: transform .2s ease;
+}
+
+.payout-wallet-dropdown.is-open .payout-wallet-arrow {
+  transform: rotate(180deg);
+}
+
+.payout-wallet-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  left: 0;
+  z-index: 50;
+
+  padding: 7px;
+  background: #fff;
+  border: 1px solid #e5dfd2;
+  border-radius: 14px;
+
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .12);
+
+  animation: payoutDropdownIn .18s ease;
+}
+
+.payout-wallet-menu[hidden] {
+  display: none;
+}
+
+@keyframes payoutDropdownIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.payout-wallet-option {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 13px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+
+  color: #292929;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: right;
+
+  cursor: pointer;
+  transition: .18s ease;
+}
+
+.payout-wallet-option:hover {
+  background: #faf7ef;
+  color: #9b7432;
+}
+
+.payout-wallet-option.is-selected {
+  background: #f8f4e9;
+  border-color: #e8d9b5;
+  color: #174f40;
+  font-weight: 700;
+}
+
+.payout-wallet-option.is-selected::after {
+  content: "✓";
+  color: #174f40;
+  font-weight: 800;
+}
+
+.payout-wallet-native {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.payout-wallet-trigger:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+
+/* Paid book payout account notice */
+.paid-payout-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 15px;
+  border: 1px solid rgba(128, 39, 61, 0.22);
+  border-radius: 13px;
+  background: rgba(128, 39, 61, 0.055);
+  color: #713044;
+}
+
+.paid-payout-notice[hidden] {
+  display: none !important;
+}
+
+.paid-payout-notice-icon {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(128, 39, 61, 0.11);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.paid-payout-notice-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.paid-payout-notice-content strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.paid-payout-notice-content p {
+  margin: 0;
+  color: #65515a;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.paid-payout-notice-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 11px;
+  padding: 8px 13px;
+  border: 1px solid rgba(128, 39, 61, 0.3);
+  border-radius: 8px;
+  background: transparent;
+  color: #80273d;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.paid-payout-notice-btn:hover {
+  background: #80273d;
+  color: #fff;
+}
+
+.paid-payout-notice-btn span {
+  font-size: 16px;
+}
+
+
+
+/* =========================================
+   Earnings & Sales Dashboard
+   تاب الأرباح والمبيعات
+========================================= */
+
+.earnings-section {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* رأس التاب */
+.earnings-heading-icon {
+  width: 54px;
+  height: 54px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 17px;
+  background: linear-gradient(145deg, #e9f2ec, #f8edda);
+  color: #104b3d;
+  font-size: 28px;
+}
+
+/* =========================================
+   إحصائيات الأرباح
+========================================= */
+
+.earnings-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.earnings-stat-card {
+  position: relative;
+  min-width: 0;
+  padding: 22px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #e9eee9;
+  border-radius: 18px;
+  box-shadow: 0 5px 20px rgba(16, 75, 61, 0.045);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.earnings-stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 26px rgba(16, 75, 61, 0.09);
+}
+
+.earnings-stat-icon {
+  width: 43px;
+  height: 43px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  font-size: 21px;
+  font-weight: 800;
+}
+
+.earnings-icon-sales {
+  color: #104b3d;
+  background: #e8f1ec;
+}
+
+.earnings-icon-profit {
+  color: #a47b31;
+  background: #f8f0df;
+}
+
+.earnings-icon-fees {
+  color: #853e50;
+  background: #f5e9ed;
+}
+
+.earnings-icon-count {
+  color: #397b69;
+  background: #e9f3ef;
+}
+
+.earnings-stat-label {
+  color: #68766f;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.earnings-stat-value {
+  max-width: 100%;
+  color: #173e33;
+  font-size: clamp(21px, 2vw, 29px);
+  font-weight: 900;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  direction: rtl;
+}
+
+.earnings-stat-card small {
+  color: #929b95;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+/* =========================================
+   بطاقة الرصيد المتاح
+========================================= */
+
+.earnings-balance-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+  border-radius: 21px;
+  background: #104b3d;
+  box-shadow: 0 10px 28px rgba(16, 75, 61, 0.13);
+}
+
+.earnings-balance-main {
+  position: relative;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  color: #fff;
+  background:
+    radial-gradient(circle at 90% 10%, rgba(222, 190, 119, 0.16), transparent 38%),
+    linear-gradient(135deg, #104b3d, #0b392f);
+}
+
+.earnings-balance-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 25px;
+}
+
+.earnings-balance-icon {
+  width: 43px;
+  height: 43px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #e6c887;
+  font-size: 23px;
+}
+
+.earnings-balance-heading div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.earnings-balance-heading div > span,
+.earnings-balance-heading div {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.earnings-balance-heading small {
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+#earningsAvailableBalance {
+  color: #fff;
+  font-size: clamp(32px, 4vw, 43px);
+  font-weight: 900;
+  line-height: 1.35;
+  direction: rtl;
+  overflow-wrap: anywhere;
+}
+
+.earnings-currency {
+  margin-top: 4px;
+  color: #e3c783;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.earnings-balance-details {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 19px;
+  background: #f8faf8;
+}
+
+.earnings-balance-detail {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.earnings-balance-detail span {
+  color: #65736b;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.earnings-balance-detail strong {
+  color: #174c3d;
+  font-size: 17px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.earnings-balance-details > p {
+  margin: 3px 0 0;
+  padding-top: 15px;
+  border-top: 1px solid #e5ebe5;
+  color: #89948d;
+  font-size: 11px;
+  line-height: 1.9;
+}
+
+/* =========================================
+   الأقسام الداخلية
+========================================= */
+
+.earnings-chart-section,
+.earnings-history-section {
+  min-width: 0;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid #e9eee9;
+  border-radius: 19px;
+  box-shadow: 0 5px 20px rgba(16, 75, 61, 0.04);
+}
+
+.earnings-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 23px;
+}
+
+.earnings-section-heading h3 {
+  margin: 5px 0 7px;
+  color: #173e33;
+  font-size: 19px;
+  font-weight: 900;
+}
+
+.earnings-section-heading p {
+  margin: 0;
+  color: #89948d;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+/* =========================================
+   فلتر الرسم البياني
+========================================= */
+
+.earnings-chart-filter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.earnings-chart-filter label {
+  color: #78857d;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.earnings-chart-filter select {
+  min-width: 115px;
+  padding: 10px 13px;
+  color: #174b3d;
+  background: #f7faf7;
+  border: 1px solid #e4ebe5;
+  border-radius: 11px;
+  outline: none;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.earnings-chart-filter select:focus {
+  border-color: #a47b31;
+  box-shadow: 0 0 0 3px rgba(164, 123, 49, 0.1);
+}
+
+/* مفتاح الرسم البياني */
+.earnings-chart-legend {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin-bottom: 18px;
+}
+
+.earnings-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #77847c;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.earnings-legend-item i {
+  width: 9px;
+  height: 9px;
+  display: inline-block;
+  border-radius: 50%;
+}
+
+.earnings-legend-sales {
+  background: #104b3d;
+}
+
+.earnings-legend-profit {
+  background: #bd9850;
+}
+
+/* مساحة الرسم البياني */
+.earnings-chart {
+  position: relative;
+  width: 100%;
+  min-height: 270px;
+  overflow: hidden;
+  border-radius: 13px;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 65px,
+      #edf1ed 66px,
+      transparent 67px
+    ),
+    #fcfdfc;
+}
+
+.earnings-chart-loading,
+.earnings-chart-empty {
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #929d95;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.earnings-chart-empty {
+  min-height: 140px;
+  padding: 20px;
+  text-align: center;
+}
+
+/* =========================================
+   الجداول
+========================================= */
+
+.earnings-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #e9eee9;
+  border-radius: 13px;
+  scrollbar-width: thin;
+  scrollbar-color: #b7c9bd #f3f6f3;
+}
+
+.earnings-table {
+  width: 100%;
+  min-width: 700px;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: right;
+}
+
+.earnings-table th {
+  padding: 15px 17px;
+  color: #66766d;
+  background: #f5f8f5;
+  border-bottom: 1px solid #e7ece7;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.earnings-table td {
+  padding: 16px 17px;
+  color: #526158;
+  border-bottom: 1px solid #eef1ee;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.earnings-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.earnings-table tbody tr {
+  transition: background 0.2s ease;
+}
+
+.earnings-table tbody tr:hover {
+  background: #fafcf9;
+}
+
+.earnings-table td:first-child {
+  color: #174b3d;
+  font-weight: 800;
+}
+
+.earnings-table td strong {
+  color: #174b3d;
+  font-weight: 900;
+}
+
+/* =========================================
+   الحالات الفارغة
+========================================= */
+
+.earnings-empty-state {
+  min-height: 190px;
+  padding: 25px 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: 1px dashed #dce6dd;
+  border-radius: 14px;
+  background: #fafcf9;
+}
+
+.earnings-empty-state .empty-icon {
+  width: 47px;
+  height: 47px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: #eaf2ec;
+  color: #104b3d;
+  font-size: 22px;
+}
+
+.earnings-empty-state h3 {
+  margin: 13px 0 6px;
+  color: #244b3e;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.earnings-empty-state p {
+  max-width: 390px;
+  margin: 0;
+  color: #89948d;
+  font-size: 12px;
+  line-height: 1.9;
+}
+
+/* =========================================
+   سجل السحوبات
+========================================= */
+
+.withdrawals-history-section {
+  margin-bottom: 5px;
+}
+
+.withdrawals-table {
+  min-width: 750px;
+}
+
+/* =========================================
+   التجاوب مع الشاشات المتوسطة
+========================================= */
+
+@media (max-width: 1100px) {
+  .earnings-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .earnings-section {
+    gap: 20px;
+  }
+
+  .earnings-balance-card {
+    grid-template-columns: 1fr;
+  }
+
+  .earnings-balance-main,
+  .earnings-balance-details {
+    padding: 23px;
+  }
+
+  .earnings-chart-section,
+  .earnings-history-section {
+    padding: 19px 15px;
+  }
+
+  .earnings-section-heading {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 520px) {
+  .earnings-stats-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .earnings-stat-card {
+    padding: 16px 13px;
+    gap: 8px;
+    border-radius: 14px;
+  }
+
+  .earnings-stat-icon {
+    width: 37px;
+    height: 37px;
+    font-size: 18px;
+  }
+
+  .earnings-stat-label {
+    font-size: 11px;
+  }
+
+  .earnings-stat-value {
+    font-size: 21px;
+  }
+
+  .earnings-stat-card small {
+    font-size: 10px;
+  }
+
+  .earnings-heading-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 13px;
+  }
+
+  .earnings-section-heading {
+    flex-direction: column;
+  }
+
+  .earnings-chart-filter {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .earnings-chart-filter select {
+    flex: 1;
+  }
+
+  .earnings-chart-legend {
+    gap: 15px;
+  }
+
+  .earnings-chart {
+    min-height: 220px;
+  }
+
+  .earnings-balance-detail span {
+    font-size: 11px;
+  }
+
+  .earnings-balance-detail strong {
+    font-size: 14px;
+  }
+
+  #earningsAvailableBalance {
+    font-size: 34px;
+  }
+}
+
+
+
+/* =========================================
+   Earnings Dashboard - Layout & Spacing
+========================================= */
+
+/* أول صف: 3 كروت متساوية */
+.earnings-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  width: 100%;
+  margin-bottom: 34px;
+}
+
+.earnings-stat-card {
+  width: 100%;
+  min-width: 0;
+  min-height: 155px;
+  padding: 25px;
+  gap: 13px;
+}
+
+/* مسافة بين الرصيد المتاح والقسم السابق */
+.earnings-balance-card {
+  width: 100%;
+  margin-top: 0;
+  margin-bottom: 38px;
+}
+
+/* مسافات الأقسام التالية */
+.earnings-chart-section,
+.earnings-history-section {
+  width: 100%;
+  margin-top: 0;
+  margin-bottom: 38px;
+  padding: 29px;
+}
+
+.earnings-section {
+  gap: 0;
+}
+
+.earnings-section-heading {
+  margin-bottom: 26px;
+}
+
+.earnings-chart-legend {
+  margin-bottom: 24px;
+}
+
+.earnings-chart {
+  min-height: 300px;
+}
+
+.earnings-table th,
+.earnings-table td {
+  padding: 18px 20px;
+}
+
+/* الشاشات المتوسطة */
+@media (max-width: 900px) {
+  .earnings-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+}
+
+/* الموبايل */
+@media (max-width: 600px) {
+  .earnings-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 26px;
+  }
+
+  .earnings-stat-card {
+    min-height: 135px;
+    padding: 22px;
+  }
+
+  .earnings-balance-card {
+    margin-bottom: 28px;
+  }
+
+  .earnings-chart-section,
+  .earnings-history-section {
+    padding: 20px;
+    margin-bottom: 28px;
+  }
+}
+
+
+
+/* إصلاح إظهار وإخفاء حالات التحميل والفراغ */
+.earnings-history-section [hidden] {
+  display: none !important;
+}
+
+
+/* Earnings Chart Mode Switch */
+
+.earnings-chart-mode {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.earnings-mode-btn {
+  flex: 1;
+  min-width: 0;
+  padding: 13px 16px;
+  border: 1px solid #e8ecea;
+  border-radius: 10px;
+  background: #f5f7f6;
+  color: #89938f;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.earnings-mode-btn:hover {
+  background: #edf2ef;
+  color: #45665a;
+}
+
+.earnings-mode-btn.active {
+  background: #104b3d;
+  border-color: #104b3d;
+  color: #fff;
+  box-shadow: 0 3px 10px rgba(16, 75, 61, 0.15);
+}
+
+.earnings-mode-btn:focus-visible {
+  outline: 2px solid #c5a15a;
+  outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+  .earnings-chart-mode {
+    gap: 8px;
+  }
+
+  .earnings-mode-btn {
+    padding: 12px 10px;
+  }
+}
+
+
+
+/* Professional Earnings Chart Tooltip */
+
+.earnings-chart {
+  position: relative;
+  overflow: visible;
+}
+
+.earnings-chart-tooltip {
+  position: absolute;
+  z-index: 20;
+  min-width: 205px;
+  padding: 15px 17px;
+  background: #123d32;
+  color: #fff;
+  border: 1px solid rgba(197, 161, 90, 0.55);
+  border-radius: 13px;
+  box-shadow: 0 10px 30px rgba(15, 45, 36, 0.22);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(5px);
+  transition: opacity 0.16s ease, transform 0.16s ease;
+  direction: rtl;
+  text-align: right;
+  font-family: inherit;
+}
+
+.earnings-chart-tooltip.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.earnings-tooltip-date {
+  display: block;
+  color: #e3c786;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.earnings-tooltip-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  font-size: 12px;
+  margin-top: 9px;
+}
+
+.earnings-tooltip-label {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.earnings-tooltip-value {
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.earnings-tooltip-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.13);
+  margin-top: 11px;
+}
+
+
+/* إخفاء أزرار التبديل في الرسم البياني */
+.earnings-chart-mode {
+  display: none !important;
+}
+
+
+/* إزالة خطوط الخلفية الزائدة من الرسم البياني */
+.earnings-chart {
+  background-image: none !important;
+  background: transparent !important;
+}
+
+
+/* Premium Earnings Period Dropdown */
+
+.custom-period-dropdown {
+  position: relative;
+  width: 155px;
+  direction: rtl;
+  z-index: 30;
+}
+
+.custom-period-trigger {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #ffffff;
+  border: 1px solid #e3eae5;
+  border-radius: 11px;
+  color: #174f40;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.custom-period-trigger:hover,
+.custom-period-dropdown.open .custom-period-trigger {
+  border-color: #b9cfc3;
+  box-shadow: 0 4px 14px rgba(23, 79, 64, 0.08);
+}
+
+.custom-period-arrow {
+  color: #c5a15a;
+  font-size: 19px;
+  transition: transform 0.2s ease;
+}
+
+.custom-period-dropdown.open .custom-period-arrow {
+  transform: rotate(180deg);
+}
+
+.custom-period-menu {
+  position: absolute;
+  top: calc(100% + 9px);
+  right: 0;
+  width: 100%;
+  padding: 6px;
+  background: #ffffff;
+  border: 1px solid #e8eee9;
+  border-radius: 13px;
+  box-shadow: 0 12px 30px rgba(20, 55, 43, 0.13);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-7px);
+  transition: all 0.2s ease;
+}
+
+.custom-period-dropdown.open .custom-period-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.custom-period-option {
+  width: 100%;
+  min-height: 41px;
+  padding: 0 11px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #58665e;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.custom-period-option:hover {
+  background: #f1f6f2;
+  color: #174f40;
+}
+
+.custom-period-option.active {
+  background: #eaf3ed;
+  color: #174f40;
+  font-weight: 700;
+}
+
+.period-check {
+  color: #c5a15a;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: all 0.18s ease;
+}
+
+.custom-period-option.active .period-check {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* زر طلب سحب الأرباح */
+.earnings-withdraw-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 22px;
+  padding: 13px 24px;
+  min-width: 190px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  background: linear-gradient(135deg, #c6a45c, #a9853e);
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 5px 16px rgba(169, 133, 62, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease,
+              background 0.2s ease;
+}
+
+.earnings-withdraw-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(169, 133, 62, 0.3);
+  background: linear-gradient(135deg, #d2b36d, #b8954c);
+}
+
+.earnings-withdraw-btn:active {
+  transform: translateY(0);
+}
+
+.earnings-withdraw-btn:focus-visible {
+  outline: 3px solid rgba(198, 164, 92, 0.35);
+  outline-offset: 3px;
+}
+
+.earnings-withdraw-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+
+
+/* نافذة طلب سحب الأرباح */
+.withdrawal-modal[hidden] {
+  display: none !important;
+}
+
+.withdrawal-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.withdrawal-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(12, 25, 21, 0.68);
+  backdrop-filter: blur(5px);
+}
+
+.withdrawal-modal-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 440px;
+  padding: 28px;
+  border: 1px solid rgba(198, 164, 92, 0.2);
+  border-radius: 20px;
+  background: var(--card-bg, #fff);
+  color: var(--text-color, #183b31);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
+  animation: withdrawalModalIn 0.22s ease;
+}
+
+@keyframes withdrawalModalIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.withdrawal-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 24px;
+}
+
+.withdrawal-modal-eyebrow {
+  color: #b18e4b;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.withdrawal-modal-header h3 {
+  margin: 7px 0;
+  font-size: 22px;
+}
+
+.withdrawal-modal-header p {
+  margin: 0;
+  color: #84918b;
+  font-size: 13px;
+}
+
+.withdrawal-modal-close {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: 10px;
+  background: rgba(120, 130, 125, 0.1);
+  color: inherit;
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.withdrawal-modal-balance {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 17px;
+  margin-bottom: 23px;
+  border: 1px solid rgba(198, 164, 92, 0.2);
+  border-radius: 13px;
+  background: rgba(198, 164, 92, 0.08);
+}
+
+.withdrawal-modal-balance span {
+  font-size: 13px;
+  color: #78867f;
+}
+
+.withdrawal-modal-balance strong {
+  color: #a9853e;
+  font-size: 17px;
+}
+
+.withdrawal-amount-field label {
+  display: block;
+  margin-bottom: 9px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.withdrawal-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  border: 1px solid #dce3df;
+  border-radius: 12px;
+  background: transparent;
+}
+
+.withdrawal-input-wrap:focus-within {
+  border-color: #b18e4b;
+  box-shadow: 0 0 0 3px rgba(198, 164, 92, 0.12);
+}
+
+.withdrawal-input-wrap input {
+  width: 100%;
+  min-width: 0;
+  padding: 14px 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  font-size: 17px;
+}
+
+.withdrawal-input-wrap span {
+  color: #84918b;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.withdrawal-amount-field small {
+  display: block;
+  margin-top: 8px;
+  color: #84918b;
+  font-size: 12px;
+}
+
+.withdrawal-modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.withdrawal-submit-btn,
+.withdrawal-cancel-btn {
+  width: 100%;
+  min-height: 46px;
+  border-radius: 11px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.withdrawal-submit-btn {
+  border: 0;
+  background: linear-gradient(135deg, #c6a45c, #a9853e);
+  color: #fff;
+}
+
+.withdrawal-cancel-btn {
+  border: 1px solid #dce3df;
+  background: transparent;
+  color: inherit;
+}
+
+.withdrawal-modal-note {
+  margin: 17px 0 0;
+  color: #84918b;
+  font-size: 12px;
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .withdrawal-modal-content {
+    padding: 22px 18px;
+  }
+}
+
+
+/* إخفاء أسهم حقل مبلغ السحب */
+#withdrawalAmount::-webkit-inner-spin-button,
+#withdrawalAmount::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+#withdrawalAmount {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}

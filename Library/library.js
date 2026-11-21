@@ -671,10 +671,9 @@ async function handleBookDetailsAction() {
 
     const price = Number(book.price || 0);
 
-    // الدفع الحقيقي مؤجل لمرحلة لاحقة.
     if (price > 0) {
-      detailsBookMessage.textContent =
-        "صفحة شراء الروايات المدفوعة ستكون متاحة قريبًا.";
+      window.location.href =
+        "/Checkout/checkout.html?book=" + encodeURIComponent(book.id);
       return;
     }
 

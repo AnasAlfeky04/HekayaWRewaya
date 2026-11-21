@@ -4658,3 +4658,1944 @@ textarea:focus-visible {
 /* =========================================
    END — BURGUNDY BRAND IDENTITY
 ========================================= */
+
+
+
+
+/* =========================================
+   Purchase Requests - Two Column Cards
+========================================= */
+
+#purchaseRequestsList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  align-items: start;
+}
+
+.purchase-card {
+  min-width: 0;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: var(--shadow);
+}
+
+.purchase-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.purchase-card-header h3 {
+  margin: 0 0 7px;
+  color: var(--ink);
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.purchase-card-header div > span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.purchase-status {
+  flex-shrink: 0;
+  padding: 7px 12px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.purchase-status.pending {
+  background: #fff4df;
+  color: #a66b19;
+}
+
+.purchase-status.approved {
+  background: var(--mint);
+  color: var(--green);
+}
+
+.purchase-status.rejected {
+  background: var(--burgundy-soft);
+  color: var(--burgundy);
+}
+
+.purchase-card-details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.purchase-card-details div {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.purchase-card-details span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.purchase-card-details strong {
+  color: var(--ink);
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.purchase-card-proof {
+  margin-top: 16px;
+}
+
+.purchase-card-proof a {
+  color: var(--burgundy);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.purchase-card-proof a:hover {
+  text-decoration: underline;
+}
+
+.purchase-card-proof span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.purchase-card-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.purchase-card-actions button {
+  flex: 1;
+  min-width: 0;
+  min-height: 42px;
+  justify-content: center;
+}
+
+.purchase-card-actions button[data-action="purchase-reject"] {
+  background: #b42336 !important;
+  color: #fff !important;
+  border: 1px solid #b42336 !important;
+}
+
+.purchase-rejection-reason {
+  margin-top: 16px;
+  padding: 12px;
+  background: var(--burgundy-pale);
+  border: 1px solid var(--burgundy-line);
+  border-radius: 10px;
+  color: var(--burgundy);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+@media (max-width: 900px) {
+  #purchaseRequestsList {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 500px) {
+  .purchase-card {
+    padding: 16px;
+  }
+
+  .purchase-card-header {
+    flex-wrap: wrap;
+  }
+
+  .purchase-card-actions {
+    flex-direction: column;
+  }
+}
+
+
+
+/* =========================================
+   Platform Earnings Dashboard
+========================================= */
+
+.earnings-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.earnings-filters button {
+  padding: 10px 20px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--white);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.earnings-filters button:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.earnings-filters button.active {
+  background: var(--green);
+  border-color: var(--green);
+  color: #fff;
+}
+
+.earnings-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.earnings-stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+  padding: 22px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+
+.earnings-stat-card span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.earnings-stat-card strong {
+  color: var(--ink);
+  font-size: 23px;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.earnings-stat-card.platform {
+  border-top: 4px solid var(--gold);
+}
+
+.earnings-stat-card.platform strong {
+  color: var(--green);
+}
+
+.earnings-chart-card {
+  padding: 24px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+
+.earnings-chart-card h3 {
+  margin: 0 0 24px;
+  color: var(--ink);
+  font-size: 17px;
+}
+
+.earnings-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  min-height: 220px;
+  padding: 20px 5px 5px;
+  overflow-x: auto;
+}
+
+.earnings-chart-item {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  min-width: 65px;
+  height: 200px;
+}
+
+.earnings-chart-value {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.earnings-chart-track {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  max-width: 42px;
+  height: 145px;
+  background: var(--mint);
+  border-radius: 8px 8px 3px 3px;
+  overflow: hidden;
+}
+
+.earnings-chart-bar {
+  width: 100%;
+  min-height: 3px;
+  background: linear-gradient(
+    to top,
+    var(--green),
+    var(--gold)
+  );
+  border-radius: 8px 8px 0 0;
+  transition: height 0.3s ease;
+}
+
+.earnings-chart-item > span {
+  color: var(--muted);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.earnings-empty {
+  width: 100%;
+  margin: auto;
+  padding: 35px 10px;
+  color: var(--muted);
+  text-align: center;
+  font-size: 14px;
+}
+
+@media (max-width: 900px) {
+  .earnings-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 550px) {
+  .earnings-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .earnings-stat-card {
+    padding: 18px;
+  }
+
+  .earnings-chart-card {
+    padding: 16px;
+  }
+
+  .earnings-filters button {
+    flex: 1;
+    padding: 10px;
+  }
+}
+
+
+
+/* =========================================
+   Platform Earnings Sales Table
+========================================= */
+
+.earnings-sales-card {
+  margin-top: 22px;
+  padding: 24px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+
+.earnings-sales-card h3 {
+  margin: 0 0 20px;
+  color: var(--ink);
+  font-size: 17px;
+}
+
+.earnings-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.earnings-table {
+  width: 100%;
+  min-width: 650px;
+  border-collapse: collapse;
+  text-align: right;
+}
+
+.earnings-table th {
+  padding: 15px 14px;
+  background: var(--mint);
+  color: var(--green);
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.earnings-table th:first-child {
+  border-radius: 0 10px 0 0;
+}
+
+.earnings-table th:last-child {
+  border-radius: 10px 0 0 0;
+}
+
+.earnings-table td {
+  padding: 16px 14px;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.earnings-table tbody tr:hover {
+  background: var(--surface);
+}
+
+.earnings-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.earnings-table .platform-income {
+  color: var(--green);
+  font-weight: 800;
+}
+
+@media (max-width: 600px) {
+  .earnings-sales-card {
+    padding: 16px;
+  }
+}
+
+
+
+/* =========================================
+   Platform Earnings - SVG Chart & Sales Table
+========================================= */
+
+#earningsContent .earnings-chart {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  padding: 12px 0 4px;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+#earningsContent .earnings-chart svg {
+  display: block;
+  width: 100%;
+  min-width: 650px;
+  height: 320px;
+  flex: none;
+  overflow: visible;
+}
+
+#earningsContent .earnings-sales-card {
+  margin-top: 22px;
+  padding: 24px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+
+#earningsContent .earnings-sales-card h3 {
+  margin: 0 0 20px;
+  color: var(--ink);
+  font-size: 17px;
+}
+
+#earningsContent .earnings-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+#earningsContent .earnings-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: right;
+}
+
+#earningsContent .earnings-table th,
+#earningsContent .earnings-table td {
+  padding: 15px 12px;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+  font-size: 13px;
+}
+
+#earningsContent .earnings-table th {
+  color: var(--muted);
+  background: var(--surface, #f8faf9);
+  font-weight: 700;
+}
+
+#earningsContent .earnings-table td {
+  color: var(--ink);
+}
+
+#earningsContent .earnings-table tr:last-child td {
+  border-bottom: 0;
+}
+
+#earningsContent .earnings-table .platform-income {
+  color: var(--green);
+  font-weight: 800;
+}
+
+#earningsContent .earnings-table .earnings-empty {
+  padding: 30px 12px;
+  color: var(--muted);
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  #earningsContent .earnings-chart-card,
+  #earningsContent .earnings-sales-card {
+    padding: 16px;
+  }
+}
+
+
+
+/* =========================================
+   Platform Earnings - Restore UI Styling
+========================================= */
+
+/* أزرار الفترات الزمنية */
+#earningsContent .earnings-period-switch {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 22px;
+  padding: 6px;
+  width: fit-content;
+  max-width: 100%;
+  background: var(--surface, #f4f7f5);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+#earningsContent .earnings-period-switch button {
+  appearance: none;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  padding: 10px 20px;
+  background: transparent;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .2s ease, color .2s ease, box-shadow .2s ease;
+}
+
+#earningsContent .earnings-period-switch button:hover {
+  color: var(--green);
+  background: #ffffff;
+}
+
+#earningsContent .earnings-period-switch button.active {
+  color: #fff;
+  background: var(--green, #104b3d);
+  border-color: var(--green, #104b3d);
+  box-shadow: 0 3px 9px rgba(16, 75, 61, .16);
+}
+
+/* كروت الإحصائيات */
+#earningsContent .earnings-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+#earningsContent .earnings-stat-card {
+  min-width: 0;
+  padding: 22px;
+  background: var(--white, #fff);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+#earningsContent .earnings-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 9px 24px rgba(20, 50, 40, .08);
+}
+
+#earningsContent .earnings-stat-card > span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+#earningsContent .earnings-stat-card > strong {
+  color: var(--ink);
+  font-size: clamp(21px, 2.5vw, 29px);
+  font-weight: 800;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+#earningsContent .earnings-stat-card > small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+/* بطاقة الرسم البياني */
+#earningsContent .earnings-chart-card {
+  position: relative;
+  margin-bottom: 22px;
+  padding: 24px;
+  background: var(--white, #fff);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+
+#earningsContent .earnings-chart-card h3 {
+  margin: 0 0 7px;
+  color: var(--ink);
+  font-size: 17px;
+  font-weight: 800;
+}
+
+#earningsContent .earnings-chart-card > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* مساحة الرسم */
+#earningsContent .earnings-chart {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  margin-top: 18px;
+  padding: 12px 0 4px;
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+#earningsContent .earnings-chart svg {
+  display: block;
+  width: 100%;
+  min-width: 650px;
+  height: 320px;
+  overflow: visible;
+}
+
+/* نافذة التفاصيل عند الوقوف على النقاط */
+#earningsContent .earnings-chart-tooltip {
+  position: absolute;
+  z-index: 20;
+  min-width: 215px;
+  max-width: 270px;
+  padding: 15px 17px;
+  background: #173e34;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.2);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .15s ease, visibility .15s ease;
+}
+
+#earningsContent .earnings-chart-tooltip.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+#earningsContent .earnings-tooltip-date {
+  display: block;
+  margin-bottom: 12px;
+  color: #f0d5a8;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+#earningsContent .earnings-tooltip-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin: 8px 0;
+}
+
+#earningsContent .earnings-tooltip-label {
+  color: #c6d8d0;
+  font-size: 11px;
+}
+
+#earningsContent .earnings-tooltip-value {
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+#earningsContent .earnings-tooltip-divider {
+  height: 1px;
+  margin: 10px 0;
+  background: rgba(255,255,255,.14);
+}
+
+/* سجل المبيعات */
+#earningsContent .earnings-sales-card {
+  margin-top: 22px;
+  padding: 24px;
+  background: var(--white, #fff);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+
+#earningsContent .earnings-sales-card h3 {
+  margin: 0 0 20px;
+  color: var(--ink);
+  font-size: 17px;
+  font-weight: 800;
+}
+
+#earningsContent .earnings-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+#earningsContent .earnings-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: right;
+}
+
+#earningsContent .earnings-table th,
+#earningsContent .earnings-table td {
+  padding: 15px 12px;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+  font-size: 13px;
+}
+
+#earningsContent .earnings-table th {
+  color: var(--muted);
+  background: var(--surface, #f8faf9);
+  font-weight: 700;
+}
+
+#earningsContent .earnings-table td {
+  color: var(--ink);
+}
+
+#earningsContent .earnings-table tr:last-child td {
+  border-bottom: 0;
+}
+
+#earningsContent .earnings-table .platform-income {
+  color: var(--green);
+  font-weight: 800;
+}
+
+#earningsContent .earnings-table .earnings-empty {
+  padding: 30px 12px;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* الشاشات الصغيرة */
+@media (max-width: 760px) {
+  #earningsContent .earnings-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  #earningsContent .earnings-stat-card {
+    padding: 17px;
+  }
+}
+
+@media (max-width: 480px) {
+  #earningsContent .earnings-stats {
+    grid-template-columns: 1fr;
+  }
+
+  #earningsContent .earnings-period-switch {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  #earningsContent .earnings-period-switch button {
+    padding: 10px 5px;
+    font-size: 11px;
+  }
+
+  #earningsContent .earnings-chart-card,
+  #earningsContent .earnings-sales-card {
+    padding: 16px;
+  }
+}
+
+
+/* =========================================
+   Premium Platform Earnings Statistics Cards
+========================================= */
+
+#earningsContent .earnings-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  margin: 0 0 26px;
+}
+
+#earningsContent .earnings-stat-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 175px;
+  padding: 23px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 17px;
+  background: linear-gradient(145deg, #ffffff 0%, #fbfcfa 100%);
+  border: 1px solid #e8eee9;
+  border-radius: 19px;
+  box-shadow:
+    0 4px 12px rgba(23, 55, 43, .035),
+    0 12px 28px rgba(23, 55, 43, .045);
+  transition:
+    transform .25s ease,
+    box-shadow .25s ease,
+    border-color .25s ease;
+}
+
+/* لمسة لونية خلفية */
+#earningsContent .earnings-stat-card::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 145px;
+  height: 145px;
+  left: -48px;
+  bottom: -75px;
+  border-radius: 50%;
+  background: var(--card-accent-soft);
+  transition: transform .35s ease;
+}
+
+#earningsContent .earnings-stat-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--card-accent-border);
+  box-shadow:
+    0 8px 18px rgba(23, 55, 43, .05),
+    0 18px 38px rgba(23, 55, 43, .09);
+}
+
+#earningsContent .earnings-stat-card:hover::before {
+  transform: scale(1.35);
+}
+
+/* ألوان الكروت الثلاثة */
+#earningsContent .earnings-stat-card:nth-child(1) {
+  --card-accent: #b78a43;
+  --card-accent-soft: rgba(183, 138, 67, .10);
+  --card-accent-border: rgba(183, 138, 67, .35);
+}
+
+#earningsContent .earnings-stat-card:nth-child(2) {
+  --card-accent: #287b62;
+  --card-accent-soft: rgba(40, 123, 98, .10);
+  --card-accent-border: rgba(40, 123, 98, .32);
+}
+
+#earningsContent .earnings-stat-card:nth-child(3) {
+  --card-accent: #85465c;
+  --card-accent-soft: rgba(133, 70, 92, .10);
+  --card-accent-border: rgba(133, 70, 92, .30);
+}
+
+/* عنوان الكارت */
+#earningsContent .earnings-stat-card > span {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #68766f;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+/* دائرة زخرفية صغيرة بجانب العنوان */
+#earningsContent .earnings-stat-card > span::before {
+  content: "";
+  flex: 0 0 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--card-accent);
+  box-shadow: 0 0 0 4px var(--card-accent-soft);
+}
+
+/* الرقم الرئيسي */
+#earningsContent .earnings-stat-card > strong {
+  position: relative;
+  display: block;
+  color: #173e34;
+  font-size: clamp(25px, 2.4vw, 33px);
+  font-weight: 850;
+  line-height: 1.35;
+  letter-spacing: -.7px;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+
+/* وصف الفترة */
+#earningsContent .earnings-stat-card > small {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: fit-content;
+  padding: 6px 11px;
+  color: var(--card-accent);
+  background: var(--card-accent-soft);
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* تحسين العرض على التابلت والموبايل */
+@media (max-width: 760px) {
+  #earningsContent .earnings-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 13px;
+  }
+
+  #earningsContent .earnings-stat-card {
+    min-height: 155px;
+    padding: 19px;
+  }
+}
+
+@media (max-width: 480px) {
+  #earningsContent .earnings-stats {
+    grid-template-columns: 1fr;
+  }
+
+  #earningsContent .earnings-stat-card {
+    min-height: 145px;
+  }
+}
+
+/* Fix platform earnings chart scrolling */
+#earningsContent .earnings-chart-card {
+  overflow: hidden !important;
+}
+
+#earningsContent .earnings-chart {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: hidden !important;
+}
+
+#earningsContent .earnings-chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+
+
+/* =========================================
+   كروت طلبات سحب الأرباح
+========================================= */
+
+.withdrawals-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 22px;
+}
+
+.withdrawal-card {
+  position: relative;
+  background: #fff;
+  border: 1px solid #e9e5dc;
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 4px 16px rgba(18, 61, 50, 0.055);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden;
+}
+
+.withdrawal-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 4px;
+  height: 100%;
+  background: #c5a45b;
+}
+
+.withdrawal-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 9px 24px rgba(18, 61, 50, 0.10);
+}
+
+/* رأس الكارت */
+
+.withdrawal-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 17px;
+  border-bottom: 1px solid #f0ede6;
+}
+
+.withdrawal-card-header h3 {
+  margin: 0 0 6px;
+  color: #123d32;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.withdrawal-card-header > div > span {
+  color: #8a8982;
+  font-size: 12px;
+}
+
+/* حالة الطلب */
+
+.withdrawal-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  padding: 6px 11px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  background: #f3f0e8;
+  color: #75633c;
+}
+
+.withdrawal-status.pending {
+  background: #fff5df;
+  color: #a87519;
+}
+
+.withdrawal-status.approved {
+  background: #e8f2ed;
+  color: #246548;
+}
+
+.withdrawal-status.rejected {
+  background: #f8e9e9;
+  color: #9b4141;
+}
+
+.withdrawal-status.paid {
+  background: #e9f0ed;
+  color: #123d32;
+}
+
+/* مبلغ السحب */
+
+.withdrawal-amount {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  margin: 19px 0;
+  color: #123d32;
+  font-size: 28px;
+  font-weight: 800;
+  direction: rtl;
+}
+
+.withdrawal-amount span {
+  color: #a58a50;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* بيانات الطلب */
+
+.withdrawal-details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 12px;
+}
+
+.withdrawal-details > div {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 11px 12px;
+  background: #faf9f6;
+  border: 1px solid #f0ede6;
+  border-radius: 11px;
+}
+
+.withdrawal-details > div > span {
+  color: #89877f;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.withdrawal-details > div > strong {
+  color: #343b36;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.withdrawal-details .withdrawal-notes {
+  grid-column: 1 / -1;
+  background: #fbf6f7;
+  border-color: #eadde0;
+}
+
+.withdrawal-details .withdrawal-notes strong {
+  color: #783f4c;
+}
+
+@media (max-width: 1000px) {
+  .withdrawals-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* الشاشات الصغيرة */
+
+@media (max-width: 600px) {
+  .withdrawals-list {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .withdrawal-card {
+    padding: 17px;
+  }
+
+  .withdrawal-details {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .withdrawal-amount {
+    font-size: 25px;
+  }
+}
+
+
+
+/* =====================================================
+   WITHDRAWAL MODALS — PREMIUM ADMIN DESIGN
+   ===================================================== */
+
+   .withdrawal-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 10050;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(10, 27, 22, .76);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+    overflow-y: auto;
+  }
+  
+  .withdrawal-modal-backdrop[hidden] {
+    display: none !important;
+  }
+  
+  /* Main dialog */
+  
+  .withdrawal-modal-dialog {
+    position: relative;
+    width: min(100%, 590px);
+    max-height: min(90vh, 820px);
+    overflow-y: auto;
+    background: #fffefa;
+    border: 1px solid rgba(190, 157, 91, .35);
+    border-radius: 24px;
+    box-shadow:
+      0 30px 90px rgba(0, 0, 0, .30),
+      0 4px 18px rgba(18, 61, 50, .10);
+    animation: withdrawalDialogEnter .28s cubic-bezier(.2,.8,.2,1);
+  }
+  
+  @keyframes withdrawalDialogEnter {
+    from {
+      opacity: 0;
+      transform: translateY(22px) scale(.97);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+  
+  /* Header */
+  
+  .withdrawal-modal-header {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 28px 30px 25px;
+    background:
+      radial-gradient(circle at 90% 0%, rgba(199, 166, 105, .16), transparent 38%),
+      linear-gradient(135deg, #123d32, #174c3e);
+    color: #fff;
+    border-bottom: 3px solid #c5a568;
+  }
+  
+  .withdrawal-modal-header > div {
+    min-width: 0;
+  }
+  
+  .withdrawal-modal-header .book-details-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 11px;
+    color: #e1c78f;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .35px;
+  }
+  
+  .withdrawal-modal-header h2 {
+    margin: 0;
+    color: #fff;
+    font-size: 23px;
+    font-weight: 900;
+    line-height: 1.5;
+  }
+  
+  .withdrawal-modal-header p {
+    margin: 7px 0 0;
+    color: rgba(255,255,255,.76);
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  
+  .withdrawal-modal-header .user-modal-close {
+    flex: 0 0 38px;
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255,255,255,.22);
+    border-radius: 12px;
+    background: rgba(255,255,255,.10);
+    color: #fff;
+    font-size: 25px;
+    cursor: pointer;
+    transition: .2s ease;
+  }
+  
+  .withdrawal-modal-header .user-modal-close:hover {
+    background: #70404a;
+    border-color: #70404a;
+    transform: rotate(90deg);
+  }
+  
+  /* Body */
+  
+  .withdrawal-modal-body {
+    padding: 27px 30px 30px;
+  }
+  
+  /* Details panel */
+  
+  .withdrawal-modal-details {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 25px;
+  }
+  
+  .withdrawal-modal-details > div {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 15px 16px;
+    background: #f8f6f0;
+    border: 1px solid #ece5d7;
+    border-radius: 15px;
+    transition: .2s ease;
+  }
+  
+  .withdrawal-modal-details > div:hover {
+    border-color: #c8ae79;
+    background: #fbf9f3;
+  }
+  
+  .withdrawal-modal-details span {
+    color: #858074;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  
+  .withdrawal-modal-details strong {
+    max-width: 100%;
+    color: #183e33;
+    font-size: 14px;
+    font-weight: 900;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+  }
+  
+  /* Highlight amount */
+  
+  #withdrawalCompleteDetails > div:first-child,
+  #withdrawalRejectDetails > div:first-child {
+    grid-column: 1 / -1;
+    position: relative;
+    overflow: hidden;
+    padding: 19px 20px;
+    background: linear-gradient(120deg, #123d32, #1d5947);
+    border: 0;
+  }
+  
+  #withdrawalCompleteDetails > div:first-child::after,
+  #withdrawalRejectDetails > div:first-child::after {
+    content: "جنيه";
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255,255,255,.16);
+    font-size: 28px;
+    font-weight: 900;
+  }
+  
+  #withdrawalCompleteDetails > div:first-child span,
+  #withdrawalRejectDetails > div:first-child span {
+    color: #e0c88f;
+  }
+  
+  #withdrawalCompleteDetails > div:first-child strong,
+  #withdrawalRejectDetails > div:first-child strong {
+    color: #fff;
+    font-size: 25px;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+  }
+  
+  /* Upload label */
+  
+  .withdrawal-upload-label,
+  .withdrawal-reason-label {
+    display: block;
+    margin-bottom: 11px;
+    color: #243d33;
+    font-size: 14px;
+    font-weight: 900;
+  }
+  
+  .withdrawal-upload-label span,
+  .withdrawal-reason-label span {
+    color: #9a4653;
+  }
+  
+  /* Upload zone */
+  
+  .withdrawal-upload-box {
+    min-height: 160px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 23px;
+    border: 2px dashed #c6aa70;
+    border-radius: 18px;
+    background:
+      radial-gradient(circle at 50% 0%, rgba(197,165,104,.10), transparent 65%),
+      #fbfaf5;
+    text-align: center;
+    cursor: pointer;
+    transition: .22s ease;
+  }
+  
+  .withdrawal-upload-box:hover {
+    border-color: #174c3e;
+    background-color: #f1f5ef;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(18,61,50,.07);
+  }
+  
+  .withdrawal-upload-icon {
+    width: 49px;
+    height: 49px;
+    display: grid;
+    place-items: center;
+    border-radius: 15px;
+    background: #e8eee8;
+    color: #174c3e;
+    font-size: 29px;
+    font-weight: 700;
+    transition: .2s ease;
+  }
+  
+  .withdrawal-upload-box:hover .withdrawal-upload-icon {
+    background: #174c3e;
+    color: #fff;
+    transform: translateY(-3px);
+  }
+  
+  .withdrawal-upload-box strong {
+    color: #174638;
+    font-size: 14px;
+    font-weight: 900;
+  }
+  
+  .withdrawal-upload-box small {
+    color: #8a8579;
+    font-size: 11px;
+    line-height: 1.7;
+  }
+  
+  /* Receipt preview */
+  
+  .withdrawal-proof-preview {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 15px;
+    padding: 14px;
+    border: 1px solid #dce7dc;
+    border-radius: 15px;
+    background: #f3f8f2;
+  }
+  
+  .withdrawal-proof-preview[hidden] {
+    display: none !important;
+  }
+  
+  .withdrawal-proof-preview img {
+    flex: 0 0 82px;
+    width: 82px;
+    height: 82px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid #d6dfd2;
+    background: #fff;
+  }
+  
+  .withdrawal-proof-preview > div {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  
+  .withdrawal-proof-preview strong {
+    color: #174638;
+    font-size: 13px;
+    font-weight: 900;
+    overflow-wrap: anywhere;
+  }
+  
+  .withdrawal-proof-preview small {
+    color: #788274;
+    font-size: 11px;
+  }
+  
+  /* Rejection textarea */
+  
+  #withdrawalRejectReason {
+    display: block;
+    width: 100%;
+    min-height: 135px;
+    padding: 15px 16px;
+    border: 1px solid #ded8cc;
+    border-radius: 15px;
+    outline: none;
+    resize: vertical;
+    background: #fff;
+    color: #263c33;
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 1.9;
+    transition: .2s ease;
+  }
+  
+  #withdrawalRejectReason::placeholder {
+    color: #aaa397;
+  }
+  
+  #withdrawalRejectReason:focus {
+    border-color: #174c3e;
+    box-shadow: 0 0 0 4px rgba(23,76,62,.08);
+  }
+  
+  .rejection-hint {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    margin: 12px 0 0;
+    padding: 12px 14px;
+    border: 1px solid #ead9dc;
+    border-radius: 12px;
+    background: #fbf3f4;
+    color: #78444d;
+    font-size: 11px;
+    line-height: 1.9;
+  }
+  
+  /* Footer actions */
+  
+  .withdrawal-modal-actions {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    margin-top: 25px;
+    padding-top: 21px;
+    border-top: 1px solid #eee9df;
+  }
+  
+  .withdrawal-modal-actions .btn {
+    min-height: 47px;
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 20px;
+    border-radius: 13px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: .2s ease;
+  }
+  
+  .withdrawal-modal-actions .btn-light {
+    border: 1px solid #e3ddd1;
+    background: #f5f2ec;
+    color: #615b50;
+  }
+  
+  .withdrawal-modal-actions .btn-light:hover {
+    background: #eae5db;
+    transform: translateY(-1px);
+  }
+  
+  .withdrawal-modal-actions #confirmWithdrawalComplete {
+    border: 1px solid #123d32;
+    background: #123d32;
+    color: #fff;
+  }
+  
+  .withdrawal-modal-actions #confirmWithdrawalComplete:hover:not(:disabled) {
+    background: #1b5946;
+    box-shadow: 0 7px 18px rgba(18,61,50,.18);
+    transform: translateY(-2px);
+  }
+  
+  .withdrawal-modal-actions #confirmWithdrawalReject {
+    border: 1px solid #70404a;
+    background: #70404a;
+    color: #fff;
+  }
+  
+  .withdrawal-modal-actions #confirmWithdrawalReject:hover:not(:disabled) {
+    background: #873f4d;
+    box-shadow: 0 7px 18px rgba(112,64,74,.18);
+    transform: translateY(-2px);
+  }
+  
+  .withdrawal-modal-actions .btn:disabled {
+    opacity: .42;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+  }
+  
+  /* Scrollbar */
+  
+  .withdrawal-modal-dialog {
+    scrollbar-width: thin;
+    scrollbar-color: #c7b17e #f5f1e8;
+  }
+  
+  .withdrawal-modal-dialog::-webkit-scrollbar {
+    width: 7px;
+  }
+  
+  .withdrawal-modal-dialog::-webkit-scrollbar-thumb {
+    background: #c7b17e;
+    border-radius: 10px;
+  }
+  
+  .withdrawal-modal-dialog::-webkit-scrollbar-track {
+    background: #f5f1e8;
+  }
+  
+  /* Mobile */
+  
+  @media (max-width: 600px) {
+    .withdrawal-modal-backdrop {
+      padding: 12px;
+    }
+  
+    .withdrawal-modal-dialog {
+      width: 100%;
+      max-height: 94vh;
+      border-radius: 19px;
+    }
+  
+    .withdrawal-modal-header {
+      padding: 22px 19px;
+    }
+  
+    .withdrawal-modal-header h2 {
+      font-size: 19px;
+    }
+  
+    .withdrawal-modal-header p {
+      font-size: 11px;
+    }
+  
+    .withdrawal-modal-body {
+      padding: 20px 17px 22px;
+    }
+  
+    .withdrawal-modal-details {
+      gap: 9px;
+    }
+  
+    .withdrawal-modal-details > div {
+      padding: 12px;
+    }
+  
+    #withdrawalCompleteDetails > div:first-child strong,
+    #withdrawalRejectDetails > div:first-child strong {
+      font-size: 22px;
+    }
+  
+    .withdrawal-modal-actions {
+      gap: 8px;
+    }
+  
+    .withdrawal-modal-actions .btn {
+      padding-inline: 10px;
+      font-size: 12px;
+    }
+  }
+
+  
+
+/* إصلاح موضع السكرول بار داخل نافذة السحب */
+
+.withdrawal-modal-dialog {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: #bda36d #f3f0e8;
+  padding-left: 5px;
+}
+
+.withdrawal-modal-dialog::-webkit-scrollbar {
+  width: 10px;
+}
+
+.withdrawal-modal-dialog::-webkit-scrollbar-track {
+  margin-block: 18px;
+  background: #f3f0e8;
+  border-radius: 20px;
+}
+
+.withdrawal-modal-dialog::-webkit-scrollbar-thumb {
+  background: #bda36d;
+  border-radius: 20px;
+  border: 1px solid #fffefa;
+}
+
+.withdrawal-modal-dialog::-webkit-scrollbar-thumb:hover {
+  background: #123d32;
+}
+
+
+/* تثبيت ارتفاع حقل سبب رفض طلب السحب */
+
+#withdrawalRejectReason {
+  height: 135px;
+  min-height: 135px;
+  max-height: 135px;
+  resize: none;
+  overflow-y: auto;
+}
+
+
+/* =========================================
+   تنسيق أزرار الموافقة والرفض لطلبات السحب
+========================================= */
+
+.withdrawal-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.withdrawal-actions button {
+  min-width: 105px;
+  padding: 10px 18px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.withdrawal-actions button:hover {
+  transform: translateY(-2px);
+}
+
+.withdrawal-actions button:active {
+  transform: translateY(0);
+}
+
+/* زر الموافقة */
+.withdrawal-actions button[data-withdrawal-action="approve"] {
+  color: #fff;
+  background: #123d32;
+  border-color: #123d32;
+  box-shadow: 0 3px 9px rgba(18, 61, 50, 0.13);
+}
+
+.withdrawal-actions button[data-withdrawal-action="approve"]:hover {
+  background: #195443;
+  border-color: #195443;
+  box-shadow: 0 5px 13px rgba(18, 61, 50, 0.2);
+}
+
+/* زر الرفض */
+.withdrawal-actions button[data-withdrawal-action="reject"] {
+  color: #873c4c;
+  background: #fff7f7;
+  border-color: #ead2d8;
+}
+
+.withdrawal-actions button[data-withdrawal-action="reject"]:hover {
+  color: #fff;
+  background: #873c4c;
+  border-color: #873c4c;
+  box-shadow: 0 5px 13px rgba(135, 60, 76, 0.18);
+}
+
+/* تحسين العرض على الشاشات الصغيرة */
+@media (max-width: 480px) {
+  .withdrawal-actions button {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+
+/* تقليل ارتفاع كروت طلبات السحب */
+
+.withdrawal-card {
+  padding: 14px 18px !important;
+}
+
+.withdrawal-card-header {
+  margin-bottom: 8px !important;
+}
+
+.withdrawal-amount {
+  margin: 8px 0 !important;
+}
+
+.withdrawal-details {
+  gap: 10px 16px !important;
+}
+
+.withdrawal-actions {
+  margin-top: 12px !important;
+}
+
+/* منع كروت السحب من التمدد رأسيًا */
+
+.withdrawals-list {
+  align-items: start !important;
+}
+
+.withdrawal-card {
+  height: fit-content !important;
+  align-self: start !important;
+  min-height: 0 !important;
+}
+
+
+/* توحيد الارتفاع الفعلي لجميع كروت السحب */
+
+.withdrawal-card {
+  height: 390px !important;
+  min-height: 390px !important;
+  max-height: 390px !important;
+  box-sizing: border-box;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.withdrawal-card .withdrawal-actions {
+  margin-top: auto;
+  flex-shrink: 0;
+}
+
+
+/* السكرول بار الذهبي داخل كروت طلبات السحب */
+
+.withdrawal-card {
+  scrollbar-width: thin;
+  scrollbar-color: #bda36d transparent;
+}
+
+.withdrawal-card::-webkit-scrollbar {
+  width: 10px;
+}
+
+.withdrawal-card::-webkit-scrollbar-track {
+  background: transparent;
+  margin-block: 12px;
+}
+
+.withdrawal-card::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    #d8c18d,
+    #a98b50
+  );
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+}
+
+.withdrawal-card::-webkit-scrollbar-thumb:hover {
+  background: #123d32;
+}
+
+
+/* =========================================
+   شريط التنقل بين طلبات السحب والسجل
+========================================= */
+
+.withdrawals-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 22px;
+}
+
+.withdrawals-view-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px;
+  background: #f5f1e8;
+  border: 1px solid #e8dfcd;
+  border-radius: 13px;
+}
+
+.withdrawals-view-switch button {
+  border: 0;
+  background: transparent;
+  color: #6d716c;
+  padding: 10px 20px;
+  border-radius: 9px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.withdrawals-view-switch button:hover {
+  color: #123d32;
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.withdrawals-view-switch button.active {
+  color: #fff;
+  background: #123d32;
+  box-shadow: 0 3px 9px rgba(18, 61, 50, 0.16);
+}
+
+@media (max-width: 480px) {
+  .withdrawals-view-switch {
+    width: 100%;
+  }
+
+  .withdrawals-view-switch button {
+    flex: 1;
+    padding-inline: 10px;
+  }
+}
+
+
+/* جعل زري طلبات السحب بعرض كامل */
+
+.withdrawals-toolbar {
+  width: 100%;
+}
+
+.withdrawals-view-switch {
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.withdrawals-view-switch button {
+  flex: 1;
+  text-align: center;
+}

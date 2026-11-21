@@ -432,10 +432,10 @@ if (bookIds.length > 0) {
       book_id,
       status,
       rejection_reason,
-      reviewed_at
+      submitted_at
     `)
     .in("book_id", bookIds)
-    .order("reviewed_at", { ascending: false });
+    .order("submitted_at", { ascending: false });
 
   if (revisionsError) throw revisionsError;
 
@@ -913,18 +913,41 @@ const rejectionHTML =
         ? `<span class="details-price-free">مجانية</span>`
         : `<span class="details-price-value">${escapeHTML(book.price)} ج.م</span>`;
     
-      const rejectionHTML =
-        book.status === "rejected" && book.rejection_reason
+        const rejectedRevision =
+        book.latestRevision?.status === "rejected"
+          ? book.latestRevision
+          : null;
+      
+      const rejectionHTML = [
+        book.status === "rejected"
           ? `
             <div class="details-rejection">
               <div class="details-rejection-title">
                 <span>!</span>
                 سبب رفض الرواية
               </div>
-              <p>${escapeHTML(book.rejection_reason)}</p>
+              <p>${escapeHTML(
+                book.rejection_reason || "لم يذكر الأدمن سببًا للرفض."
+              )}</p>
             </div>
           `
-          : "";
+          : "",
+      
+        rejectedRevision
+          ? `
+            <div class="details-rejection">
+              <div class="details-rejection-title">
+                <span>!</span>
+                تم رفض التعديلات المقترحة
+              </div>
+              <p>${escapeHTML(
+                rejectedRevision.rejection_reason ||
+                "لم يذكر الأدمن سببًا لرفض التعديلات."
+              )}</p>
+            </div>
+          `
+          : ""
+      ].join("");
 
 
           $("detailsHeaderStatus").innerHTML = `
@@ -2190,10 +2213,31 @@ if (
             }
           );
       
-          if (priceError) {
-            console.error("Published book price update error:", priceError);
-            throw new Error("تعذر تحديث سعر الرواية.");
-          }
+          
+if (priceError) {
+  console.error("Published book price update error:", priceError);
+
+  const errorMessage = (
+    priceError.message ||
+    priceError.details ||
+    priceError.hint ||
+    ""
+  ).toLowerCase();
+
+  if (
+    errorMessage.includes("لا يمكن نشر رواية مدفوعة") ||
+    errorMessage.includes("حساب سحب صالح") ||
+    errorMessage.includes("شروط الأرباح")
+  ) {
+    throw new Error(
+      "لا يمكن تحويل الرواية إلى مدفوعة قبل إضافة حساب سحب صالح والموافقة على شروط توزيع الأرباح (80% للكاتب و20% للمنصة). انتقل إلى حساب السحب وأكمل بياناتك أولًا."
+    );
+  }
+
+  throw new Error(
+    priceError.message || "تعذر تحديث سعر الرواية. حاول مرة أخرى."
+  );
+}
       
           publishedPriceUpdated = true;
         }
@@ -2428,6 +2472,56 @@ if (
     });
 
 
+    
+let payoutAccountIsValid = false;
+
+function isPayoutAccountValid(data) {
+  if (!data) return false;
+
+  const accountName = (data.account_name || "").trim();
+  const accountIdentifier = (data.account_identifier || "").trim();
+
+  if (
+    !accountName ||
+    !accountIdentifier ||
+    !["instapay", "wallet"].includes(data.payout_method) ||
+    data.terms_accepted !== true ||
+    !data.terms_accepted_at ||
+    !data.accepted_terms_at
+  ) {
+    return false;
+  }
+
+  if (data.payout_method === "instapay") {
+    return Boolean((data.instapay_address || "").trim());
+  }
+
+  if (data.payout_method === "wallet") {
+    return Boolean(
+      (data.wallet_type || "").trim() &&
+      (data.wallet_phone || "").trim()
+    );
+  }
+
+  return false;
+}
+
+function updatePaidBookPayoutNotice() {
+  const freeCheckbox = $("bookFree");
+  const priceInput = $("bookPrice");
+  const notice = $("paidBookPayoutNotice");
+
+  if (!freeCheckbox || !priceInput || !notice) return;
+
+  const isPaid =
+    !freeCheckbox.checked &&
+    Number(priceInput.value) > 0;
+
+  notice.hidden = !(isPaid && !payoutAccountIsValid);
+}
+
+
+
     // -------------------------------------------------------
   // التحكم في سعر الرواية المجانية أو المدفوعة
   // -------------------------------------------------------
@@ -2453,6 +2547,8 @@ if (
     }
 
     priceField.classList.toggle("is-free", isFree);
+
+    updatePaidBookPayoutNotice();
   }
 
   $("bookFree").addEventListener("change", syncBookPriceField);
@@ -2703,6 +2799,10 @@ if (
       targetPanel.hidden = false;
       targetPanel.classList.add("active");
 
+      if (tab === "earnings") {
+        loadEarningsSummary();
+      }
+
       document.querySelectorAll(".sidebar-nav [data-tab]")
         .forEach((link) => {
           const isActive = link.dataset.tab === tab;
@@ -2759,32 +2859,1331 @@ if (
     // 18. بدء تشغيل اللوحة
     // -------------------------------------------------------
   
+
     async function initDashboard() {
       try {
         const allowed = await loadCurrentUser();
-  
+    
         if (!allowed || !currentUser) return;
-  
+    
         await Promise.all([
           loadCategories(),
           loadMyBooks()
         ]);
-
+    
+        await loadPayoutAccount();
+    
         initAddCategoryDropdown();
-  
+
+        // لو لوحة الكاتب بدأت على تاب الأرباح، حمّل بياناته بعد تسجيل الدخول
+        const earningsPanel = document.querySelector(
+          '[data-tab-panel="earnings"]'
+        );
+        
+        if (earningsPanel && !earningsPanel.hidden) {
+          await loadEarningsSummary();
+        }
+    
       } catch (error) {
         console.error(
           "Dashboard initialization error:",
           error
         );
-  
+    
         showMessage(
           error.message || "تعذر تشغيل لوحة الكاتب.",
           "error"
         );
       }
     }
+
+
+    function initPayoutWalletDropdown() {
+      const dropdown = $("payoutWalletDropdown");
+      const select = $("payoutWalletType");
+      const trigger = $("payoutWalletTrigger");
+      const menu = $("payoutWalletMenu");
+      const label = $("payoutWalletLabel");
+    
+      if (!dropdown || !select || !trigger || !menu || !label) return;
+    
+      function closeDropdown() {
+        dropdown.classList.remove("is-open");
+        menu.hidden = true;
+        trigger.setAttribute("aria-expanded", "false");
+      }
+    
+      function syncDropdown() {
+        const selectedOption = select.options[select.selectedIndex];
+    
+        label.textContent = selectedOption
+          ? selectedOption.textContent
+          : "اختر المحفظة";
+    
+        menu.querySelectorAll(".payout-wallet-option").forEach(option => {
+          const selected = option.dataset.value === select.value;
+    
+          option.classList.toggle("is-selected", selected);
+          option.setAttribute("aria-selected", String(selected));
+        });
+    
+        trigger.disabled = select.disabled;
+      }
+    
+      function openDropdown() {
+        if (select.disabled) return;
+    
+        menu.hidden = false;
+        dropdown.classList.add("is-open");
+        trigger.setAttribute("aria-expanded", "true");
+      }
+    
+      Array.from(select.options).forEach(option => {
+        if (!option.value) return;
+    
+        const button = document.createElement("button");
+    
+        button.type = "button";
+        button.className = "payout-wallet-option";
+        button.textContent = option.textContent;
+        button.dataset.value = option.value;
+        button.setAttribute("role", "option");
+    
+        button.addEventListener("click", () => {
+          select.value = option.value;
+    
+          select.dispatchEvent(
+            new Event("change", { bubbles: true })
+          );
+    
+          syncDropdown();
+          closeDropdown();
+        });
+    
+        menu.appendChild(button);
+      });
+    
+      trigger.addEventListener("click", () => {
+        if (menu.hidden) {
+          openDropdown();
+        } else {
+          closeDropdown();
+        }
+      });
+    
+      document.addEventListener("click", event => {
+        if (!dropdown.contains(event.target)) {
+          closeDropdown();
+        }
+      });
+    
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape") {
+          closeDropdown();
+        }
+      });
+    
+      select.addEventListener("change", syncDropdown);
+    
+      syncDropdown();
+    
+      return syncDropdown;
+    }
+
+
+
+
+
+let earningsSalesData = [];
+let earningsChartMode = "sales";
+let earningsChartControlsInitialized = false;
+
+// إنشاء عنصر SVG
+function createChartElement(tag, attributes = {}) {
+  const element = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    tag
+  );
+
+  Object.entries(attributes).forEach(([key, value]) => {
+    element.setAttribute(key, value);
+  });
+
+  return element;
+}
+
+// بداية الأسبوع: الاثنين
+function formatChartDate(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+
+
+
+
+function getWeekStart(date) {
+  const result = new Date(date);
+  result.setHours(0, 0, 0, 0);
+
+  const day = result.getDay();
+  result.setDate(result.getDate() - (day === 0 ? 6 : day - 1));
+
+  return result;
+}
+
+
+
+function getEarningsChartBuckets(period) {
+  const now = new Date();
+  const buckets = [];
+
+  const formatDate = date =>
+    date.toLocaleDateString("ar-EG", {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    });
+
   
-    initDashboard();
+  // اليومي: اليوم كاملًا، نقطة كل 4 ساعات
+  if (period === "daily") {
+    const today = new Date(now);
+    today.setHours(0, 0, 0, 0);
+
+    for (let i = 0; i < 6; i++) {
+      const start = new Date(today);
+      start.setHours(i * 4);
+
+      const end = new Date(start);
+      end.setHours(end.getHours() + 4);
+
+      const startHour = String(i * 4).padStart(2, "0");
+      const endHour = String((i + 1) * 4).padStart(2, "0");
+
+      buckets.push({
+        key: `${start.toLocaleDateString("en-CA")}-${i * 4}`,
+        label: `${startHour}:00`,
+        tooltipLabel: `${startHour}:00 — ${endHour}:00`,
+        value: 0,
+        salesCount: 0,
+        authorEarning: 0,
+        start,
+        end
+      });
+    }
+  }
+
+
+  // الأسبوعي: آخر 7 أيام، نقطة لكل يوم
+  if (period === "weekly") {
+    const today = new Date(now);
+    today.setHours(0, 0, 0, 0);
+
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(today.getDate() - i);
+
+      buckets.push({
+        key: date.toLocaleDateString("en-CA"),
+        label: date.toLocaleDateString("ar-EG", {
+          weekday: "short",
+          day: "numeric"
+        }),
+        tooltipLabel: formatDate(date),
+        value: 0,
+        salesCount: 0,
+        authorEarning: 0,
+        start: date,
+        end: new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1)
+      });
+    }
+  }
+
+  // الشهري: آخر 12 شهرًا
+  if (period === "monthly") {
+    const firstMonth = new Date(
+      now.getFullYear(),
+      now.getMonth() - 11,
+      1
+    );
+
+    for (let i = 0; i < 12; i++) {
+      const date = new Date(
+        firstMonth.getFullYear(),
+        firstMonth.getMonth() + i,
+        1
+      );
+
+      const monthLabel = date.toLocaleDateString("ar-EG", {
+        month: "long",
+        year: "numeric"
+      });
+
+      buckets.push({
+        key: `${date.getFullYear()}-${date.getMonth()}`,
+        label: date.toLocaleDateString("ar-EG", {
+          month: "short"
+        }),
+        tooltipLabel: monthLabel,
+        value: 0,
+        salesCount: 0,
+        authorEarning: 0,
+        start: date,
+        end: new Date(date.getFullYear(), date.getMonth() + 1, 1)
+      });
+    }
+  }
+
+  // السنوي: آخر 5 سنوات
+  if (period === "yearly") {
+    const currentYear = now.getFullYear();
+
+    for (let i = 4; i >= 0; i--) {
+      const year = currentYear - i;
+
+      buckets.push({
+        key: String(year),
+        label: String(year),
+        tooltipLabel: `سنة ${year}`,
+        value: 0,
+        salesCount: 0,
+        authorEarning: 0,
+        start: new Date(year, 0, 1),
+        end: new Date(year + 1, 0, 1)
+      });
+    }
+  }
+
+  return buckets;
+}
+
+
+
+
+
+
+
+// رسم البيانات
+function renderEarningsChart() {
+  const chart = $("earningsChart");
+  const empty = $("earningsChartEmpty");
+  const loading = $("earningsChartLoading");
+  const filter = $("earningsPeriodFilter");
+
+  if (!chart || !empty || !filter) return;
+
+  if (loading) loading.hidden = true;
+
+  const period = filter.value;
+  const buckets = getEarningsChartBuckets(period);
+
+  // مفتاح التاريخ المحلي بدون التأثر بتنسيق اللغة
+  const getDateKey = date => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  };
+
+  // تحديد النقطة التي تنتمي إليها عملية البيع
+  const getBucketKey = date => {
+    if (period === "daily") {
+      const hour = Math.floor(date.getHours() / 4) * 4;
+      return `${getDateKey(date)}-${hour}`;
+    }
+
+    if (period === "weekly") {
+      return getDateKey(date);
+    }
+
+    if (period === "monthly") {
+      return `${date.getFullYear()}-${date.getMonth()}`;
+    }
+
+    return String(date.getFullYear());
+  };
+
+  // تصفير بيانات الفترات
+  buckets.forEach(bucket => {
+    bucket.salesCount = 0;
+    bucket.authorEarning = 0;
+    bucket.value = 0;
+  });
+
+  const bucketMap = new Map(
+    buckets.map((bucket, index) => [bucket.key, index])
+  );
+
+  // توزيع المبيعات على الفترات الصحيحة
+  earningsSalesData.forEach(item => {
+    if (!item.sold_at) return;
+
+    const date = new Date(item.sold_at);
+
+    if (Number.isNaN(date.getTime())) return;
+
+    const index = bucketMap.get(getBucketKey(date));
+
+    if (index === undefined) return;
+
+    const bucket = buckets[index];
+
+    bucket.salesCount += 1;
+
+    const earning = Number(item.author_earning || 0);
+
+    bucket.authorEarning += earning;
+    bucket.value += earning;
+  });
+
+  // إظهار الرسم حتى لو كل القيم صفر
+  chart.hidden = false;
+  empty.hidden = true;
+
+  const width = 900;
+  const height = 320;
+
+  const margin = {
+    top: 25,
+    right: 25,
+    bottom: 55,
+    left: 75
+  };
+
+  const plotWidth = width - margin.left - margin.right;
+  const plotHeight = height - margin.top - margin.bottom;
+
+  // مقياس رأسي ديناميكي يبدأ من صفر
+  const maxValue = Math.max(
+    ...buckets.map(bucket => bucket.value),
+    0
+  );
+
+  const rawStep = Math.max(maxValue / 5, 1);
+  const magnitude = Math.pow(10, Math.floor(Math.log10(rawStep)));
+  const normalizedStep = rawStep / magnitude;
+
+  const niceStep = normalizedStep <= 1 ? 1
+    : normalizedStep <= 2 ? 2
+    : normalizedStep <= 5 ? 5
+    : 10;
+
+  const axisStep = niceStep * magnitude;
+  const roundedMax = axisStep * 5;
+
+  // حساب أماكن النقاط
+  const points = buckets.map((bucket, index) => {
+    const x = buckets.length === 1
+      ? width / 2
+      : margin.left + (index / (buckets.length - 1)) * plotWidth;
+
+    const y = margin.top + plotHeight -
+      (bucket.value / roundedMax) * plotHeight;
+
+    return { x, y, bucket };
+  });
+
+  const svg = createChartElement("svg", {
+    viewBox: `0 0 ${width} ${height}`,
+    width: "100%",
+    height: "100%",
+    role: "img",
+    "aria-label": "رسم بياني لأرباح الكاتب"
+  });
+
+  // خطوط الخلفية وتدريج المحور الرأسي
+  for (let i = 0; i <= 5; i++) {
+    const y = margin.top + (plotHeight / 5) * (5 - i);
+
+    svg.appendChild(createChartElement("line", {
+      x1: margin.left,
+      y1: y,
+      x2: width - margin.right,
+      y2: y,
+      stroke: "#e8eeeb",
+      "stroke-width": 1
+    }));
+
+    const value = axisStep * i;
+
+    const label = createChartElement("text", {
+      x: margin.left - 12,
+      y: y + 5,
+      "text-anchor": "end",
+      fill: "#89938f",
+      "font-size": 13
+    });
+
+    label.textContent = Math.round(value).toLocaleString("ar-EG");
+    svg.appendChild(label);
+  }
+
+  // الخط البياني
+  const pathData = points.map((point, index) =>
+    `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`
+  ).join(" ");
+
+  svg.appendChild(createChartElement("path", {
+    d: pathData,
+    fill: "none",
+    stroke: "#104b3d",
+    "stroke-width": 4,
+    "stroke-linecap": "round",
+    "stroke-linejoin": "round"
+  }));
+
+  // تنسيق المبالغ
+  const formatMoney = amount =>
+    new Intl.NumberFormat("ar-EG", {
+      maximumFractionDigits: 2
+    }).format(amount);
+
+  // تجهيز نافذة التفاصيل
+  const tooltip = document.createElement("div");
+  tooltip.className = "earnings-chart-tooltip";
+
+  tooltip.innerHTML = `
+    <span class="earnings-tooltip-date"></span>
+
+    <div class="earnings-tooltip-row">
+      <span class="earnings-tooltip-label">النسخ المباعة</span>
+      <span class="earnings-tooltip-value tooltip-sales-count"></span>
+    </div>
+
+    <div class="earnings-tooltip-divider"></div>
+
+    <div class="earnings-tooltip-row">
+      <span class="earnings-tooltip-label">إجمالي أرباحك</span>
+      <span class="earnings-tooltip-value tooltip-author-earning"></span>
+    </div>
+  `;
+
+  const tooltipDate = tooltip.querySelector(".earnings-tooltip-date");
+  const tooltipSales = tooltip.querySelector(".tooltip-sales-count");
+  const tooltipEarning = tooltip.querySelector(".tooltip-author-earning");
+
+  const showTooltip = (event, bucket) => {
+    tooltipDate.textContent = bucket.tooltipLabel || bucket.label;
+
+    tooltipSales.textContent =
+      `${bucket.salesCount.toLocaleString("ar-EG")} نسخة`;
+
+    tooltipEarning.textContent =
+      `${formatMoney(bucket.authorEarning)} جنيه`;
+
+    const rect = chart.getBoundingClientRect();
+
+    let x = event.clientX - rect.left;
+    let y = event.clientY - rect.top - tooltip.offsetHeight - 14;
+
+    const halfWidth = tooltip.offsetWidth / 2;
+
+    x = Math.max(
+      halfWidth + 8,
+      Math.min(x, chart.clientWidth - halfWidth - 8)
+    );
+
+    if (y < 8) {
+      y = event.clientY - rect.top + 18;
+    }
+
+    tooltip.style.left = `${x}px`;
+    tooltip.style.top = `${y}px`;
+    tooltip.style.transform = "translate(-50%, 0)";
+
+    tooltip.classList.add("visible");
+  };
+
+  // النقاط وتسميات المحور الأفقي
+  points.forEach(point => {
+    const circle = createChartElement("circle", {
+      cx: point.x,
+      cy: point.y,
+      r: 6,
+      fill: "#104b3d",
+      stroke: "#ffffff",
+      "stroke-width": 2,
+      style: "cursor: pointer"
+    });
+
+    circle.addEventListener("mouseenter", event => {
+      showTooltip(event, point.bucket);
+    });
+
+    circle.addEventListener("mousemove", event => {
+      showTooltip(event, point.bucket);
+    });
+
+    circle.addEventListener("mouseleave", () => {
+      tooltip.classList.remove("visible");
+    });
+
+    svg.appendChild(circle);
+
+    const label = createChartElement("text", {
+      x: point.x,
+      y: height - 20,
+      "text-anchor": "middle",
+      fill: "#89938f",
+      "font-size": 13
+    });
+
+    label.textContent = point.bucket.label;
+    svg.appendChild(label);
+  });
+
+  chart.replaceChildren(svg, tooltip);
+}
+
+
+
+
+
+
+
+// ربط أزرار التبديل وفلتر الفترة والقائمة المخصصة
+function initEarningsChartControls() {
+  if (earningsChartControlsInitialized) return;
+
+  const filter = $("earningsPeriodFilter");
+  const buttons = document.querySelectorAll("[data-chart-mode]");
+
+  // أزرار تبديل وضع الرسم
+  buttons.forEach(button => {
+    button.addEventListener("click", () => {
+      earningsChartMode = button.dataset.chartMode;
+
+      buttons.forEach(item => {
+        const isActive = item.dataset.chartMode === earningsChartMode;
+
+        item.classList.toggle("active", isActive);
+        item.setAttribute("aria-pressed", String(isActive));
+      });
+
+      renderEarningsChart();
+    });
+  });
+
+  // فلتر الفترة الأصلي
+  if (filter) {
+    filter.addEventListener("change", renderEarningsChart);
+  }
+
+  // القائمة المخصصة للفترة
+  const dropdown = $("earningsPeriodDropdown");
+  const trigger = $("earningsPeriodTrigger");
+  const selectedText = $("earningsPeriodSelected");
+  const menu = $("earningsPeriodMenu");
+
+  if (dropdown && trigger && selectedText && menu && filter) {
+
+    // فتح وإغلاق القائمة
+    trigger.addEventListener("click", () => {
+      const isOpen = dropdown.classList.toggle("open");
+      trigger.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    // اختيار الفترة
+    menu.querySelectorAll(".custom-period-option").forEach(option => {
+      option.addEventListener("click", () => {
+        const value = option.dataset.value;
+
+        filter.value = value;
+        selectedText.textContent = option.querySelector("span").textContent;
+
+        menu.querySelectorAll(".custom-period-option").forEach(item => {
+          const isActive = item === option;
+
+          item.classList.toggle("active", isActive);
+          item.setAttribute("aria-selected", String(isActive));
+        });
+
+        dropdown.classList.remove("open");
+        trigger.setAttribute("aria-expanded", "false");
+
+        filter.dispatchEvent(new Event("change", { bubbles: true }));
+      });
+    });
+
+    // إغلاق القائمة عند الضغط خارجها
+    document.addEventListener("click", event => {
+      if (!dropdown.contains(event.target)) {
+        dropdown.classList.remove("open");
+        trigger.setAttribute("aria-expanded", "false");
+      }
+    });
+
+    // إغلاق القائمة بزر Escape
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") {
+        dropdown.classList.remove("open");
+        trigger.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
+
+  // ضبط أزرار وضع الرسم عند التحميل
+  buttons.forEach(button => {
+    const isActive = button.dataset.chartMode === earningsChartMode;
+
+    button.classList.toggle("active", isActive);
+    button.setAttribute("aria-pressed", String(isActive));
+  });
+
+  earningsChartControlsInitialized = true;
+}
+
+
+
+
+
+
+
+    async function loadEarningsSummary() {
+      
+      if (!currentUser?.id) {
+        console.error("Earnings: currentUser is not available.");
+      
+        $("salesLoading").hidden = true;
+        $("withdrawalsLoading").hidden = true;
+      
+        $("salesEmpty").hidden = false;
+        $("withdrawalsEmpty").hidden = false;
+      
+        return;
+      }
+    
+      const salesLoading = $("salesLoading");
+      const salesEmpty = $("salesEmpty");
+      const salesWrapper = $("salesTableWrapper");
+    
+      const withdrawalsLoading = $("withdrawalsLoading");
+      const withdrawalsEmpty = $("withdrawalsEmpty");
+      const withdrawalsWrapper = $("withdrawalsTableWrapper");
+    
+      salesLoading.hidden = false;
+      salesEmpty.hidden = true;
+      salesWrapper.hidden = true;
+    
+      withdrawalsLoading.hidden = false;
+      withdrawalsEmpty.hidden = true;
+      withdrawalsWrapper.hidden = true;
+    
+      const formatMoney = amount =>
+        new Intl.NumberFormat("ar-EG", {
+          style: "currency",
+          currency: "EGP",
+          maximumFractionDigits: 2
+        }).format(Number(amount || 0));
+    
+      const formatDate = value => {
+        if (!value) return "—";
+    
+        const date = new Date(value);
+    
+        if (Number.isNaN(date.getTime())) return "—";
+    
+        return date.toLocaleDateString("ar-EG", {
+          year: "numeric",
+          month: "long",
+          day: "numeric"
+        });
+      };
+    
+      const createCell = value => {
+        const cell = document.createElement("td");
+        cell.textContent = value;
+        return cell;
+      };
+    
+      try {
+
+        initEarningsChartControls();
+
+        const [
+          { data: sales, error: salesError },
+          { data: withdrawals, error: withdrawalsError },
+          { data: balance, error: balanceError }
+        ] = await Promise.all([
+          db
+            .from("author_sales")
+            .select("book_title, gross_price, author_earning, sold_at")
+            .eq("author_id", currentUser.id)
+            .order("sold_at", { ascending: false }),
+    
+          db
+            .from("author_withdrawals")
+            .select("amount, payout_method, requested_at, processed_at, status, admin_notes")
+            .eq("author_id", currentUser.id)
+            .order("requested_at", { ascending: false }),
+    
+          db.rpc("get_author_available_balance")
+        ]);
+    
+        if (salesError) throw salesError;
+        if (withdrawalsError) throw withdrawalsError;
+        if (balanceError) throw balanceError;
+
+
+        // حفظ بيانات المبيعات لاستخدامها في الرسم البياني
+        earningsSalesData = sales || [];
+
+        // تحديث الرسم البياني
+        renderEarningsChart();
+
+    
+        // ملخص المبيعات والأرباح
+        const totalSales = (sales || []).reduce(
+          (sum, item) => sum + Number(item.gross_price || 0),
+          0
+        );
+    
+        const totalEarnings = (sales || []).reduce(
+          (sum, item) => sum + Number(item.author_earning || 0),
+          0
+        );
+    
+        const salesCount = (sales || []).length;
+    
+        const reservedBalance = (withdrawals || [])
+          .filter(item => ["pending", "approved"].includes(item.status))
+          .reduce(
+            (sum, item) => sum + Number(item.amount || 0),
+            0
+          );
+    
+        $("earningsTotalSales").textContent =
+          formatMoney(totalSales);
+    
+        $("earningsTotalProfit").textContent =
+          formatMoney(totalEarnings);
+    
+        $("earningsSalesCount").textContent =
+          salesCount.toLocaleString("ar-EG");
+    
+        $("earningsBalanceTotal").textContent =
+          formatMoney(totalEarnings);
+    
+        $("earningsReservedBalance").textContent =
+          formatMoney(reservedBalance);
+    
+        $("earningsAvailableBalance").textContent =
+          formatMoney(balance ?? 0);
+    
+        // جدول المبيعات
+        const salesBody = $("salesTableBody");
+        salesBody.replaceChildren();
+    
+        if (!sales || sales.length === 0) {
+          salesEmpty.hidden = false;
+        } else {
+          sales.forEach(item => {
+            const tr = document.createElement("tr");
+    
+            tr.append(
+              createCell(item.book_title || "رواية بدون عنوان"),
+              createCell(formatMoney(item.gross_price)),
+              createCell(formatMoney(item.author_earning)),
+              createCell(formatDate(item.sold_at))
+            );
+    
+            salesBody.appendChild(tr);
+          });
+    
+          salesWrapper.hidden = false;
+        }
+    
+        // جدول السحوبات
+        const withdrawalsBody = $("withdrawalsTableBody");
+        withdrawalsBody.replaceChildren();
+    
+        const statusLabels = {
+          pending: "قيد المراجعة",
+          approved: "تمت الموافقة",
+          paid: "تم التحويل",
+          rejected: "مرفوض"
+        };
+    
+        const methodLabels = {
+          instapay: "إنستاباي",
+          wallet: "محفظة إلكترونية"
+        };
+    
+        if (!withdrawals || withdrawals.length === 0) {
+          withdrawalsEmpty.hidden = false;
+        } else {
+          withdrawals.forEach(item => {
+            const tr = document.createElement("tr");
+    
+            const statusCell = document.createElement("td");
+            statusCell.textContent =
+              statusLabels[item.status] || "غير معروف";
+                      
+            if (item.status === "rejected" && item.admin_notes) {
+              const reason = document.createElement("small");
+              reason.textContent = `سبب الرفض: ${item.admin_notes}`;
+              reason.style.display = "block";
+              reason.style.marginTop = "6px";
+              reason.style.whiteSpace = "normal";
+              statusCell.appendChild(reason);
+            }
+    
+            tr.append(
+              createCell(formatMoney(item.amount)),
+              createCell(methodLabels[item.payout_method] || "—"),
+              createCell(formatDate(item.requested_at)),
+              createCell(formatDate(item.processed_at)),
+              statusCell
+            );
+    
+            withdrawalsBody.appendChild(tr);
+          });
+    
+          withdrawalsWrapper.hidden = false;
+        }
+    
+      } catch (error) {
+        console.error("Load earnings summary error:", error);
+    
+        showMessage(
+          "تعذر تحميل بيانات الأرباح والمبيعات.",
+          "error"
+        );
+    
+      } finally {
+        salesLoading.hidden = true;
+        withdrawalsLoading.hidden = true;
+            
+        if ($("earningsChartLoading")) {
+          $("earningsChartLoading").hidden = true;
+        }
+      }
+    }
+    
+
+
+
+/* =========================================
+   واجهة اختيار وسيلة حساب السحب
+========================================= */
+
+
+function initPayoutAccountUI() {
+
+  const syncWalletDropdown = initPayoutWalletDropdown();
+
+  const form = $("payoutAccountForm");
+
+  const methods = document.querySelectorAll(
+    'input[name="payoutMethod"]'
+  );
+
+  const instaPayFields = $("instapayFields");
+  const walletFields = $("walletFields");
+
+  const instaPayInput = $("payoutInstaPay");
+  const walletType = $("payoutWalletType");
+  const walletPhone = $("payoutWalletPhone");
+
+  function updatePayoutMethod() {
+    const selected = document.querySelector(
+      'input[name="payoutMethod"]:checked'
+    )?.value;
+
+    const isWallet = selected === "wallet";
+
+    instaPayFields.hidden = isWallet;
+    walletFields.hidden = !isWallet;
+
+    instaPayInput.disabled = isWallet;
+    instaPayInput.required = !isWallet;
+
+    walletType.disabled = !isWallet;
+
+    if (syncWalletDropdown) syncWalletDropdown();
+
+    walletType.required = isWallet;
+
+    walletPhone.disabled = !isWallet;
+    walletPhone.required = isWallet;
+  }
+
+  methods.forEach(method => {
+    method.addEventListener("change", updatePayoutMethod);
+  });
+
+  updatePayoutMethod();
+
+
+  $("bookPrice").addEventListener(
+    "input",
+    updatePaidBookPayoutNotice
+  );
   
-  })();
+  $("goPayoutAccountBtn").addEventListener("click", () => {
+    go("payout-account");
+  });
+  
+  updatePaidBookPayoutNotice();
+
+
+  // تحميل بيانات حساب السحب المحفوظة
+  async function loadPayoutAccount() {
+
+    if (!currentUser?.id) return;
+
+    const { data, error } = await db
+      .from("author_payout_accounts")
+      .select("*")
+      .eq("author_id", currentUser.id)
+      .maybeSingle();
+
+    if (error) {
+      console.error("Load payout account error:", error);
+      showMessage("تعذر تحميل بيانات حساب السحب.", "error");
+
+      payoutAccountIsValid = false;
+      updatePaidBookPayoutNotice();
+
+      return;
+    }
+
+    if (!data) {
+      updatePayoutMethod();
+      payoutAccountIsValid = false;
+      updatePaidBookPayoutNotice();
+      return;
+    }
+
+    $("payoutOwnerName").value = data.owner_name || "";
+
+    const selectedMethod = document.querySelector(
+      `input[name="payoutMethod"][value="${data.payout_method}"]`
+    );
+
+    if (selectedMethod) {
+      selectedMethod.checked = true;
+    }
+
+    instaPayInput.value = data.instapay_address || "";
+
+    walletType.value = data.wallet_type || "";
+
+    walletPhone.value = data.wallet_phone || "";
+
+    $("payoutTerms").checked = data.terms_accepted === true;
+
+    payoutAccountIsValid = isPayoutAccountValid(data);
+    updatePaidBookPayoutNotice();
+
+    updatePayoutMethod();
+
+    if (syncWalletDropdown) syncWalletDropdown();
+  }
+
+
+  // حفظ بيانات حساب السحب
+  form.addEventListener("submit", async event => {
+
+    event.preventDefault();
+
+    if (!form.reportValidity()) return;
+
+    if (!currentUser?.id) {
+      showMessage("يرجى تسجيل الدخول أولاً.", "error");
+      return;
+    }
+
+    const selectedMethod = document.querySelector(
+      'input[name="payoutMethod"]:checked'
+    )?.value;
+
+    const saveButton = $("savePayoutAccountBtn");
+
+    const originalText = saveButton.textContent;
+
+    const now = new Date().toISOString();
+
+    
+const ownerName = $("payoutOwnerName").value.trim();
+
+const accountIdentifier =
+  selectedMethod === "instapay"
+    ? instaPayInput.value.trim()
+    : walletPhone.value.trim();
+
+const payload = {
+  author_id: currentUser.id,
+
+  account_name: ownerName,
+  account_identifier: accountIdentifier,
+  accepted_terms_at: now,
+
+  owner_name: ownerName,
+  payout_method: selectedMethod,
+
+  instapay_address:
+    selectedMethod === "instapay"
+      ? instaPayInput.value.trim()
+      : null,
+
+  wallet_type:
+    selectedMethod === "wallet"
+      ? walletType.value
+      : null,
+
+  wallet_phone:
+    selectedMethod === "wallet"
+      ? walletPhone.value.trim()
+      : null,
+
+  terms_accepted: $("payoutTerms").checked,
+  terms_accepted_at: now,
+  updated_at: now
+};
+
+    try {
+
+      saveButton.disabled = true;
+      saveButton.textContent = "جارٍ حفظ البيانات...";
+
+      const { error } = await db
+        .from("author_payout_accounts")
+        .upsert(payload, {
+          onConflict: "author_id"
+        });
+
+      if (error) throw error;
+
+      payoutAccountIsValid = isPayoutAccountValid(payload);
+      updatePaidBookPayoutNotice();
+
+      showMessage(
+        "تم حفظ بيانات حساب السحب بنجاح.",
+        "success"
+      );
+
+    } catch (error) {
+
+      console.error("Save payout account error:", error);
+
+      showMessage(
+        error.message || "تعذر حفظ بيانات حساب السحب.",
+        "error"
+      );
+
+    } finally {
+
+      saveButton.disabled = false;
+      saveButton.textContent = originalText;
+
+    }
+  });
+
+  return loadPayoutAccount;
+}
+
+
+
+
+
+/* =========================================
+   نظام طلب سحب الأرباح
+========================================= */
+
+function initWithdrawalUI() {
+
+  const modal = $("withdrawalModal");
+  const amountInput = $("withdrawalAmount");
+  const balanceLabel = $("withdrawalModalBalance");
+
+  const openBtn = $("requestWithdrawalBtn");
+  const closeBtn = $("closeWithdrawalModal");
+  const cancelBtn = $("cancelWithdrawalBtn");
+  const backdrop = $("withdrawalModalBackdrop");
+  const submitBtn = $("submitWithdrawalBtn");
+
+  let availableBalance = 0;
+
+  const formatMoney = amount =>
+    new Intl.NumberFormat("ar-EG", {
+      style: "currency",
+      currency: "EGP",
+      maximumFractionDigits: 2
+    }).format(Number(amount || 0));
+
+  function closeModal() {
+    modal.hidden = true;
+    amountInput.value = "";
+  }
+
+  async function openModal() {
+
+    if (!currentUser?.id) {
+      showMessage("يرجى تسجيل الدخول أولاً.", "error");
+      return;
+    }
+
+    if (!payoutAccountIsValid) {
+      showMessage(
+        "يجب حفظ بيانات حساب استلام الأرباح أولاً.",
+        "error"
+      );
+
+      go("payout-account");
+      return;
+    }
+
+    modal.hidden = false;
+    balanceLabel.textContent = "جارٍ تحميل الرصيد...";
+    amountInput.value = "";
+    amountInput.disabled = true;
+    submitBtn.disabled = true;
+
+    try {
+
+      const { data, error } = await db.rpc(
+        "get_author_available_balance"
+      );
+
+      if (error) throw error;
+
+      availableBalance = Number(data || 0);
+
+      balanceLabel.textContent = formatMoney(availableBalance);
+
+      amountInput.max = availableBalance;
+      amountInput.disabled = false;
+
+      submitBtn.disabled = availableBalance <= 0;
+
+      if (availableBalance <= 0) {
+        showMessage(
+          "لا يوجد رصيد متاح للسحب حاليًا.",
+          "error"
+        );
+      }
+
+    } catch (error) {
+
+      console.error("Load withdrawal balance error:", error);
+
+      showMessage(
+        "تعذر تحميل الرصيد المتاح. حاول مرة أخرى.",
+        "error"
+      );
+
+      closeModal();
+
+    }
+  }
+
+  openBtn.addEventListener("click", openModal);
+
+  closeBtn.addEventListener("click", closeModal);
+  cancelBtn.addEventListener("click", closeModal);
+  backdrop.addEventListener("click", closeModal);
+
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && !modal.hidden) {
+      closeModal();
+    }
+  });
+
+  amountInput.addEventListener("input", () => {
+    const amount = Number(amountInput.value);
+
+    submitBtn.disabled =
+      !amountInput.value ||
+      !Number.isFinite(amount) ||
+      amount <= 0 ||
+      amount > availableBalance;
+  });
+
+  submitBtn.addEventListener("click", async () => {
+
+    const amount = Number(amountInput.value);
+
+    if (!Number.isFinite(amount) || amount <= 0) {
+      showMessage("أدخل مبلغ سحب صحيحًا.", "error");
+      return;
+    }
+
+    if (amount > availableBalance) {
+      showMessage(
+        "مبلغ السحب أكبر من الرصيد المتاح.",
+        "error"
+      );
+      return;
+    }
+
+    const originalText = submitBtn.textContent;
+
+    try {
+
+      submitBtn.disabled = true;
+      amountInput.disabled = true;
+      submitBtn.textContent = "جارٍ إرسال الطلب...";
+
+      const { data, error } = await db.rpc(
+        "request_author_withdrawal",
+        {
+          p_amount: amount
+        }
+      );
+
+      if (error) throw error;
+
+      console.log("Withdrawal request created:", data);
+
+      closeModal();
+
+      showMessage(
+        "تم إرسال طلب السحب بنجاح، وهو الآن قيد المراجعة.",
+        "success"
+      );
+
+      await loadEarningsSummary();
+
+    } catch (error) {
+
+      console.error("Request withdrawal error:", error);
+
+      showMessage(
+        error.message || "تعذر إرسال طلب السحب. حاول مرة أخرى.",
+        "error"
+      );
+
+    } finally {
+
+      submitBtn.textContent = originalText;
+      amountInput.disabled = false;
+
+      if (!modal.hidden) {
+        submitBtn.disabled =
+          availableBalance <= 0 ||
+          !amountInput.value ||
+          Number(amountInput.value) <= 0 ||
+          Number(amountInput.value) > availableBalance;
+      }
+
+    }
+  });
+}
+
+initWithdrawalUI();
+
+
+
+
+
+const loadPayoutAccount = initPayoutAccountUI();
+
+initDashboard();
+  
+})();

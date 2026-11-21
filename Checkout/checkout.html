@@ -1,0 +1,493 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#104b3d">
+
+  <title>إتمام شراء الرواية | حكاية ورواية</title>
+
+  <link rel="icon" type="image/png" href="TabLogo.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="checkout.css">
+</head>
+
+<body>
+
+  <!-- رأس الصفحة -->
+  <header class="checkout-header">
+    <div class="checkout-header-inner">
+
+      <a href="../index.html" class="checkout-brand">
+        <img src="Logo.png" alt="حكاية ورواية">
+      </a>
+
+      <a href="../Library/library.html" class="back-to-library">
+        العودة إلى المكتبة
+        <span aria-hidden="true">←</span>
+      </a>
+
+    </div>
+  </header>
+
+
+  <!-- المحتوى الرئيسي -->
+  <main class="checkout-main">
+
+    <section class="checkout-heading">
+      <span class="checkout-kicker">خطوة جديدة نحو حكاية جديدة</span>
+
+      <h1>إتمام شراء الرواية</h1>
+
+      <p>
+        أكمل بيانات التحويل وأرسل إثبات الدفع،
+        وسنراجع طلبك لإضافة الرواية إلى مكتبتك.
+      </p>
+    </section>
+
+
+    <!-- مؤشر خطوات الشراء -->
+    <div class="checkout-steps">
+
+      <div class="checkout-step active">
+        <span class="step-number">1</span>
+        <span>بيانات الرواية</span>
+      </div>
+
+      <span class="steps-line"></span>
+
+      <div class="checkout-step active">
+        <span class="step-number">2</span>
+        <span>الدفع والتحويل</span>
+      </div>
+
+      <span class="steps-line"></span>
+
+      <div class="checkout-step">
+        <span class="step-number">3</span>
+        <span>مراجعة الطلب</span>
+      </div>
+
+    </div>
+
+
+    <div class="checkout-layout">
+
+      <!-- بيانات الرواية -->
+      <section class="checkout-book-section">
+
+        <div class="section-heading">
+          <span class="section-icon">📖</span>
+
+          <div>
+            <h2>ملخص طلبك</h2>
+            <p>تأكد من بيانات الرواية قبل إتمام الشراء.</p>
+          </div>
+        </div>
+
+
+        <div class="checkout-book-card">
+
+          <div class="checkout-book-cover-wrapper">
+
+            <img
+              id="checkoutBookCover"
+              class="checkout-book-cover"
+              src=""
+              alt="غلاف الرواية"
+              hidden
+            >
+
+            <div
+              id="checkoutCoverPlaceholder"
+              class="checkout-cover-placeholder"
+            >
+              <span>حكاية</span>
+              <strong>ورواية</strong>
+            </div>
+
+          </div>
+
+
+          <div class="checkout-book-info">
+
+            <span id="checkoutBookCategory" class="checkout-book-category">
+              جاري التحميل...
+            </span>
+
+            <h3 id="checkoutBookTitle">جاري تحميل الرواية...</h3>
+
+            <p class="checkout-author">
+              <span>✍</span>
+              <span id="checkoutBookAuthor">—</span>
+            </p>
+
+            <p
+              id="checkoutBookDescription"
+              class="checkout-book-description"
+            ></p>
+
+          </div>
+
+        </div>
+
+
+        <div class="checkout-price-card">
+
+          <div class="price-row">
+            <span>سعر الرواية</span>
+            <strong id="checkoutBookPrice">—</strong>
+          </div>
+
+          <div class="price-divider"></div>
+
+          <div class="price-row total-price-row">
+            <span>الإجمالي المطلوب</span>
+            <strong id="checkoutTotalPrice">—</strong>
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- بيانات الدفع -->
+      <section class="checkout-payment-section">
+
+        <div class="section-heading">
+          <span class="section-icon">💳</span>
+
+          <div>
+            <h2>بيانات الدفع</h2>
+            <p>اختر طريقة الدفع المناسبة لك.</p>
+          </div>
+        </div>
+
+
+        <div id="checkoutPaymentLoading" class="checkout-loading">
+          جاري تحميل طرق الدفع...
+        </div>
+
+
+        <div
+          id="checkoutPaymentMethods"
+          class="checkout-payment-methods"
+          hidden
+        >
+
+          <div class="payment-methods-heading">
+            <h3>طرق الدفع المتاحة</h3>
+            <span>اختر طريقة واحدة</span>
+          </div>
+
+          <div id="paymentMethodsList" class="payment-methods-list">
+          </div>
+
+        </div>
+
+
+        <!-- تفاصيل طريقة الدفع المختارة -->
+        <div
+          id="selectedPaymentDetails"
+          class="selected-payment-details"
+          hidden
+        >
+
+          <div class="payment-details-heading">
+            <span class="payment-details-icon">✓</span>
+
+            <div>
+              <h3 id="selectedPaymentName">بيانات التحويل</h3>
+              <p>حوّل المبلغ إلى الحساب التالي.</p>
+            </div>
+          </div>
+
+
+          <div class="payment-account-row">
+            <span>اسم صاحب الحساب</span>
+
+            <div class="copy-value">
+              <strong id="selectedAccountName">—</strong>
+
+              <button
+                type="button"
+                class="copy-button"
+                data-copy="accountName"
+                aria-label="نسخ اسم صاحب الحساب"
+              >
+                نسخ
+              </button>
+            </div>
+          </div>
+
+
+          <div class="payment-account-row">
+            <span id="selectedIdentifierLabel">رقم الحساب</span>
+
+            <div class="copy-value">
+              <strong id="selectedAccountIdentifier">—</strong>
+
+              <button
+                type="button"
+                class="copy-button"
+                data-copy="accountIdentifier"
+                aria-label="نسخ بيانات الحساب"
+              >
+                نسخ
+              </button>
+            </div>
+          </div>
+
+
+          <div
+            id="selectedPaymentInstructions"
+            class="payment-instructions"
+            hidden
+          >
+          </div>
+
+          <p class="payment-important-note">
+            تأكد من تحويل المبلغ الموضح في ملخص الطلب
+            إلى بيانات الحساب المعروضة أعلاه.
+          </p>
+
+        </div>
+
+
+
+        <!-- نموذج بيانات المشتري -->
+        <div class="checkout-form-section">
+
+          <div class="form-heading">
+            <h3>بيانات التحويل</h3>
+            <p>أدخل البيانات كما تظهر في عملية التحويل.</p>
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="buyerName">
+              اسم صاحب التحويل
+              <span>*</span>
+            </label>
+
+            <input
+              type="text"
+              id="buyerName"
+              placeholder="اكتب اسم صاحب التحويل"
+              autocomplete="name"
+              maxlength="100"
+              required
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="transferPhone">
+              رقم الهاتف المرتبط بالتحويل
+              <span>*</span>
+            </label>
+
+            <input
+              type="tel"
+              id="transferPhone"
+              placeholder="مثال: 01xxxxxxxxx"
+              autocomplete="tel"
+              minlength="11"
+              maxlength="11"
+              required
+            >
+
+            <small>
+              أدخل رقم الهاتف الذي تم التحويل منه أو المرتبط بعملية الدفع.
+            </small>
+
+          </div>
+
+
+          <div class="form-group proof-upload-group">
+
+            <label for="purchaseProof">
+              صورة إثبات التحويل
+              <span>*</span>
+            </label>
+
+
+            <label for="purchaseProof" class="proof-upload-box">
+
+              <span class="proof-upload-icon">↑</span>
+
+              <strong id="proofUploadTitle">
+                اضغط لاختيار صورة إثبات التحويل
+              </strong>
+
+              <span id="proofUploadDescription">
+                JPG أو PNG أو WebP — بحد أقصى 5 ميجابايت
+              </span>
+
+            </label>
+
+            <input
+              type="file"
+              id="purchaseProof"
+              accept="image/jpeg,image/png,image/webp"
+              hidden
+            >
+
+            <div
+              id="proofPreviewContainer"
+              class="proof-preview-container"
+              hidden
+            >
+
+              <img
+                id="proofPreview"
+                src=""
+                alt="معاينة إثبات التحويل"
+              >
+
+              <button
+                type="button"
+                id="removeProofBtn"
+                class="remove-proof-button"
+              >
+                إزالة الصورة
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <div class="checkout-confirmation-note">
+
+            <span class="confirmation-icon">ⓘ</span>
+
+            <p>
+              بعد إرسال الطلب، سيقوم فريق المنصة بمراجعة إثبات التحويل.
+              ستتم إضافة الرواية إلى مكتبتك بعد تأكيد الدفع فقط.
+            </p>
+
+          </div>
+
+
+          <div
+            id="checkoutMessage"
+            class="checkout-message"
+            role="status"
+            aria-live="polite"
+          ></div>
+
+
+          <button
+            type="button"
+            id="submitPurchaseBtn"
+            class="submit-purchase-button"
+            disabled
+          >
+            <span>إرسال طلب الشراء</span>
+            <span aria-hidden="true">←</span>
+          </button>
+
+
+          <p class="checkout-secure-note">
+            <span>🔒</span>
+            بياناتك وإثبات التحويل محفوظة بشكل آمن.
+          </p>
+
+        </div>
+
+      </section>
+
+    </div>
+
+
+    <!-- رسالة نجاح الطلب -->
+    <section
+      id="checkoutSuccess"
+      class="checkout-success"
+      hidden
+    >
+
+      <div class="success-icon">✓</div>
+
+      <span class="success-kicker">تم إرسال طلبك بنجاح</span>
+
+      <h2>طلبك الآن قيد المراجعة</h2>
+
+      <p>
+        استلمنا طلب شراء الرواية وإثبات التحويل.
+        بمجرد مراجعة الطلب وتأكيد الدفع، ستتم إضافة الرواية إلى مكتبتك.
+      </p>
+
+      <a href="../Profile/profile.html" class="success-library-button">
+        الذهاب إلى حسابي
+      </a>
+
+      <a href="../Library/library.html" class="success-back-link">
+        العودة إلى المكتبة
+      </a>
+
+    </section>
+
+
+    <!-- حالة الخطأ -->
+    <section
+      id="checkoutError"
+      class="checkout-error"
+      hidden
+    >
+
+      <div class="error-icon">!</div>
+
+      <h2 id="checkoutErrorTitle">تعذر فتح صفحة الشراء</h2>
+
+      <p id="checkoutErrorMessage">
+        حدثت مشكلة أثناء تحميل بيانات الرواية.
+      </p>
+
+      <a href="../Library/library.html" class="error-back-button">
+        العودة إلى المكتبة
+      </a>
+
+    </section>
+
+  </main>
+
+
+  <!-- تذييل الصفحة -->
+  <footer>
+    <a href="../index.html" class="checkout-brand">
+      <img src="Logo.png" alt="حكاية ورواية">
+    </a>
+    <p>مساحة عربية لكل الحكايات.</p>
+    <small>© <span id="year"></span> حكاية ورواية — جميع الحقوق محفوظة لمنصة حكاية ورواية</small>
+  </footer>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="checkout.js"></script>
+
+  <div id="global-scrollbar" aria-label="شريط تمرير الصفحة">
+    <div class="scrollbar-track">
+      <div class="scrollbar-thumb"></div>
+    </div>
+  </div>
+  
+  <link rel="stylesheet" href="/Scrollbar/global-scrollbar.css">
+  <script src="/Scrollbar/global-scrollbar.js"></script>
+
+</body>
+</html>

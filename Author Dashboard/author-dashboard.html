@@ -70,12 +70,30 @@
         </a>
 
         <a
+          href="#earnings"
+          class="nav-link"
+          data-tab="earnings"
+        >
+          <span class="nav-icon">↗</span>
+          <span>الأرباح والمبيعات</span>
+        </a>
+
+        <a
           href="#upload-section"
           class="nav-link"
           data-tab="upload-section"
         >
           <span class="nav-icon">＋</span>
           <span>إضافة رواية</span>
+        </a>
+
+        <a
+          href="#payout-account"
+          class="nav-link"
+          data-tab="payout-account"
+        >
+          <span class="nav-icon">▣</span>
+          <span>حساب السحب</span>
         </a>
 
       </nav>
@@ -373,6 +391,362 @@
 
       </section>
 
+
+
+
+      <!-- =========================================
+           تاب الأرباح والمبيعات
+      ========================================== -->
+      <section
+        id="earnings"
+        class="content-section tab-panel earnings-section"
+        data-tab-panel="earnings"
+        hidden
+      >
+
+        <div class="section-heading">
+          <div>
+            <span class="section-kicker">أداؤك المالي</span>
+            <h2>الأرباح والمبيعات</h2>
+            <p>تابع مبيعات رواياتك وأرباحك وطلبات السحب من مكان واحد.</p>
+          </div>
+
+          <div class="earnings-heading-icon">↗</div>
+        </div>
+
+        <!-- ملخص الأرباح -->
+        <section class="earnings-stats-grid" aria-label="ملخص الأرباح">
+
+          <article class="earnings-stat-card">
+            <div class="earnings-stat-icon earnings-icon-sales">▤</div>
+            <span class="earnings-stat-label">إجمالي المبيعات</span>
+            <strong id="earningsTotalSales" class="earnings-stat-value">—</strong>
+            <small>القيمة الإجمالية لعمليات البيع الناجحة</small>
+          </article>
+
+          <article class="earnings-stat-card">
+            <div class="earnings-stat-icon earnings-icon-profit">✦</div>
+            <span class="earnings-stat-label">إجمالي أرباحك</span>
+            <strong id="earningsTotalProfit" class="earnings-stat-value">—</strong>
+            <small>نصيبك بعد خصم عمولة المنصة</small>
+          </article>
+
+          <article class="earnings-stat-card">
+            <div class="earnings-stat-icon earnings-icon-count">✓</div>
+            <span class="earnings-stat-label">عمليات البيع</span>
+            <strong id="earningsSalesCount" class="earnings-stat-value">—</strong>
+            <small>عدد عمليات البيع الناجحة</small>
+          </article>
+
+        </section>
+
+        <!-- الرصيد المالي -->
+        
+<section class="earnings-balance-card">
+
+  <div class="earnings-balance-main">
+    <div class="earnings-balance-heading">
+      <span class="earnings-balance-icon">◈</span>
+      <div>
+        <span>الرصيد المتاح للسحب</span>
+        <small>المبلغ الذي يمكنك طلب سحبه حاليًا</small>
+      </div>
+    </div>
+
+    <strong id="earningsAvailableBalance">—</strong>
+    <span class="earnings-currency">جنيه مصري</span>
+
+    <button
+      type="button"
+      class="earnings-withdraw-btn"
+      id="requestWithdrawalBtn"
+    >
+      <span>طلب سحب الأرباح</span>
+      <span aria-hidden="true">←</span>
+    </button>
+  </div>
+
+  <div class="earnings-balance-details">
+
+    <div class="earnings-balance-detail">
+      <span>إجمالي الأرباح المكتسبة</span>
+      <strong id="earningsBalanceTotal">—</strong>
+    </div>
+
+    <div class="earnings-balance-detail">
+      <span>المبالغ المحجوزة للسحب</span>
+      <strong id="earningsReservedBalance">—</strong>
+    </div>
+
+    <p>
+      المبالغ المحجوزة تشمل طلبات السحب المعلقة والمعتمدة،
+      أما المبالغ التي تم تحويلها بالفعل فتظل مخصومة من رصيدك المتاح.
+    </p>
+
+  </div>
+
+</section>
+
+
+
+
+<!-- نافذة طلب سحب الأرباح -->
+<div class="withdrawal-modal" id="withdrawalModal" hidden>
+  <div class="withdrawal-modal-backdrop" id="withdrawalModalBackdrop"></div>
+
+  <div class="withdrawal-modal-content" role="dialog" aria-modal="true" aria-labelledby="withdrawalModalTitle">
+
+    <div class="withdrawal-modal-header">
+      <div>
+        <span class="withdrawal-modal-eyebrow">الأرباح والمستحقات</span>
+        <h3 id="withdrawalModalTitle">طلب سحب الأرباح</h3>
+        <p>أدخل المبلغ الذي ترغب في سحبه</p>
+      </div>
+
+      <button type="button" class="withdrawal-modal-close" id="closeWithdrawalModal" aria-label="إغلاق">
+        ×
+      </button>
+    </div>
+
+    <div class="withdrawal-modal-balance">
+      <span>الرصيد المتاح للسحب</span>
+      <strong id="withdrawalModalBalance">— جنيه</strong>
+    </div>
+
+    <div class="withdrawal-amount-field">
+      <label for="withdrawalAmount">مبلغ السحب</label>
+      <div class="withdrawal-input-wrap">
+        <input
+          type="number"
+          id="withdrawalAmount"
+          min="0.01"
+          step="0.01"
+          placeholder="أدخل المبلغ"
+          inputmode="decimal"
+        >
+        <span>جنيه</span>
+      </div>
+      <small>لا يمكنك طلب مبلغ أكبر من رصيدك المتاح.</small>
+    </div>
+
+    <div class="withdrawal-modal-actions">
+      <button type="button" class="withdrawal-submit-btn" id="submitWithdrawalBtn">
+        تأكيد طلب السحب
+      </button>
+
+      <button type="button" class="withdrawal-cancel-btn" id="cancelWithdrawalBtn">
+        إلغاء
+      </button>
+    </div>
+
+    <p class="withdrawal-modal-note">
+      سيتم إرسال طلبك إلى إدارة المنصة لمراجعته.
+    </p>
+
+  </div>
+</div>
+
+
+
+
+        <!-- الرسم البياني -->
+        <section class="earnings-chart-section">
+
+          <div class="earnings-section-heading">
+            <div>
+              <span class="section-kicker">تحليل الأداء</span>
+              <h3>حركة المبيعات والأرباح</h3>
+              <p>تابع أداءك المالي خلال الفترات المختلفة.</p>
+            </div>
+
+            
+<div class="earnings-chart-filter">
+  <label>الفترة</label>
+
+  <div class="custom-period-dropdown" id="earningsPeriodDropdown">
+
+    <button type="button"
+      class="custom-period-trigger"
+      id="earningsPeriodTrigger"
+      aria-haspopup="listbox"
+      aria-expanded="false">
+
+      <span id="earningsPeriodSelected">أسبوعي</span>
+      <span class="custom-period-arrow">⌄</span>
+    </button>
+
+    <div class="custom-period-menu" id="earningsPeriodMenu" role="listbox">
+
+      <button type="button"
+        class="custom-period-option"
+        data-value="daily"
+        role="option"
+        aria-selected="false">
+        <span>يومي</span>
+        <span class="period-check">✓</span>
+      </button>
+
+      <button type="button"
+        class="custom-period-option active"
+        data-value="weekly"
+        role="option"
+        aria-selected="true">
+        <span>أسبوعي</span>
+        <span class="period-check">✓</span>
+      </button>
+
+      <button type="button"
+        class="custom-period-option"
+        data-value="monthly"
+        role="option"
+        aria-selected="false">
+        <span>شهري</span>
+        <span class="period-check">✓</span>
+      </button>
+
+      <button type="button"
+        class="custom-period-option"
+        data-value="yearly"
+        role="option"
+        aria-selected="false">
+        <span>سنوي</span>
+        <span class="period-check">✓</span>
+      </button>
+
+    </div>
+
+    <select id="earningsPeriodFilter" hidden>
+      <option value="daily">يومي</option>
+      <option value="weekly" selected>أسبوعي</option>
+      <option value="monthly">شهري</option>
+      <option value="yearly">سنوي</option>
+    </select>
+
+  </div>
+</div>
+
+
+          </div>
+          
+          <div class="earnings-chart-mode">
+            <button
+              type="button"
+              class="earnings-mode-btn active"
+              data-chart-mode="sales"
+            >
+              المبيعات
+            </button>
+          
+            <button
+              type="button"
+              class="earnings-mode-btn"
+              data-chart-mode="profit"
+            >
+              أرباحك
+            </button>
+          </div>
+
+          <div
+            id="earningsChart"
+            class="earnings-chart"
+            role="img"
+            aria-label="الرسم البياني للمبيعات والأرباح"
+          >
+            <div id="earningsChartLoading" class="earnings-chart-loading">
+              جاري تحميل الرسم البياني...
+            </div>
+          </div>
+
+          <div id="earningsChartEmpty" class="earnings-chart-empty" hidden>
+            لا توجد مبيعات خلال الفترة المحددة.
+          </div>
+
+        </section>
+
+        <!-- سجل المبيعات -->
+        <section class="earnings-history-section">
+
+          <div class="earnings-section-heading">
+            <div>
+              <span class="section-kicker">عمليات الشراء الناجحة</span>
+              <h3>سجل المبيعات</h3>
+              <p>تفاصيل الروايات التي تم بيعها وأرباحك من كل عملية.</p>
+            </div>
+          </div>
+
+          <div id="salesLoading" class="loading-state">
+            <span class="loading-spinner"></span>
+            <p>جاري تحميل سجل المبيعات...</p>
+          </div>
+
+          <div id="salesEmpty" class="earnings-empty-state" hidden>
+            <div class="empty-icon">▤</div>
+            <h3>لسه مفيش مبيعات</h3>
+            <p>هتظهر هنا تفاصيل عمليات بيع رواياتك بمجرد إتمام أول عملية شراء.</p>
+          </div>
+
+          <div id="salesTableWrapper" class="earnings-table-wrapper" hidden>
+            <table class="earnings-table">
+              <thead>
+                <tr>
+                  <th>الرواية</th>
+                  <th>سعر البيع</th>
+                  <th>أرباحك</th>
+                  <th>تاريخ البيع</th>
+                </tr>
+              </thead>
+
+              <tbody id="salesTableBody"></tbody>
+            </table>
+          </div>
+
+        </section>
+
+        <!-- سجل السحوبات -->
+        <section class="earnings-history-section withdrawals-history-section">
+
+          <div class="earnings-section-heading">
+            <div>
+              <span class="section-kicker">المستحقات المالية</span>
+              <h3>سجل السحوبات</h3>
+              <p>تابع جميع طلبات السحب السابقة والحالية وحالة كل طلب.</p>
+            </div>
+          </div>
+
+          <div id="withdrawalsLoading" class="loading-state">
+            <span class="loading-spinner"></span>
+            <p>جاري تحميل سجل السحوبات...</p>
+          </div>
+
+          <div id="withdrawalsEmpty" class="earnings-empty-state" hidden>
+            <div class="empty-icon">↗</div>
+            <h3>لا توجد طلبات سحب حتى الآن</h3>
+            <p>عندما تقدم طلب سحب، هتقدر تتابع تفاصيله وحالته من هنا.</p>
+          </div>
+
+          <div id="withdrawalsTableWrapper" class="earnings-table-wrapper" hidden>
+            <table class="earnings-table withdrawals-table">
+              <thead>
+                <tr>
+                  <th>المبلغ</th>
+                  <th>طريقة الاستلام</th>
+                  <th>تاريخ الطلب</th>
+                  <th>تاريخ التنفيذ</th>
+                  <th>الحالة</th>
+                </tr>
+              </thead>
+
+              <tbody id="withdrawalsTableBody"></tbody>
+            </table>
+          </div>
+
+        </section>
+
+      </section>
+
+
+
+
       <!-- =========================================
            التاب الثالث: إضافة رواية
       ========================================== -->
@@ -484,9 +858,34 @@
                 </label>
               </div>
             
+              
               <small class="price-help" id="priceHelp">
                 الرواية مجانية حاليًا. ألغِ التحديد لإضافة سعر.
               </small>
+
+              <div id="paidBookPayoutNotice" class="paid-payout-notice" hidden>
+                <div class="paid-payout-notice-icon">ⓘ</div>
+              
+                <div class="paid-payout-notice-content">
+                  <strong>تحتاج إلى إضافة حساب سحب</strong>
+                
+                  <p>
+                    يمكنك إرسال الرواية للمراجعة، لكن لن يمكن نشرها وهي مدفوعة
+                    قبل إضافة حساب سحب صالح والموافقة على شروط توزيع الأرباح
+                    (80% لك و20% للمنصة).
+                  </p>
+                
+                  <button
+                    type="button"
+                    id="goPayoutAccountBtn"
+                    class="paid-payout-notice-btn"
+                  >
+                    إضافة حساب السحب
+                    <span>←</span>
+                  </button>
+                </div>
+              </div>
+
             </div>
 
             <!-- ملف الرواية PDF -->
@@ -601,6 +1000,173 @@
         </form>
 
       </section>
+
+
+<!-- =========================================
+     تاب حساب السحب
+========================================== -->
+<section
+id="payout-account"
+class="content-section tab-panel payout-section"
+data-tab-panel="payout-account"
+hidden
+>
+<div class="section-heading">
+  <div>
+    <span class="section-kicker">المستحقات المالية</span>
+    <h2>حساب السحب</h2>
+    <p>حدّد الطريقة التي تفضّل استلام أرباح رواياتك من خلالها.</p>
+  </div>
+  <div class="payout-heading-icon">↗</div>
+</div>
+
+<div class="payout-summary">
+  <div class="payout-summary-icon">٪</div>
+  <div>
+    <strong>توزيع أرباحك</strong>
+    <p>تحصل على 80% من قيمة كل عملية بيع ناجحة، وتكون عمولة المنصة 20%.</p>
+  </div>
+  <div class="payout-rates">
+    <span><strong>80%</strong> حصتك</span>
+    <span><strong>20%</strong> عمولة المنصة</span>
+  </div>
+</div>
+
+<form id="payoutAccountForm" class="payout-form">
+
+  <div class="payout-form-heading">
+    <h3>بيانات الاستلام</h3>
+    <p>أدخل بيانات الحساب الذي تريد استقبال مستحقاتك عليه.</p>
+  </div>
+
+  <div class="payout-field">
+    <label for="payoutOwnerName">اسم صاحب الحساب</label>
+    <input
+      id="payoutOwnerName"
+      type="text"
+      placeholder="الاسم المسجل به حساب الاستلام"
+      autocomplete="name"
+      required
+    >
+  </div>
+
+  <div class="payout-field">
+    <label>طريقة استلام الأرباح</label>
+
+    <div class="payout-method-options">
+
+      <label class="payout-method-card">
+        <input type="radio" name="payoutMethod" value="instapay" checked>
+        <span class="payout-method-content">
+          <img src="instapay.png" alt="InstaPay">
+          <span>InstaPay</span>
+        </span>
+      </label>
+    
+      <label class="payout-method-card">
+        <input type="radio" name="payoutMethod" value="wallet">
+        <span class="payout-method-content">
+          <img src="wallet.png" alt="محفظة إلكترونية">
+          <span>محفظة إلكترونية</span>
+        </span>
+      </label>
+    
+    </div>
+    
+  </div>
+
+  <div id="instapayFields" class="payout-method-fields">
+    <div class="payout-field">
+      <label for="payoutInstaPay">عنوان InstaPay (IPA)</label>
+      <input
+        id="payoutInstaPay"
+        type="text"
+        placeholder="example@instapay"
+        dir="ltr"
+        required
+      >
+      <small>أدخل عنوان الدفع اللحظي المرتبط بحسابك.</small>
+    </div>
+  </div>
+
+  <div id="walletFields" class="payout-method-fields" hidden>
+    <div class="payout-field">
+      <label for="payoutWalletType">نوع المحفظة</label>
+      <div class="payout-wallet-dropdown" id="payoutWalletDropdown">
+
+        <button
+          type="button"
+          class="payout-wallet-trigger"
+          id="payoutWalletTrigger"
+          aria-haspopup="listbox"
+          aria-expanded="false"
+        >
+          <span id="payoutWalletLabel">اختر المحفظة</span>
+          <span class="payout-wallet-arrow">⌄</span>
+        </button>
+      
+        <div
+          class="payout-wallet-menu"
+          id="payoutWalletMenu"
+          role="listbox"
+          hidden
+        ></div>
+      
+        <select id="payoutWalletType" required class="payout-wallet-native">
+          <option value="">اختر المحفظة</option>
+          <option value="vodafone_cash">Vodafone Cash</option>
+          <option value="orange_cash">Orange Cash</option>
+          <option value="etisalat_cash">e& cash</option>
+        </select>
+      
+      </div>
+    </div>
+
+    <div class="payout-field">
+      <label for="payoutWalletPhone">رقم المحفظة</label>
+      <input
+        id="payoutWalletPhone"
+        type="tel"
+        inputmode="numeric"
+        placeholder="01xxxxxxxxx"
+        dir="ltr"
+        disabled
+      >
+    </div>
+  </div>
+
+  <div class="payout-terms">
+    <label>
+      <input id="payoutTerms" type="checkbox" required>
+      <span>
+        أوافق على أن تكون نسبة أرباحي 80% من قيمة كل عملية بيع ناجحة،
+        مقابل عمولة 20% للمنصة.
+      </span>
+    </label>
+  </div>
+
+  <div class="payout-security-note">
+    <span>ⓘ</span>
+    <p>
+      تُستخدم هذه البيانات لتحويل مستحقاتك المالية يدويًا بعد مراجعة طلب السحب.
+      تأكد من صحة البيانات قبل حفظها.
+    </p>
+  </div>
+
+  <div class="payout-actions">
+    <button
+      id="savePayoutAccountBtn"
+      class="primary-btn"
+      type="submit"
+    >
+      حفظ بيانات حساب السحب
+    </button>
+    <small>يمكنك تعديل بيانات الاستلام لاحقًا.</small>
+  </div>
+
+</form>
+</section>
+
 
       <!-- التذييل: يظل ظاهرًا خارج التابات -->
       <footer class="dashboard-footer">

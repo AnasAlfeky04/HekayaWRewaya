@@ -22,6 +22,20 @@
       <button class="nav-item" data-tab="revisions"><span>⟳</span>تعديلات الروايات<b id="navRevisions">—</b></button>
       <button class="nav-item" data-tab="users"><span>♙</span> المستخدمون</button>
       <button class="nav-item" data-tab="statistics"><span>▥</span> الإحصائيات</button>
+
+      <button class="nav-item" data-tab="purchases">
+        <span>▣</span> طلبات الشراء
+      </button>
+      
+      <button class="nav-item" data-tab="earnings">
+        <span>◈</span> أرباح المنصة
+      </button>
+
+      <button class="nav-item" data-tab="withdrawals">
+        <span>⇧</span> طلبات السحب
+        <b id="navWithdrawals">—</b>
+      </button>
+
     </nav>
     <div class="sidebar-bottom"><div class="secure-note"><span class="secure-icon">✓</span><div><strong>وصول إداري</strong><small>تُحمّل البيانات من قاعدة البيانات</small></div></div><a class="back-link" href="/Profile/profile.html">← العودة إلى حسابي</a></div>
   </aside>
@@ -264,7 +278,231 @@
       </div>
       
       <p class="privacy-note">ملاحظة: لا يتم عرض البريد الإلكتروني من جدول المصادقة في المتصفح؛ تُعرض هنا البيانات الموجودة في الملفات الشخصية فقط.</p></section>
-    <section class="tab-panel" id="panel-statistics"><div class="section-heading"><div><h2>إحصائيات المنصة</h2><p>الأرقام الفعلية المحمّلة من قاعدة البيانات.</p></div></div><div class="stats-grid statistics-grid"><article class="stat-card"><div class="stat-top"><span class="stat-icon green">▤</span><span class="stat-caption">إجمالي الروايات</span></div><strong id="detailAll">—</strong><small>كل سجلات الروايات</small></article><article class="stat-card"><div class="stat-top"><span class="stat-icon blue">✓</span><span class="stat-caption">نسبة النشر</span></div><strong id="publishRate">—</strong><small>الروايات المنشورة من إجمالي الروايات</small></article><article class="stat-card"><div class="stat-top"><span class="stat-icon amber">◷</span><span class="stat-caption">معدل المراجعة</span></div><strong id="reviewRate">—</strong><small>الروايات التي حُسمت حالتها</small></article><article class="stat-card"><div class="stat-top"><span class="stat-icon purple">♙</span><span class="stat-caption">القرّاء</span></div><strong id="readerCount">—</strong><small>حسابات بدور قارئ</small></article><article class="stat-card"><div class="stat-top"><span class="stat-icon blue">✍</span><span class="stat-caption">الكُتّاب</span></div><strong id="authorCount">—</strong><small>حسابات بدور كاتب</small></article></div><div class="surface"><div class="surface-heading"><div><h3>توزيع حالات الروايات</h3><p>مقارنة عدد الروايات في كل حالة.</p></div></div><div class="bar-chart" id="statusChart"></div><div class="chart-legend"><span><i class="legend-pending"></i> قيد المراجعة</span><span><i class="legend-published"></i> منشور</span><span><i class="legend-rejected"></i> مرفوض</span></div></div><p class="privacy-note">لا يتم احتساب مشاهدات الروايات أو إجمالي القراءات لعدم وجود سجل أحداث مخصص يقيس كل قراءة بصورة موثوقة.</p></section>
+    <section class="tab-panel" id="panel-statistics">
+      <div class="section-heading">
+        <div>
+          <h2>إحصائيات المنصة</h2>
+          <p>الأرقام الفعلية المحمّلة من قاعدة البيانات.</p>
+        </div>
+      </div>
+      <div class="stats-grid statistics-grid">
+        <article class="stat-card">
+          <div class="stat-top">
+            <span class="stat-icon green">▤</span>
+            <span class="stat-caption">إجمالي الروايات</span>
+          </div><strong id="detailAll">—</strong>
+          <small>كل سجلات الروايات</small>
+        </article><article class="stat-card">
+          <div class="stat-top">
+            <span class="stat-icon blue">✓</span>
+            <span class="stat-caption">نسبة النشر</span>
+          </div><strong id="publishRate">—</strong>
+          <small>الروايات المنشورة من إجمالي الروايات</small>
+        </article>
+        <article class="stat-card">
+          <div class="stat-top">
+            <span class="stat-icon amber">◷</span>
+            <span class="stat-caption">معدل المراجعة</span>
+          </div>
+          <strong id="reviewRate">—</strong>
+          <small>الروايات التي حُسمت حالتها</small>
+        </article>
+        <article class="stat-card">
+          <div class="stat-top">
+            <span class="stat-icon purple">♙</span>
+            <span class="stat-caption">القرّاء</span>
+          </div>
+          <strong id="readerCount">—</strong>
+          <small>حسابات بدور قارئ</small>
+        </article>
+        <article class="stat-card">
+          <div class="stat-top">
+            <span class="stat-icon blue">✍</span>
+            <span class="stat-caption">الكُتّاب</span>
+          </div>
+          <strong id="authorCount">—</strong>
+          <small>حسابات بدور كاتب</small>
+        </article>
+      </div>
+      <div class="surface">
+        <div class="surface-heading">
+          <div>
+            <h3>توزيع حالات الروايات</h3>
+            <p>مقارنة عدد الروايات في كل حالة.</p>
+          </div>
+        </div>
+        <div class="bar-chart" id="statusChart">
+
+        </div>
+        <div class="chart-legend">
+          <span>
+            <i class="legend-pending"></i> قيد المراجعة</span>
+            <span>
+              <i class="legend-published"></i> منشور</span>
+              <span>
+                <i class="legend-rejected"></i> مرفوض</span>
+              </div>
+            </div>
+            <p class="privacy-note">لا يتم احتساب مشاهدات الروايات أو إجمالي القراءات لعدم وجود سجل أحداث مخصص يقيس كل قراءة بصورة موثوقة.</p>
+     </section>
+
+
+     <!-- =========================================
+     طلبات الشراء
+========================================= -->
+<section class="tab-panel" id="panel-purchases">
+
+  <div class="panel-heading">
+    <div>
+      <h2>طلبات الشراء</h2>
+      <p>مراجعة طلبات شراء الروايات وإثباتات التحويل.</p>
+    </div>
+  </div>
+
+  <div id="purchaseRequestsList"></div>
+
+</section>
+
+
+<!-- =========================================
+     أرباح المنصة
+========================================= -->
+<section class="tab-panel" id="panel-earnings">
+
+  <div class="panel-heading">
+    <div>
+      <h2>أرباح المنصة</h2>
+      <p>متابعة المبيعات وعمولة المنصة ومستحقات الكُتّاب.</p>
+    </div>
+  </div>
+
+  <div id="earningsContent"></div>
+
+</section>
+
+
+
+<!-- =========================================
+     طلبات سحب الأرباح
+========================================= -->
+<section class="tab-panel" id="panel-withdrawals">
+
+  <div class="panel-heading">
+    <div>
+      <h2>طلبات سحب الأرباح</h2>
+      <p>مراجعة طلبات سحب الكُتّاب وتأكيد عمليات التحويل.</p>
+    </div>
+  </div>
+
+
+
+  <div class="withdrawals-toolbar">
+    <div class="withdrawals-view-switch">
+      <button type="button" class="active" data-withdrawals-view="pending">
+        الطلبات المعلقة
+      </button>
+  
+      <button type="button" data-withdrawals-view="history">
+        سجل العمليات
+      </button>
+    </div>
+  </div>
+
+  <div id="withdrawalsContent">
+    <div class="loading-state">جارٍ تحميل طلبات السحب…</div>
+  </div>
+
+</section>
+
+
+
+
+<!-- نافذة تأكيد تحويل أرباح الكاتب -->
+<div class="modal-backdrop withdrawal-modal-backdrop" id="withdrawalCompleteModal" hidden>
+  <section class="withdrawal-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="withdrawalCompleteTitle">
+    <header class="withdrawal-modal-header">
+      <div>
+        <span class="book-details-eyebrow">حكاية ورواية · إدارة الأرباح</span>
+        <h2 id="withdrawalCompleteTitle">تأكيد تحويل الأرباح</h2>
+        <p id="withdrawalCompleteSubtitle">ارفع إيصال التحويل لتأكيد وصول الأرباح إلى الكاتب.</p>
+      </div>
+      <button type="button" class="user-modal-close" id="closeWithdrawalCompleteModal" aria-label="إغلاق">×</button>
+    </header>
+
+    <div class="withdrawal-modal-body">
+      <div id="withdrawalCompleteDetails" class="withdrawal-modal-details"></div>
+
+      <label class="withdrawal-upload-label" for="withdrawalProofInput">
+        إيصال التحويل <span aria-hidden="true">*</span>
+      </label>
+
+      <input
+        type="file"
+        id="withdrawalProofInput"
+        accept="image/jpeg,image/png,image/webp,application/pdf"
+        hidden
+      >
+
+      <label for="withdrawalProofInput" class="withdrawal-upload-box" id="withdrawalUploadBox">
+        <span class="withdrawal-upload-icon">↑</span>
+        <strong>اضغط لاختيار إيصال التحويل</strong>
+        <small>JPG أو PNG أو WebP أو PDF · بحد أقصى 10 ميجابايت</small>
+      </label>
+
+      <div id="withdrawalProofPreview" class="withdrawal-proof-preview" hidden></div>
+
+      <div class="withdrawal-modal-actions">
+        <button type="button" class="btn btn-light" id="cancelWithdrawalComplete">إلغاء</button>
+        <button type="button" class="btn btn-primary" id="confirmWithdrawalComplete" disabled>
+          تأكيد التحويل
+        </button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- نافذة رفض طلب السحب -->
+<div class="modal-backdrop withdrawal-modal-backdrop" id="withdrawalRejectModal" hidden>
+  <section class="withdrawal-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="withdrawalRejectTitle">
+    <header class="withdrawal-modal-header">
+      <div>
+        <span class="book-details-eyebrow">حكاية ورواية · مراجعة طلبات السحب</span>
+        <h2 id="withdrawalRejectTitle">رفض طلب السحب</h2>
+        <p id="withdrawalRejectSubtitle">اكتب سبب الرفض ليظهر للكاتب في حسابه.</p>
+      </div>
+      <button type="button" class="user-modal-close" id="closeWithdrawalRejectModal" aria-label="إغلاق">×</button>
+    </header>
+
+    <div class="withdrawal-modal-body">
+      <div id="withdrawalRejectDetails" class="withdrawal-modal-details"></div>
+
+      <label class="withdrawal-reason-label" for="withdrawalRejectReason">
+        سبب الرفض <span aria-hidden="true">*</span>
+      </label>
+
+      <textarea
+        id="withdrawalRejectReason"
+        rows="5"
+        maxlength="2000"
+        placeholder="اكتب سبب رفض طلب السحب..."
+      ></textarea>
+
+      <p class="rejection-hint">سيظهر سبب الرفض للكاتب، وسيتم فك حجز مبلغ السحب وإعادته إلى رصيده المتاح.</p>
+
+      <div class="withdrawal-modal-actions">
+        <button type="button" class="btn btn-light" id="cancelWithdrawalReject">إلغاء</button>
+        <button type="button" class="btn btn-danger" id="confirmWithdrawalReject" disabled>
+          تأكيد الرفض
+        </button>
+      </div>
+    </div>
+  </section>
+</div>
+
+
+
+
+
     <footer class="page-footer">حكاية ورواية <span>•</span> لوحة الإدارة <span>•</span> <span id="footerYear"></span></footer>
   </main>
 </div>
