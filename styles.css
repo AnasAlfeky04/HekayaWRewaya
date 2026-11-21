@@ -644,8 +644,8 @@ footer small {
 
   .navbar .logo img {
     padding-left: 50px;
-    width: 130px;
-    height: 50px;
+    width: 140px;
+    height: 60px;
   }
 
   .navbar {
@@ -3095,9 +3095,6 @@ footer small {
   } */
 
 
-  
-
-  
   .latest-releases .section-heading .section-tag {
     color: var(--burgundy);
     border-color: rgba(197, 161, 92, 0.55);
@@ -3268,5 +3265,15 @@ footer small {
     width: 115px;
     height: 115px;
     left: 20px;
+  }
+}
+
+/* تكبير زري مكتبتي وحسابي على الموبايل */
+@media (max-width: 800px) {
+  #myLibraryBtn,
+  #signupBtn {
+    padding: 11px 15px;
+    font-size: 12px;
+    min-height: 40px;
   }
 }
