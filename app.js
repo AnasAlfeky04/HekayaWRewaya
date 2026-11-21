@@ -829,13 +829,16 @@ console.table(
   
             <div class="premium-cover-shade"></div>
   
-            <span class="premium-book-category">
-              ${safeCategory}
-            </span>
+            
           </div>
   
           <div class="premium-book-info">
+
             <h3 class="premium-book-title">${safeTitle}</h3>
+
+            <span class="premium-book-category">
+              ${safeCategory}
+            </span>
   
             <div class="premium-book-author">
               <span class="premium-author-mark">✦</span>
@@ -954,14 +957,15 @@ function renderLatestBooks() {
           ${cover}
 
           <div class="latest-orbit-cover-shade"></div>
+        </div>
+
+        <div class="latest-orbit-info">
+
+          <h3 class="latest-orbit-title">${safeTitle}</h3>
 
           <span class="latest-orbit-category">
             ${safeCategory}
           </span>
-        </div>
-
-        <div class="latest-orbit-info">
-          <h3 class="latest-orbit-title">${safeTitle}</h3>
 
           <div class="latest-orbit-author">
             <span class="latest-orbit-author-mark">✦</span>
