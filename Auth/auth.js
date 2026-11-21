@@ -82,6 +82,8 @@ const authSubtitle = document.getElementById("authSubtitle");
 const authSubmit = document.getElementById("authSubmit");
 const authStatus = document.getElementById("authStatus");
 
+const resendConfirmationBtn = document.getElementById("resendConfirmationBtn");
+
 let mode = "login";
 let submitting = false;
 
@@ -95,6 +97,8 @@ function setMode(nextMode) {
   mode = nextMode;
 
   const isSignup = mode === "signup";
+
+  resendConfirmationBtn.hidden = !isSignup;
 
   loginTab.classList.toggle("active", !isSignup);
   signupTab.classList.toggle("active", isSignup);
@@ -124,6 +128,109 @@ function setMode(nextMode) {
 
   setStatus("", "");
 }
+
+
+
+
+
+resendConfirmationBtn.addEventListener("click", async function () {
+  const emailValue = email.value.trim();
+
+  if (!emailValue) {
+    setStatus("اكتب بريدك الإلكتروني أولًا لإعادة إرسال رسالة التأكيد.", "error");
+    email.focus();
+    return;
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
+    setStatus("البريد الإلكتروني غير صحيح. راجعه وحاول مرة أخرى.", "error");
+    email.focus();
+    return;
+  }
+
+  resendConfirmationBtn.disabled = true;
+  resendConfirmationBtn.textContent = "جارٍ إرسال رسالة التأكيد...";
+
+  try {
+    const result = await db.auth.resend({
+      type: "signup",
+      email: emailValue,
+      options: {
+        emailRedirectTo: `${window.location.origin}/Auth/auth.html?mode=login`
+      }
+    });
+
+    if (result.error) throw result.error;
+
+    setStatus(
+      "تم إرسال طلب إعادة التأكيد بنجاح. يُرجى مراجعة بريدك الإلكتروني.",
+      "success"
+    );
+
+  } catch (error) {
+    console.error("Resend confirmation error:", error);
+
+    const errorMessage = (error.message || "").toLowerCase();
+
+    
+    const waitMatch =
+      errorMessage.match(/after\s+(\d+)\s+seconds?/i) ||
+      errorMessage.match(/wait\s+(\d+)\s+seconds?/i) ||
+      errorMessage.match(/(\d+)\s+seconds?\s+(?:before|until)/i) ||
+      errorMessage.match(/(\d+)\s*ثانية/);
+
+
+    if (waitMatch) {
+      const seconds = Number(waitMatch[1]);
+
+      setStatus(
+        `لا يمكن إعادة إرسال رسالة التأكيد الآن. يُرجى الانتظار ${seconds} ثانية ثم المحاولة مرة أخرى.`,
+        "error"
+      );
+
+    } else if (
+      errorMessage.includes("rate limit") ||
+      errorMessage.includes("too many requests")
+    ) {
+      setStatus(
+        "لقد أرسلت طلبات كثيرة خلال وقت قصير. يُرجى الانتظار قليلًا ثم المحاولة مرة أخرى.",
+        "error"
+      );
+
+    } else if (
+      errorMessage.includes("already confirmed") ||
+      errorMessage.includes("email confirmed")
+    ) {
+      setStatus(
+        "بريدك الإلكتروني مؤكد بالفعل. يمكنك الانتقال إلى تسجيل الدخول.",
+        "success"
+      );
+
+    } else if (
+      errorMessage.includes("network") ||
+      errorMessage.includes("fetch")
+    ) {
+      setStatus(
+        "تعذر الاتصال بالخدمة حاليًا. تحقق من اتصال الإنترنت وحاول مرة أخرى.",
+        "error"
+      );
+
+    } else {
+      setStatus(
+        "تعذر إرسال رسالة التأكيد حاليًا. يُرجى المحاولة مرة أخرى بعد قليل.",
+        "error"
+      );
+    }
+
+  } finally {
+    resendConfirmationBtn.disabled = false;
+    resendConfirmationBtn.textContent = "إعادة إرسال رسالة تأكيد البريد الإلكتروني";
+  }
+});
+
+
+
+
 
 loginTab.addEventListener("click", function () {
   setMode("login");
@@ -277,7 +384,7 @@ form.addEventListener("submit", async function (event) {
       errorMessage.includes("rate limit") ||
       errorMessage.includes("too many requests")
     ) {
-      message = "تم إجراء محاولات كثيرة في وقت قصير. إنتظر قليلة وحاول مرة أخرى.";
+      message = "لقد أجريت محاولات كثيرة خلال وقت قصير. يُرجى الانتظار قليلًا ثم المحاولة مرة أخرى.";
     }
 
     setStatus(message, "error");
