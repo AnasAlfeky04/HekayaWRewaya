@@ -3277,3 +3277,71 @@ footer small {
     min-height: 40px;
   }
 }
+
+
+/* إظهار تصنيف الرواية على جسم الكارت */
+.premium-book-info .premium-book-category,
+.latest-orbit-info .latest-orbit-category {
+  position: static;
+  display: inline-flex;
+  align-self: flex-start;
+  margin: 0 0 10px;
+  transform: none;
+}
+
+/* تصغير التصنيف ووضعه تحت عنوان الرواية */
+.premium-book-info .premium-book-category,
+.latest-orbit-info .latest-orbit-category {
+  font-size: 10px;
+  padding: 3px 8px;
+  margin-top: 6px;
+  margin-bottom: 8px;
+  width: fit-content;
+}
+
+
+/* إزالة الفراغ الزائد بين العنوان والتصنيف */
+.latest-orbit-title {
+  min-height: 0 !important;
+  margin-bottom: 2px !important;
+  line-height: 1.35;
+}
+
+.latest-orbit-info .latest-orbit-category {
+  margin-top: 2px !important;
+  margin-bottom: 5px !important;
+}
+
+
+/* اسم الرواية في سطر واحد فقط */
+.latest-orbit-title {
+  display: block !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 0 !important;
+  height: auto;
+  margin-bottom: 2px !important;
+  line-height: 1.5;
+}
+
+
+/* ضبط المسافة بين اسم الرواية والتصنيف في مكتبتنا */
+.premium-book-title {
+  display: block !important;
+  min-height: 0 !important;
+  height: auto;
+  margin-bottom: 2px !important;
+  line-height: 1.5;
+
+  /* سطر واحد مع نقاط عند طول الاسم */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* تقليل المسافة حول التصنيف */
+.premium-book-info .premium-book-category {
+  margin-top: 2px !important;
+  margin-bottom: 5px !important;
+}
