@@ -416,7 +416,7 @@ function renderPaymentMethods() {
       image.alt = method.display_name;
   
       if (method.method_type === "instapay") {
-        image.src = "instapay.png";
+        image.src = "Instapay.png";
       } else if (method.method_type === "wallet") {
         image.src = "wallet.png";
       }
