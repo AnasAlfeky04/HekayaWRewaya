@@ -861,11 +861,13 @@ const rejectionHTML =
       try {
         await Promise.all([
           loadCategories(),
-          loadMyBooks()
+          loadMyBooks(),
+          loadPayoutAccount(),
+          loadEarningsSummary()
         ]);
   
         showMessage(
-          "تم تحديث الروايات والإحصائيات والتصنيفات بنجاح.",
+          "تم تحديث جميع بيانات لوحة الكاتب بنجاح.",
           "success"
         );
   
@@ -2873,7 +2875,6 @@ if (
     
         await loadPayoutAccount();
     
-        initAddCategoryDropdown();
 
         // لو لوحة الكاتب بدأت على تاب الأرباح، حمّل بياناته بعد تسجيل الدخول
         const earningsPanel = document.querySelector(
