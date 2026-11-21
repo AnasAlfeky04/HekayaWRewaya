@@ -17,6 +17,28 @@
       SUPABASE_KEY
     );
   
+
+
+
+let sessionExpiredRedirecting = false;
+
+db.auth.onAuthStateChange((event, session) => {
+  if (event === "SIGNED_OUT" && !sessionExpiredRedirecting) {
+    sessionExpiredRedirecting = true;
+
+    showMessage(
+      "انتهت صلاحية جلسة تسجيل الدخول. يُرجى تسجيل الدخول مرة أخرى للمتابعة.",
+      "error"
+    );
+
+    setTimeout(() => {
+      window.location.replace("/Auth/auth.html?mode=login");
+    }, 2500);
+  }
+});
+
+
+
     const $ = (id) => document.getElementById(id);
   
     let currentUser = null;
@@ -246,74 +268,133 @@
     // 4. بيانات الحساب
     // -------------------------------------------------------
   
+
     async function loadCurrentUser() {
+      function isSessionExpired(error) {
+        const message = (error?.message || "").toLowerCase();
+        const code = (error?.code || "").toLowerCase();
+    
+        return (
+          message.includes("jwt expired") ||
+          message.includes("token expired") ||
+          message.includes("session expired") ||
+          message.includes("refresh token") ||
+          message.includes("invalid jwt") ||
+          code.includes("token_expired")
+        );
+      }
+    
+      function redirectToLogin(message) {
+        showMessage(message, "error");
+    
+        setTimeout(() => {
+          window.location.replace("/Auth/auth.html?mode=login");
+        }, 2500);
+    
+        return false;
+      }
+    
       const {
         data: { user },
         error
       } = await db.auth.getUser();
-  
-      if (error) throw error;
-  
-      if (!user) {
-        window.location.replace("/Profile/profile.html");
-        return false;
+    
+      if (error) {
+        console.error("Author authentication failed:", error);
+    
+        if (isSessionExpired(error)) {
+          return redirectToLogin(
+            "انتهت صلاحية جلسة تسجيل الدخول. يُرجى تسجيل الدخول مرة أخرى للمتابعة."
+          );
+        }
+    
+        return redirectToLogin(
+          "تعذر التحقق من جلسة تسجيل الدخول. يُرجى تسجيل الدخول مرة أخرى."
+        );
       }
-  
+    
+      if (!user) {
+        return redirectToLogin(
+          "يجب تسجيل الدخول أولًا للوصول إلى مساحة الكاتب."
+        );
+      }
+    
       currentUser = user;
-  
+    
       const { data: profile, error: profileError } = await db
         .from("profiles")
         .select("id, display_name, role, avatar_path")
         .eq("id", currentUser.id)
         .maybeSingle();
-  
-      if (profileError) throw profileError;
-  
-      if (!profile) {
-        throw new Error("تعذر العثور على بيانات حسابك.");
-      }
-  
-      if (profile.role !== "author") {
+    
+      if (profileError) {
+        console.error("Author profile verification failed:", profileError);
+    
+        if (isSessionExpired(profileError)) {
+          return redirectToLogin(
+            "انتهت صلاحية جلسة تسجيل الدخول. يُرجى تسجيل الدخول مرة أخرى للمتابعة."
+          );
+        }
+    
         showMessage(
-          "الصفحة دي مخصصة لحسابات الكُتّاب فقط. هنرجعك لصفحة حسابك.",
+          "تعذر تحميل بيانات حسابك حاليًا. يُرجى المحاولة مرة أخرى.",
           "error"
         );
-  
+    
+        return false;
+      }
+    
+      if (!profile) {
+        showMessage(
+          "تعذر العثور على بيانات حسابك. يُرجى التواصل مع إدارة المنصة.",
+          "error"
+        );
+    
+        return false;
+      }
+    
+      if (profile.role !== "author") {
+        showMessage(
+          "هذه الصفحة مخصصة لحسابات الكُتّاب فقط. سيتم تحويلك إلى صفحة حسابك.",
+          "error"
+        );
+    
         setTimeout(() => {
           window.location.replace("/Profile/profile.html");
         }, 1800);
-  
+    
         return false;
       }
-  
+    
       currentProfile = profile;
-  
+    
       const name = profile.display_name || "كاتب حكاية ورواية";
-  
+    
       $("sidebarName").textContent = name;
       $("welcomeName").textContent = name;
       $("currentYear").textContent = new Date().getFullYear();
-  
+    
       const firstLetter = name.trim().charAt(0) || "ك";
-  
+    
       $("sidebarAvatar").textContent = firstLetter;
       $("sidebarAvatar").style.backgroundImage = "";
-  
+    
       if (profile.avatar_path) {
         const { data } = db.storage
           .from("avatars")
           .getPublicUrl(profile.avatar_path);
-  
+    
         if (data && data.publicUrl) {
           $("sidebarAvatar").style.backgroundImage =
             `url("${data.publicUrl}")`;
-  
+    
           $("sidebarAvatar").textContent = "";
         }
       }
-  
+    
       return true;
     }
+    
   
     // -------------------------------------------------------
     // 5. تحميل التصنيفات
@@ -3604,6 +3685,8 @@ function initEarningsChartControls() {
     
       try {
 
+        console.log("Earnings refresh started");
+
         initEarningsChartControls();
 
         const [
@@ -3629,6 +3712,11 @@ function initEarningsChartControls() {
         if (salesError) throw salesError;
         if (withdrawalsError) throw withdrawalsError;
         if (balanceError) throw balanceError;
+
+
+        console.log("Fresh sales data:", sales);
+        console.log("Fresh withdrawals data:", withdrawals);
+        console.log("Fresh balance:", balance);
 
 
         // حفظ بيانات المبيعات لاستخدامها في الرسم البياني

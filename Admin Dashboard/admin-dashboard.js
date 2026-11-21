@@ -21,6 +21,27 @@
       SUPABASE_URL,
       SUPABASE_PUBLISHABLE_KEY
     );
+
+
+
+let sessionExpiredRedirecting = false;
+
+db.auth.onAuthStateChange((event, session) => {
+  if (event === "SIGNED_OUT" && !sessionExpiredRedirecting) {
+    sessionExpiredRedirecting = true;
+
+    showNotice(
+      "انتهت صلاحية جلسة تسجيل الدخول. يُرجى تسجيل الدخول مرة أخرى للمتابعة.",
+      "error"
+    );
+
+    setTimeout(() => {
+      window.location.replace("/Auth/auth.html?mode=login");
+    }, 2500);
+  }
+});
+
+
   
     const $ = (id) => document.getElementById(id);
   
@@ -40,6 +61,7 @@
       activeWithdrawal: null,
       withdrawalProofFile: null,
       withdrawalsView: 'pending',
+      purchaseRequestsView: 'pending',
     };
   
     const roleLabels = {
@@ -336,52 +358,108 @@ async function loadBookCovers(root = document) {
     // 4. التحقق من حساب مدير المنصة
     // ---------------------------------------------------------
   
+
     async function requireAdmin() {
-      const { data, error } = await db.auth.getUser();
-  
-      if (error || !data.user) {
-        location.replace('/Auth/auth.html?mode=login');
+      function isSessionExpired(error) {
+        const message = (error?.message || '').toLowerCase();
+        const code = (error?.code || '').toLowerCase();
+    
+        return (
+          message.includes('jwt expired') ||
+          message.includes('token expired') ||
+          message.includes('session expired') ||
+          message.includes('refresh token') ||
+          message.includes('invalid jwt') ||
+          code.includes('token_expired')
+        );
+      }
+    
+      function redirectToLogin(message) {
+        showNotice(message, 'error');
+    
+        setTimeout(() => {
+          location.replace('/Auth/auth.html?mode=login');
+        }, 2500);
+    
         return false;
       }
-  
+    
+      const { data, error } = await db.auth.getUser();
+    
+      if (error) {
+        console.error('Admin authentication failed:', error);
+    
+        if (isSessionExpired(error)) {
+          return redirectToLogin(
+            'انتهت صلاحية جلسة تسجيل الدخول. يُرجى تسجيل الدخول مرة أخرى للمتابعة.'
+          );
+        }
+    
+        return redirectToLogin(
+          'تعذر التحقق من جلسة تسجيل الدخول. يُرجى تسجيل الدخول مرة أخرى.'
+        );
+      }
+    
+      if (!data.user) {
+        return redirectToLogin(
+          'يجب تسجيل الدخول أولًا للوصول إلى لوحة التحكم.'
+        );
+      }
+    
       state.user = data.user;
-  
+    
       const { data: profile, error: profileError } = await db
         .from('profiles')
         .select('id, display_name, role, avatar_path')
         .eq('id', state.user.id)
         .maybeSingle();
-  
-      if (profileError || !profile) {
+    
+      if (profileError) {
         console.error('Profile verification failed:', profileError);
-  
+    
+        if (isSessionExpired(profileError)) {
+          return redirectToLogin(
+            'انتهت صلاحية جلسة تسجيل الدخول. يُرجى تسجيل الدخول مرة أخرى للمتابعة.'
+          );
+        }
+    
         showNotice(
-          'تعذر التحقق من بيانات الحساب وصلاحياته.',
+          'تعذر التحقق من بيانات حسابك حاليًا. يُرجى المحاولة مرة أخرى.',
           'error'
         );
-  
+    
         return false;
       }
-  
-      state.profile = profile;
-  
-      if (state.profile.role !== 'admin') {
+    
+      if (!profile) {
         showNotice(
-          'هذه الصفحة مخصصة لمدير المنصة فقط.',
+          'تعذر العثور على بيانات حسابك. يُرجى التواصل مع إدارة المنصة.',
           'error'
         );
-  
+    
+        return false;
+      }
+    
+      state.profile = profile;
+    
+      if (state.profile.role !== 'admin') {
+        showNotice(
+          'عذرًا، هذه الصفحة مخصصة لمدير المنصة فقط.',
+          'error'
+        );
+    
         setTimeout(() => {
           location.replace('/Profile/profile.html');
         }, 1400);
-  
+    
         return false;
       }
-  
+    
       console.info('Admin authenticated:', state.user.id);
-  
+    
       return true;
     }
+    
   
     // ---------------------------------------------------------
     // 5. تحميل بيانات المنصة
@@ -2378,7 +2456,7 @@ function renderWithdrawals() {
   if (navCount) {
     navCount.textContent = withdrawals.filter(
       item => item.status === 'pending'
-    ).length.toLocaleString('ar-EG');
+    ).length.toLocaleString('en-US');
   }
 
   if (state.withdrawalsLoadError) {
@@ -2569,18 +2647,43 @@ async function renderPurchaseRequests() {
   const container = $('purchaseRequestsList');
   if (!container) return;
 
+  
+
   const requests = state.purchaseRequests || [];
 
-  if (!requests.length) {
-    container.innerHTML = `
-      <div class="empty-state">
-        <p>لا توجد طلبات شراء حتى الآن.</p>
-      </div>
-    `;
-    return;
-  }
+const currentView = state.purchaseRequestsView || 'pending';
 
-  const cards = await Promise.all(requests.map(async (request) => {
+const visibleRequests = requests.filter(request =>
+  currentView === 'pending'
+    ? request.status === 'pending'
+    : request.status !== 'pending'
+);
+
+// تحديث عداد الطلبات المعلقة في القائمة الجانبية
+const navCount = $('navPurchases');
+
+if (navCount) {
+  navCount.textContent = requests.filter(
+    request => request.status === 'pending'
+  ).length.toLocaleString('en-US');
+}
+
+if (!visibleRequests.length) {
+  container.innerHTML = `
+    <div class="empty-state">
+      <p>${
+        currentView === 'pending'
+          ? 'لا توجد طلبات شراء معلقة حاليًا.'
+          : 'لا توجد عمليات شراء تمت مراجعتها حتى الآن.'
+      }</p>
+    </div>
+  `;
+  return;
+}
+
+
+
+  const cards = await Promise.all(visibleRequests.map(async (request) => {
     let proofUrl = '';
 
     if (request.proof_path) {
@@ -2653,15 +2756,13 @@ async function renderPurchaseRequests() {
                 <button type="button"
                   class="btn btn-danger"
                   data-action="purchase-reject"
-                  data-id="${esc(request.id)}"
-                  
+                  data-id="${esc(request.id)}">
                   <span style="
-                      color: #ffffff !important;
-                      -webkit-text-fill-color: #ffffff !important;
-                      display: inline !important;
-                      visibility: visible !important;
-                    ">رفض الطلب</span>
-
+                    color: #ffffff !important;
+                    -webkit-text-fill-color: #ffffff !important;
+                    display: inline !important;
+                    visibility: visible !important;
+                  ">رفض الطلب</span>
                 </button>
               </div>
             `
@@ -4238,6 +4339,26 @@ document.addEventListener('click', function (event) {
 
   renderWithdrawals();
 }, true);
+
+
+document.addEventListener('click', function (event) {
+  const button = event.target.closest('[data-purchases-view]');
+  if (!button) return;
+
+  event.preventDefault();
+
+  state.purchaseRequestsView = button.dataset.purchasesView;
+
+  document.querySelectorAll('[data-purchases-view]').forEach(item => {
+    item.classList.toggle(
+      'active',
+      item.dataset.purchasesView === state.purchaseRequestsView
+    );
+  });
+
+  renderPurchaseRequests();
+}, true);
+
   
   })();
 

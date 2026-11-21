@@ -25,6 +25,7 @@
 
       <button class="nav-item" data-tab="purchases">
         <span>▣</span> طلبات الشراء
+        <b id="navPurchases">—</b>
       </button>
       
       <button class="nav-item" data-tab="earnings">
@@ -359,7 +360,21 @@
     </div>
   </div>
 
-  <div id="purchaseRequestsList"></div>
+  <div class="withdrawals-toolbar">
+    <div class="withdrawals-view-switch">
+      <button type="button" class="active" data-purchases-view="pending">
+        الطلبات المعلقة
+      </button>
+
+      <button type="button" data-purchases-view="history">
+        سجل العمليات
+      </button>
+    </div>
+  </div>
+
+  <div id="purchaseRequestsList">
+    <div class="loading-state">جارٍ تحميل طلبات الشراء…</div>
+  </div>
 
 </section>
 

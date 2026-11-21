@@ -65,7 +65,7 @@ function openBookDetails(book) {
   detailsBookPrice.textContent =
     price <= 0
       ? "مجانية"
-      : `${price.toLocaleString("ar-EG")} جنيه`;
+      : `${price.toLocaleString("ar-EG")} ج.م`;
 
   detailsBookMessage.textContent = "";
 
@@ -466,7 +466,7 @@ function renderBooks() {
             ${
               price <= 0
                 ? "مجانية"
-                : `${price.toLocaleString("ar-EG")} جنيه`
+                : `${price.toLocaleString("ar-EG")} ج.م`
             }
           </div>
         `;
