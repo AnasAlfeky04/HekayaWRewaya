@@ -198,6 +198,7 @@ form.addEventListener("submit", async function (event) {
         email: emailValue,
         password: password.value,
         options: {
+          emailRedirectTo: `${window.location.origin}/Auth/auth.html?mode=login`,
           data: {
             display_name: displayName.value.trim(),
             account_type: accountType.value
