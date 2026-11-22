@@ -4223,3 +4223,27 @@ html.intro-book-running body::-webkit-scrollbar {
   width: 0 !important;
   height: 0 !important;
 }
+
+
+/* Remove the fake white book pages */
+.intro-book-pages {
+  display: none !important;
+}
+
+/* Let the actual website show underneath the cover */
+.intro-book-overlay.is-active {
+  background: transparent !important;
+}
+
+.intro-book-scene {
+  background: transparent !important;
+}
+
+/* Keep the website visible behind the opening cover */
+.intro-book-cover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+}
