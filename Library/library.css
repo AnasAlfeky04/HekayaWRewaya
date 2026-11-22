@@ -469,13 +469,9 @@ nav a:hover::after {
 
 
   .btn-secondary-glass {
-    background: linear-gradient(
-      135deg,
-      rgba(212, 175, 55, 0.02),
-      rgba(212, 175, 55, 0.02)
-    );
-    color: #eed754;
-    border: 1px solid rgba(212, 175, 55, 0.55);
+    background: rgba(112, 47, 59, 0.1);
+    border-color: rgba(112, 47, 59, 0.2);
+    color: var(--library-burgundy);
     border-radius: 10px;
     padding: 10px 18px;
     font-weight: bolder;
@@ -491,13 +487,9 @@ nav a:hover::after {
   }
   
   .btn-secondary-glass:hover {
-    background: linear-gradient(
-      135deg,
-      rgba(212, 175, 55, 0.1),
-      rgba(212, 175, 55, 0.1)
-    );
-    color: #ffcc32;
-    border-color: #d4af37;
+    background: rgba(112, 47, 59, 0.3);
+    border-color: rgba(112, 47, 59, 0.4);
+    color: var(--library-burgundy-dark);
     box-shadow: 0 5px 18px rgba(212, 175, 55, 0.18);
     transform: translateY(-1px);
   }
