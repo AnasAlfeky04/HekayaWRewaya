@@ -1675,7 +1675,59 @@ function initFloatingStatsLogos() {
   requestAnimationFrame(animate);
 }
 
+
+
+
+
+/* =========================================
+   Opening Book Intro Controller
+========================================= */
+
+(function initOpeningBookIntro() {
+  const introOverlay = document.getElementById("introBookOverlay");
+
+  if (!introOverlay) return;
+
+  let alreadyShown = false;
+
+  try {
+    alreadyShown = sessionStorage.getItem("hikayaIntroShown") === "1";
+  } catch (error) {
+    // Continue normally if sessionStorage is unavailable
+  }
+
+  if (alreadyShown) {
+    introOverlay.remove();
+    return;
+  }
+
+  try {
+    sessionStorage.setItem("hikayaIntroShown", "1");
+  } catch (error) {
+    // The intro can still run without sessionStorage
+  }
+
+  introOverlay.classList.add("is-active");
+
+  // Keep the cover visible for 3 seconds, then open it
+  setTimeout(() => {
+    introOverlay.classList.add("is-opening");
+  }, 3000);
+
+  // Remove the intro after the opening animation finishes
+  setTimeout(() => {
+    introOverlay.classList.add("is-hidden");
+
+    setTimeout(() => {
+      introOverlay.remove();
+    }, 400);
+  }, 4500);
+})();
+
+
+
+
+
 initFloatingStatsLogos();
 
-   
-   startApp();
+startApp();
