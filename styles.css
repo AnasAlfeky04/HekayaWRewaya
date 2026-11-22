@@ -9,6 +9,11 @@
   --muted: #737d76;
   --line: #e8e7df;
   --mint: #eaf2e9;
+  --burgundy: #702F3B;
+  --burgundy-dark: #54212B;
+  --burgundy-light: #8A4653;
+  --burgundy-soft: #F3E7E9;
+  --burgundy-gold: #C5A15C;
 }
 
 * {
@@ -144,19 +149,19 @@ nav a:hover::after {
 }
 
 .btn-primary {
-  background: var(--green);
+  background: var(--burgundy);
   color: white;
 }
 
 .btn-primary:hover {
-  background: var(--dark-green);
+  background: var(--burgundy-dark);
   transform: translateY(-2px);
 }
 
 .btn-outline {
   background: transparent;
   border-color: #d8e4db;
-  color: var(--green);
+  color: var(--burgundy);
 }
 
 .btn-light {
@@ -1314,7 +1319,7 @@ footer small {
 
   /* زر مكتبتي - ذهبي هادئ */
 #myLibraryBtn {
-  background: #c5a15c;
+  background: var(--burgundy);
   border-color: #c5a15c;
   color: #fffdf7;
   white-space: nowrap;
@@ -1324,7 +1329,7 @@ footer small {
 }
 
 #myLibraryBtn:hover {
-  background: #b08a45;
+  background: var(--burgundy-dark);
   border-color: #b08a45;
   box-shadow: 0 4px 10px rgba(176, 137, 70, 0.2);
   transform: translateY(-1px);
@@ -2995,19 +3000,10 @@ footer small {
    GREEN - GOLD - BURGUNDY
    ================================================== */
 
-   :root {
-    --burgundy: #702F3B;
-    --burgundy-dark: #54212B;
-    --burgundy-light: #8A4653;
-    --burgundy-soft: #F3E7E9;
-    --burgundy-gold: #C5A15C;
-  }
-
 
   .navbar .btn-outline:hover {
-    background: var(--burgundy);
-    color: #fff;
-    border-color: var(--burgundy);
+    background: rgba(112, 47, 59, 0.1);
+    border-color: rgba(112, 47, 59, 0.2);
   }
 
   
@@ -3369,3 +3365,5 @@ footer small {
     white-space: nowrap;
   }
 }
+
+
