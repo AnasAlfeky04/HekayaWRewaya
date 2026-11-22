@@ -3752,17 +3752,27 @@ footer small {
   }
 }
 
+
+/* MOBILE - FORCE CENTER BOOK TO THE FRONT */
+
 @media (max-width: 800px) {
+  #heroBooks {
+    perspective: 1400px;
+    transform-style: flat;
+  }
+
   #heroBooks > .hero-book:nth-child(1) {
     z-index: 1 !important;
+    transform: translateZ(-35px) rotateY(-24deg) rotateZ(-8deg);
   }
 
   #heroBooks > .hero-book:nth-child(2) {
     z-index: 9999 !important;
-    position: absolute;
+    transform: translateZ(50px) rotateY(-5deg) rotateZ(0deg);
   }
 
   #heroBooks > .hero-book:nth-child(3) {
     z-index: 2 !important;
+    transform: translateZ(-35px) rotateY(24deg) rotateZ(8deg);
   }
 }
