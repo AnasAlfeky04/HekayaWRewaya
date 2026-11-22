@@ -1679,6 +1679,7 @@ function initFloatingStatsLogos() {
 
 
 
+
 /* =========================================
    Opening Book Intro Controller
 ========================================= */
@@ -1693,7 +1694,7 @@ function initFloatingStatsLogos() {
   try {
     alreadyShown = sessionStorage.getItem("hikayaIntroShown") === "1";
   } catch (error) {
-    // Continue normally if sessionStorage is unavailable
+    // Continue if sessionStorage is unavailable
   }
 
   if (alreadyShown) {
@@ -1704,25 +1705,31 @@ function initFloatingStatsLogos() {
   try {
     sessionStorage.setItem("hikayaIntroShown", "1");
   } catch (error) {
-    // The intro can still run without sessionStorage
+    // Continue if sessionStorage is unavailable
   }
 
+  // Show the book and hide the page scrollbar
+  document.documentElement.classList.add("intro-book-running");
   introOverlay.classList.add("is-active");
 
-  // Keep the cover visible for 3 seconds, then open it
+  // Wait 3 seconds before opening the cover
   setTimeout(() => {
     introOverlay.classList.add("is-opening");
   }, 3000);
 
-  // Remove the intro after the opening animation finishes
+  // Finish the opening animation
   setTimeout(() => {
     introOverlay.classList.add("is-hidden");
+
+    // Restore the page scrollbar
+    document.documentElement.classList.remove("intro-book-running");
 
     setTimeout(() => {
       introOverlay.remove();
     }, 400);
   }, 4500);
 })();
+
 
 
 

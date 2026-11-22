@@ -4012,3 +4012,214 @@ footer small {
     animation-duration: 0.01ms;
   }
 }
+
+
+
+
+
+/* =========================================
+   Opening Book Intro - Fullscreen Page Curl
+========================================= */
+
+.intro-book-overlay.is-active {
+  background: #702f3b;
+  overflow: hidden;
+}
+
+.intro-book-scene {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.intro-book-pages {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  transform: translateZ(-2px);
+  box-shadow: none;
+}
+
+.intro-book-cover {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  transform-origin: right center;
+  overflow: hidden;
+  box-shadow: none;
+  background:
+    radial-gradient(ellipse at 48% 45%, #86424e 0%, #702f3b 48%, #54212b 100%);
+}
+
+/* إطار الغلاف الداخلي */
+.intro-book-cover::before {
+  inset: 22px;
+  border-radius: 0;
+  border-width: 2px;
+  box-shadow: inset 0 0 0 6px rgba(197, 161, 92, 0.1);
+}
+
+/* تأثير الإضاءة والانحناء على سطح الورقة */
+.intro-book-cover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 0;
+  border-radius: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(25, 8, 12, 0.22) 0%,
+      transparent 12%,
+      transparent 72%,
+      rgba(255, 226, 180, 0.08) 88%,
+      rgba(20, 5, 8, 0.2) 100%
+    );
+  transform-origin: right center;
+}
+
+/* حافة الورقة المنحنية */
+.intro-book-cover-inner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 12%;
+  height: 100%;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(20, 5, 8, 0.08) 35%,
+    rgba(20, 5, 8, 0.3) 75%,
+    rgba(255, 232, 194, 0.12) 100%
+  );
+  opacity: 0;
+  transform-origin: right center;
+}
+
+/* تقوّس الورقة أثناء الفتح */
+.intro-book-overlay.is-opening .intro-book-cover {
+  animation: introBookPageCurl 1.5s cubic-bezier(0.55, 0.05, 0.25, 1) forwards;
+}
+
+.intro-book-overlay.is-opening .intro-book-cover-inner {
+  animation: introBookInnerCurl 1.5s ease-in-out forwards;
+}
+
+.intro-book-overlay.is-opening .intro-book-cover-inner::before {
+  animation: introBookFoldShadow 1.5s ease-in-out forwards;
+}
+
+.intro-book-overlay.is-opening .intro-book-pages {
+  animation: introBookPagesReveal 1.5s ease forwards;
+}
+
+@keyframes introBookPageCurl {
+  0% {
+    transform: perspective(1800px) rotateY(0deg) skewY(0deg);
+    filter: brightness(1);
+  }
+
+  20% {
+    transform: perspective(1800px) rotateY(-12deg) skewY(1deg);
+    filter: brightness(0.88);
+  }
+
+  48% {
+    transform: perspective(1800px) rotateY(-48deg) skewY(-2deg);
+    filter: brightness(0.78);
+  }
+
+  72% {
+    transform: perspective(1800px) rotateY(-88deg) skewY(1deg);
+    filter: brightness(0.9);
+  }
+
+  100% {
+    transform: perspective(1800px) rotateY(-165deg) skewY(0deg);
+    filter: brightness(1);
+  }
+}
+
+@keyframes introBookInnerCurl {
+  0%, 100% {
+    transform: translateZ(2px) skewY(0deg);
+  }
+
+  25% {
+    transform: translateZ(2px) skewY(1.5deg);
+  }
+
+  55% {
+    transform: translateZ(2px) skewY(-2deg);
+  }
+
+  80% {
+    transform: translateZ(2px) skewY(1deg);
+  }
+}
+
+@keyframes introBookFoldShadow {
+  0% {
+    opacity: 0;
+    width: 4%;
+  }
+
+  35% {
+    opacity: 1;
+    width: 18%;
+  }
+
+  75% {
+    opacity: 0.8;
+    width: 10%;
+  }
+
+  100% {
+    opacity: 0;
+    width: 0;
+  }
+}
+
+@keyframes introBookPagesReveal {
+  0% {
+    transform: translateZ(-2px);
+  }
+
+  100% {
+    transform: translateZ(0);
+  }
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .intro-book-pages,
+  .intro-book-cover {
+    width: 100%;
+    height: 100%;
+  }
+
+  .intro-book-cover::before {
+    inset: 14px;
+  }
+
+  .intro-book-cover-inner {
+    padding: 25px;
+  }
+}
+
+
+/* Hide page scrollbar while the opening book is visible */
+html.intro-book-running {
+  overflow: hidden !important;
+  scrollbar-width: none !important;
+}
+
+html.intro-book-running::-webkit-scrollbar,
+html.intro-book-running body::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
