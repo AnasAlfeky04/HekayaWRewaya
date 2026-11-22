@@ -1480,6 +1480,124 @@ async function loadHomeStats() {
     Number(stats.authors_count || 0).toLocaleString("en-US");
 }
 
+
+
+// =========================================
+// HERO - RANDOM PUBLISHED BOOKS
+// =========================================
+
+async function loadHeroBooks() {
+  const heroBooks = document.getElementById("heroBooks");
+
+  if (!heroBooks) return;
+
+  try {
+    // تحميل جميع الروايات المنشورة التي لديها غلاف
+    const { data, error } = await db
+      .from("books")
+      .select("id, title, cover_path")
+      .eq("status", "published");
+
+    if (error) throw error;
+
+    const candidates = (data || []).filter(function (book) {
+      return book.id && book.title && book.cover_path;
+    });
+
+    // خلط الروايات عشوائيًا
+    for (let i = candidates.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+
+      [candidates[i], candidates[j]] = [
+        candidates[j],
+        candidates[i]
+      ];
+    }
+
+    // اختيار 3 روايات
+    const selectedBooks = candidates.slice(0, 3);
+
+    if (!selectedBooks.length) {
+      heroBooks.textContent = "لا توجد روايات متاحة حاليًا.";
+      return;
+    }
+
+    // إنشاء روابط آمنة للأغلفة
+    const booksWithCovers = await Promise.all(
+      selectedBooks.map(async function (book) {
+        const { data: coverData, error: coverError } = await db.storage
+          .from("book-covers")
+          .createSignedUrl(book.cover_path, 3600);
+
+        if (coverError || !coverData?.signedUrl) {
+          console.warn(
+            "تعذر تحميل غلاف الرواية:",
+            book.id,
+            coverError
+          );
+
+          return null;
+        }
+
+        return {
+          ...book,
+          coverUrl: coverData.signedUrl
+        };
+      })
+    );
+
+    const validBooks = booksWithCovers.filter(Boolean);
+
+    // إزالة رسالة التحميل
+    heroBooks.replaceChildren();
+
+    if (!validBooks.length) {
+      heroBooks.textContent = "تعذر تحميل أغلفة الروايات حاليًا.";
+      return;
+    }
+
+    // عرض الأغلفة
+    validBooks.forEach(function (book) {
+      const link = document.createElement("a");
+
+      link.className = "hero-book";
+      link.href =
+        "/Library/library.html?book=" +
+        encodeURIComponent(book.id);
+
+      link.setAttribute(
+        "aria-label",
+        "عرض رواية " + book.title
+      );
+
+      const cover = document.createElement("img");
+
+      cover.src = book.coverUrl;
+      cover.alt = "غلاف رواية " + book.title;
+      cover.loading = "eager";
+      cover.decoding = "async";
+
+      const shade = document.createElement("span");
+      shade.className = "hero-book-shade";
+
+      const title = document.createElement("span");
+      title.className = "hero-book-title";
+      title.textContent = book.title;
+
+      shade.appendChild(title);
+      link.appendChild(cover);
+      link.appendChild(shade);
+
+      heroBooks.appendChild(link);
+    });
+
+  } catch (error) {
+    console.error("Hero books loading error:", error);
+    heroBooks.textContent = "تعذر تحميل الروايات حاليًا.";
+  }
+}
+
+
    
 async function startApp() {
   await refreshProfile();
@@ -1487,7 +1605,8 @@ async function startApp() {
   await Promise.all([
     loadBooks(),
     loadHomeCategories(),
-    loadHomeStats()
+    loadHomeStats(),
+    loadHeroBooks()
   ]);
 }
 
@@ -1553,8 +1672,6 @@ function initFloatingStatsLogos() {
 
   requestAnimationFrame(animate);
 }
-
-
 
 initFloatingStatsLogos();
 
