@@ -1725,11 +1725,7 @@ function initFloatingStatsLogos() {
     setTimeout(() => {
       introOverlay.remove();
       document.documentElement.classList.remove("intro-book-running");
-    }, 400);
-
-    setTimeout(() => {
-      introOverlay.remove();
-    }, 400);
+    }, 3800);
   }, 4500);
 })();
 
