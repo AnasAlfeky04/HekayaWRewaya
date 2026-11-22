@@ -1557,10 +1557,12 @@ async function loadHeroBooks() {
     }
 
     // عرض الأغلفة
-    validBooks.forEach(function (book) {
+    validBooks.forEach(function (book, index) {
       const link = document.createElement("a");
 
       link.className = "hero-book";
+      link.style.position = "absolute";
+      link.style.zIndex = index === 1 ? "9999" : index === 0 ? "1" : "2";
       link.href =
         "/Library/library.html?book=" +
         encodeURIComponent(book.id);
