@@ -644,7 +644,7 @@ footer small {
 
   .navbar .logo img {
     padding-left: 50px;
-    width: 140px;
+    width: 130px;
     height: 60px;
   }
 
@@ -3268,15 +3268,6 @@ footer small {
   }
 }
 
-/* تكبير زري مكتبتي وحسابي على الموبايل */
-@media (max-width: 800px) {
-  #myLibraryBtn,
-  #signupBtn {
-    padding: 11px 15px;
-    font-size: 12px;
-    min-height: 40px;
-  }
-}
 
 
 /* إظهار تصنيف الرواية على جسم الكارت */
@@ -3344,4 +3335,37 @@ footer small {
 .premium-book-info .premium-book-category {
   margin-top: 2px !important;
   margin-bottom: 5px !important;
+}
+
+
+/* تكبير وتوحيد أزرار الهيدر على الموبايل فقط */
+@media (max-width: 800px) {
+  .navbar .nav-actions .btn {
+    padding: 10px 15px;
+    font-size: 12px;
+  }
+}
+
+/* تثبيت اللوجو والأزرار في صف واحد على الموبايل */
+@media (max-width: 800px) {
+  .navbar {
+    flex-wrap: nowrap;
+  }
+
+  .navbar .nav-actions {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .navbar .logo {
+    flex-shrink: 1;
+    min-width: 0;
+  }
+
+  .navbar .nav-actions .btn {
+    white-space: nowrap;
+  }
 }
