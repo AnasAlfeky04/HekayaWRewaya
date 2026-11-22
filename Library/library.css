@@ -2196,3 +2196,42 @@ body.book-details-open #global-scrollbar {
         margin-top: 75px !important;
     }
 }
+
+
+/* ضبط توزيع هيدر المكتبة على الموبايل دون تصغير الأزرار */
+@media (max-width: 600px) {
+  .navbar {
+    width: 100%;
+    padding: 8px 12px;
+    gap: 5px;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+  }
+
+  .navbar .logo {
+    min-width: 0;
+    flex-shrink: 1;
+  }
+
+  .navbar .logo img {
+    width: 100px;
+    height: 45px;
+    padding-left: 0;
+  }
+
+  .navbar .nav-actions {
+    display: flex;
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+  }
+
+  .navbar .nav-actions .btn {
+    flex-shrink: 0;
+    padding: 10px 17px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+}
