@@ -4272,3 +4272,21 @@ html.intro-book-running body::-webkit-scrollbar {
   }
 }
 
+
+
+/* Completely hide native scrollbar during intro */
+html.intro-book-running,
+html.intro-book-running body {
+  overflow: hidden !important;
+  height: 100% !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+html.intro-book-running::-webkit-scrollbar,
+html.intro-book-running body::-webkit-scrollbar,
+html.intro-book-running *::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}

@@ -1684,6 +1684,7 @@ function initFloatingStatsLogos() {
    Opening Book Intro Controller
 ========================================= */
 
+
 (function initOpeningBookIntro() {
   const introOverlay = document.getElementById("introBookOverlay");
 
@@ -1693,9 +1694,7 @@ function initFloatingStatsLogos() {
 
   try {
     alreadyShown = sessionStorage.getItem("hikayaIntroShown") === "1";
-  } catch (error) {
-    // Continue if sessionStorage is unavailable
-  }
+  } catch (error) {}
 
   if (alreadyShown) {
     introOverlay.remove();
@@ -1704,31 +1703,33 @@ function initFloatingStatsLogos() {
 
   try {
     sessionStorage.setItem("hikayaIntroShown", "1");
-  } catch (error) {
-    // Continue if sessionStorage is unavailable
-  }
+  } catch (error) {}
 
-  // Show the book and hide the page scrollbar
+  // Hide scrollbars immediately
   document.documentElement.classList.add("intro-book-running");
+  document.body.classList.add("intro-book-running");
+
   introOverlay.classList.add("is-active");
 
-  // Wait 4 seconds before opening the cover
+  // Keep cover visible for 4 seconds
   setTimeout(() => {
     introOverlay.classList.add("is-opening");
   }, 4000);
 
-  // Finish the opening animation
+  // Finish after 1.5 seconds of opening animation
   setTimeout(() => {
     introOverlay.classList.add("is-hidden");
 
-    // Restore the page scrollbar after the cover is removed
     setTimeout(() => {
       introOverlay.remove();
-      document.documentElement.classList.remove("intro-book-running");
-    }, 3800);
-  }, 4500);
-})();
 
+      // Restore scrolling after intro is completely removed
+      document.documentElement.classList.remove("intro-book-running");
+      document.body.classList.remove("intro-book-running");
+    }, 400);
+
+  }, 5500);
+})();
 
 
 
