@@ -1712,17 +1712,20 @@ function initFloatingStatsLogos() {
   document.documentElement.classList.add("intro-book-running");
   introOverlay.classList.add("is-active");
 
-  // Wait 3 seconds before opening the cover
+  // Wait 4 seconds before opening the cover
   setTimeout(() => {
     introOverlay.classList.add("is-opening");
-  }, 3000);
+  }, 4000);
 
   // Finish the opening animation
   setTimeout(() => {
     introOverlay.classList.add("is-hidden");
 
-    // Restore the page scrollbar
-    document.documentElement.classList.remove("intro-book-running");
+    // Restore the page scrollbar after the cover is removed
+    setTimeout(() => {
+      introOverlay.remove();
+      document.documentElement.classList.remove("intro-book-running");
+    }, 400);
 
     setTimeout(() => {
       introOverlay.remove();

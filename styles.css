@@ -4247,3 +4247,28 @@ html.intro-book-running body::-webkit-scrollbar {
   height: 100%;
   border-radius: 0;
 }
+
+
+/* Open the Arabic book cover outward to the right */
+.intro-book-overlay.is-opening .intro-book-cover {
+  animation: introBookOpenOutward 1.5s cubic-bezier(0.55, 0.05, 0.25, 1) forwards !important;
+}
+
+@keyframes introBookOpenOutward {
+  0% {
+    transform: perspective(1800px) rotateY(0deg);
+  }
+
+  25% {
+    transform: perspective(1800px) rotateY(25deg);
+  }
+
+  55% {
+    transform: perspective(1800px) rotateY(85deg);
+  }
+
+  100% {
+    transform: perspective(1800px) rotateY(180deg);
+  }
+}
+
