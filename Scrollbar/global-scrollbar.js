@@ -55,31 +55,6 @@
         animationPending = true;
         requestAnimationFrame(updateScrollbar);
       };
-
-
-
-            // مراقبة تغيّر محتوى الصفحة بعد التحميل
-            const pageContentObserver = new MutationObserver(() => {
-              scheduleUpdate();
-            });
-      
-            pageContentObserver.observe(document.body, {
-              childList: true,
-              subtree: true,
-              characterData: true
-            });
-      
-            // مراقبة تغيّر ارتفاع الصفحة
-            if ("ResizeObserver" in window) {
-              const pageResizeObserver = new ResizeObserver(() => {
-                scheduleUpdate();
-              });
-      
-              pageResizeObserver.observe(document.documentElement);
-              pageResizeObserver.observe(document.body);
-            }
-
-
   
       const scrollToPosition = (clientY) => {
         const rect = scrollbar.getBoundingClientRect();
