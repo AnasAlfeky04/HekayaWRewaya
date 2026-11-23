@@ -55,6 +55,20 @@
         animationPending = true;
         requestAnimationFrame(updateScrollbar);
       };
+
+
+
+            // إعادة تحديث السكرول بار عند انتهاء أي شاشة افتتاحية
+            const introObserver = new MutationObserver(() => {
+              scheduleUpdate();
+            });
+      
+            introObserver.observe(document.documentElement, {
+              attributes: true,
+              attributeFilter: ["class"]
+            });
+
+
   
       const scrollToPosition = (clientY) => {
         const rect = scrollbar.getBoundingClientRect();
