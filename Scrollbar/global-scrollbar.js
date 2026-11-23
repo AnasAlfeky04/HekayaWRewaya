@@ -58,15 +58,26 @@
 
 
 
-            // إعادة تحديث السكرول بار عند انتهاء أي شاشة افتتاحية
-            const introObserver = new MutationObserver(() => {
+            // مراقبة تغيّر محتوى الصفحة بعد التحميل
+            const pageContentObserver = new MutationObserver(() => {
               scheduleUpdate();
             });
       
-            introObserver.observe(document.documentElement, {
-              attributes: true,
-              attributeFilter: ["class"]
+            pageContentObserver.observe(document.body, {
+              childList: true,
+              subtree: true,
+              characterData: true
             });
+      
+            // مراقبة تغيّر ارتفاع الصفحة
+            if ("ResizeObserver" in window) {
+              const pageResizeObserver = new ResizeObserver(() => {
+                scheduleUpdate();
+              });
+      
+              pageResizeObserver.observe(document.documentElement);
+              pageResizeObserver.observe(document.body);
+            }
 
 
   
