@@ -1685,6 +1685,7 @@ function initFloatingStatsLogos() {
 ========================================= */
 
 
+
 (function initOpeningBookIntro() {
   const introOverlay = document.getElementById("introBookOverlay");
 
@@ -1705,31 +1706,32 @@ function initFloatingStatsLogos() {
     sessionStorage.setItem("hikayaIntroShown", "1");
   } catch (error) {}
 
-  // Hide scrollbars immediately
+  // Hide scrollbar during the entire intro
   document.documentElement.classList.add("intro-book-running");
   document.body.classList.add("intro-book-running");
 
   introOverlay.classList.add("is-active");
 
-  // Keep cover visible for 4 seconds
+  // Keep the cover visible for 2.5 seconds
   setTimeout(() => {
     introOverlay.classList.add("is-opening");
-  }, 4000);
+  }, 2500);
 
-  // Finish after 1.5 seconds of opening animation
+  // Finish opening animation
   setTimeout(() => {
     introOverlay.classList.add("is-hidden");
 
+    // Remove cover, then restore scrollbar
     setTimeout(() => {
       introOverlay.remove();
 
-      // Restore scrolling after intro is completely removed
       document.documentElement.classList.remove("intro-book-running");
       document.body.classList.remove("intro-book-running");
     }, 400);
 
-  }, 5500);
+  }, 4000);
 })();
+
 
 
 
