@@ -1707,8 +1707,6 @@ function initFloatingStatsLogos() {
   } catch (error) {}
 
   // Hide scrollbar during the entire intro
-  document.documentElement.classList.add("intro-book-running");
-  document.body.classList.add("intro-book-running");
 
   introOverlay.classList.add("is-active");
 
@@ -1725,14 +1723,6 @@ function initFloatingStatsLogos() {
     setTimeout(() => {
       
       introOverlay.remove();
-
-      document.documentElement.classList.remove("intro-book-running");
-      document.body.classList.remove("intro-book-running");
-
-      // إعادة حساب وإظهار السكرول بار بعد انتهاء المقدمة
-      requestAnimationFrame(() => {
-        window.dispatchEvent(new Event("resize"));
-      });
 
     }, 400);
 

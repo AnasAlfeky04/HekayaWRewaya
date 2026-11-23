@@ -4290,3 +4290,16 @@ html.intro-book-running *::-webkit-scrollbar {
   width: 0 !important;
   height: 0 !important;
 }
+
+
+/* المقدمة تغطي الصفحة بالكامل بما فيها السكرول بار */
+.intro-book-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000000;
+}
+
+/* السكرول بار يظل محمّلاً خلف الغلاف */
+#global-scrollbar {
+  z-index: 99999;
+}
