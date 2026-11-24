@@ -4318,3 +4318,18 @@ html.intro-book-running *::-webkit-scrollbar {
     transform: perspective(1800px) rotateY(180deg);
   }
 }
+
+
+/* جملة الغلاف العشوائية */
+.intro-book-quote {
+  width: min(80%, 700px);
+  margin: 22px auto 0;
+  color: #C5A15C;
+  font-family: "Cairo", sans-serif;
+  font-size: clamp(16px, 2vw, 25px);
+  font-weight: bold;
+  line-height: 1.9;
+  text-align: center;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  direction: rtl;
+}

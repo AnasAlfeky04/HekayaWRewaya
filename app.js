@@ -1689,6 +1689,38 @@ function initFloatingStatsLogos() {
 (function initOpeningBookIntro() {
   const introOverlay = document.getElementById("introBookOverlay");
 
+
+
+  // الجمل العشوائية التي تظهر على غلاف المقدمة
+const introQuotes = [
+  "حياة واحدة لا تكفي",
+  "خلف هذا الغلاف حكايات وروايات",
+  "اترك الواقع هنا، وعش خيال الروايات",
+  "لكل عالم باب، وهذا الباب عالمك",
+  "بعض الصفحات لا تقلب، إنما تعاش",
+  "هنا، للخيال الكلمة الاولى والاخيرة",
+  "تنتهي الرواية، ويبقى شيء منها بداخلك",
+  "أحيانا، نفهم أنفسنا من حكايات الآخرين",
+  "ما زالت هناك حكايات لم تكتشفها بعد",
+  "إبدأ الكتابة، فهناك من ينتظر حكاية تشبهه",
+  "نقرأ عن غيرنا، فنجد شيئا منا",
+  "للحكايات التي نحبها، وللتي سنكتبها يوما",
+  "بينك وبين العالم الآخر، هذا الغلاف",
+  "صفحة واحده قد تغير حياتك",
+  "الحكاية التي لم تجدها، إكتبها",
+  "هنا يلتقي خيالك بخيال الآخرين"
+];
+
+// اختيار جملة عشوائية وعرضها
+const quoteElement = document.getElementById("introBookQuote");
+
+if (quoteElement) {
+  const randomIndex = Math.floor(Math.random() * introQuotes.length);
+  quoteElement.textContent = introQuotes[randomIndex];
+}
+
+
+
   if (!introOverlay) return;
 
   let alreadyShown = false;
