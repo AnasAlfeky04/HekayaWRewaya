@@ -52,16 +52,30 @@ async function getPdfUrl(){
 }
 
 
+let pageFlipAudioReady = false;
+
+function preparePageFlipSound() {
+  const sound = $("pageFlipSound");
+  if (!sound) return;
+
+  sound.load();
+
+  sound.addEventListener("canplaythrough", () => {
+    pageFlipAudioReady = true;
+  }, { once: true });
+
+  sound.addEventListener("error", () => {
+    console.error("Page flip audio loading failed:", sound.error);
+  });
+}
+
 function playPageFlipSound() {
   const sound = $("pageFlipSound");
-  if (!sound) {
-    console.error("Page flip sound element not found");
-    return;
-  }
+  if (!sound || sound.readyState < 2) return;
 
   sound.currentTime = 0;
 
-  sound.play().catch((error) => {
+  sound.play().catch(error => {
     console.error("Page flip audio error:", error);
   });
 }
@@ -630,5 +644,6 @@ document.addEventListener("fullscreenchange", () => {
   btn.setAttribute("aria-label", btn.title);
 });
 
+preparePageFlipSound();
 
 initReader();
