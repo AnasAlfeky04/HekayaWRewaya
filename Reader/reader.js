@@ -52,32 +52,37 @@ async function getPdfUrl(){
 }
 
 
-let pageFlipAudioReady = false;
-
 function preparePageFlipSound() {
   const sound = $("pageFlipSound");
   if (!sound) return;
 
-  sound.load();
-
-  sound.addEventListener("canplaythrough", () => {
-    pageFlipAudioReady = true;
-  }, { once: true });
+  sound.preload = "auto";
 
   sound.addEventListener("error", () => {
     console.error("Page flip audio loading failed:", sound.error);
   });
+
+  sound.load();
 }
 
 function playPageFlipSound() {
   const sound = $("pageFlipSound");
-  if (!sound || sound.readyState < 2) return;
+  if (!sound) return;
 
-  sound.currentTime = 0;
+  try {
+    sound.pause();
+    sound.currentTime = 0;
 
-  sound.play().catch(error => {
+    const playPromise = sound.play();
+
+    if (playPromise !== undefined) {
+      playPromise.catch(error => {
+        console.error("Page flip audio error:", error);
+      });
+    }
+  } catch (error) {
     console.error("Page flip audio error:", error);
-  });
+  }
 }
 
 
