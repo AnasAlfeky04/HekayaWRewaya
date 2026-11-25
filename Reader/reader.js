@@ -418,6 +418,9 @@ async function searchDocument(direction=1){
 
 // السهم الموجود على اليمين: الرجوع للصفحات السابقة
 $("prevBtn").addEventListener("click", () => {
+  if (currentPage <= 1) return;
+
+  playPageFlipSound();
   goToPage(currentPage - (isMobile() ? 1 : 2));
 });
 
@@ -473,6 +476,9 @@ bookStage.addEventListener("pointercancel", () => {
 
 // السهم الموجود على الشمال: الانتقال للصفحات التالية
 $("nextBtn").addEventListener("click", () => {
+  if (currentPage + (isMobile() ? 1 : 2) > pdfDoc.numPages) return;
+
+  playPageFlipSound();
   goToPage(currentPage + (isMobile() ? 1 : 2));
 });
 
