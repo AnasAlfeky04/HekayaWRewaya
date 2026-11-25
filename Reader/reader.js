@@ -54,12 +54,15 @@ async function getPdfUrl(){
 
 function playPageFlipSound() {
   const sound = $("pageFlipSound");
-  if (!sound) return;
+  if (!sound) {
+    console.error("Page flip sound element not found");
+    return;
+  }
 
   sound.currentTime = 0;
 
-  sound.play().catch(() => {
-    // تجاهل الخطأ لو المتصفح منع تشغيل الصوت
+  sound.play().catch((error) => {
+    console.error("Page flip audio error:", error);
   });
 }
 
@@ -426,6 +429,7 @@ const bookStage = $("bookStage");
 
 bookStage.addEventListener("pointerdown", (e) => {
   if (!isMobile() || e.pointerType !== "touch" || !e.isPrimary) return;
+
   if (zoom > 1.01) return;
 
   if (!e.target.closest(".page-sheet")) return;
