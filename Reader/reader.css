@@ -1561,3 +1561,12 @@ body.dark input:focus-visible {
      height: 0 !important;
      background: transparent !important;
    }
+
+
+
+/* تقليب الصفحات بالسحب على الموبايل */
+@media (max-width: 760px) {
+  .page-sheet {
+    touch-action: pan-y;
+  }
+}

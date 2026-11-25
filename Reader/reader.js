@@ -50,6 +50,20 @@ async function getPdfUrl(){
   if(!url)throw new Error("لم نتمكن من الحصول على رابط قراءة الرواية.");
   return url;
 }
+
+
+function playPageFlipSound() {
+  const sound = $("pageFlipSound");
+  if (!sound) return;
+
+  sound.currentTime = 0;
+
+  sound.play().catch(() => {
+    // تجاهل الخطأ لو المتصفح منع تشغيل الصوت
+  });
+}
+
+
 async function initReader(){
   try{
     if(!window.pdfjsLib)throw new Error("مكتبة عرض الصفحات لم يتم تحميلها. حدّث الصفحة وحاول مرة أخرى.");
@@ -71,6 +85,61 @@ async function initReader(){
   }catch(error){console.error("Reader init error:",error);showError(error.message||"تعذّر فتح الرواية. تأكد من تسجيل الدخول وحاول مرة أخرى.");}
 }
 
+
+
+function tintCanvasPaper(canvas) {
+  const context = canvas.getContext("2d");
+
+  if (!context || !canvas.width || !canvas.height) return;
+
+  let imageData;
+
+  try {
+    imageData = context.getImageData(
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+  } catch (error) {
+    console.warn("Paper tint skipped:", error);
+    return;
+  }
+
+  const pixels = imageData.data;
+
+  // لون الورق العاجي
+  const targetR = 248;
+  const targetG = 242;
+  const targetB = 232;
+
+  for (let i = 0; i < pixels.length; i += 4) {
+    const alpha = pixels[i + 3];
+
+    if (alpha === 0) continue;
+
+    const r = pixels[i];
+    const g = pixels[i + 1];
+    const b = pixels[i + 2];
+
+    const min = Math.min(r, g, b);
+    const max = Math.max(r, g, b);
+
+    // استهداف الأبيض والدرجات القريبة منه فقط
+    if (min < 218 || max - min > 20) continue;
+
+    const strength = Math.min(1, (min - 218) / 37);
+
+    pixels[i] = Math.round(r + (targetR - r) * strength);
+    pixels[i + 1] = Math.round(g + (targetG - g) * strength);
+    pixels[i + 2] = Math.round(b + (targetB - b) * strength);
+  }
+
+  context.putImageData(imageData, 0, 0);
+}
+
+
+
 async function renderOne(pageNumber, canvas, layer, token) {
   const context = canvas.getContext("2d");
 
@@ -87,6 +156,12 @@ async function renderOne(pageNumber, canvas, layer, token) {
   if (token !== renderToken) return;
 
   const box = canvas.parentElement;
+
+  box.style.touchAction =
+  isMobile() && zoom <= 1.01
+    ? "pan-y"
+    : "pan-x pan-y";
+
   const base = page.getViewport({ scale: 1 });
 
   const availableWidth = Math.max(100, box.clientWidth - 18);
@@ -114,6 +189,9 @@ async function renderOne(pageNumber, canvas, layer, token) {
     viewport,
     transform: dpr !== 1 ? [dpr, 0, 0, dpr, 0, 0] : null
   }).promise;
+
+  // تحويل درجات الأبيض إلى لون ورق عاجي بعد انتهاء الرسم
+  tintCanvasPaper(canvas);
 }
 
 async function renderSpread() {
@@ -339,6 +417,55 @@ async function searchDocument(direction=1){
 $("prevBtn").addEventListener("click", () => {
   goToPage(currentPage - (isMobile() ? 1 : 2));
 });
+
+
+// تقليب الصفحات بالسحب بالإصبع على الموبايل
+let swipeStart = null;
+
+const bookStage = $("bookStage");
+
+bookStage.addEventListener("pointerdown", (e) => {
+  if (!isMobile() || e.pointerType !== "touch" || !e.isPrimary) return;
+  if (zoom > 1.01) return;
+
+  if (!e.target.closest(".page-sheet")) return;
+
+  swipeStart = {
+    x: e.clientX,
+    y: e.clientY,
+    pointerId: e.pointerId
+  };
+});
+
+bookStage.addEventListener("pointerup", (e) => {
+  if (!swipeStart || e.pointerId !== swipeStart.pointerId) return;
+
+  const deltaX = e.clientX - swipeStart.x;
+  const deltaY = e.clientY - swipeStart.y;
+
+  swipeStart = null;
+
+  // تجاهل السحب القصير أو الرأسي
+  if (Math.abs(deltaX) < 55) return;
+  if (Math.abs(deltaX) < Math.abs(deltaY) * 1.25) return;
+
+// السحب من اليسار إلى اليمين: الصفحة التالية
+if (deltaX > 0 && currentPage < pdfDoc.numPages) {
+  playPageFlipSound();
+  goToPage(currentPage + 1);
+}
+
+// السحب من اليمين إلى اليسار: الصفحة السابقة
+else if (deltaX < 0 && currentPage > 1) {
+  playPageFlipSound();
+  goToPage(currentPage - 1);
+}
+});
+
+bookStage.addEventListener("pointercancel", () => {
+  swipeStart = null;
+});
+
 
 // السهم الموجود على الشمال: الانتقال للصفحات التالية
 $("nextBtn").addEventListener("click", () => {
