@@ -98,11 +98,52 @@ function preparePageFlipSound() {
   return pageFlipAudioLoading;
 }
 
+
+
+let pageFlipAudioUnlocked = false;
+
+function unlockPageFlipSound() {
+  if (!pageFlipAudioContext || pageFlipAudioUnlocked) return;
+
+  try {
+    // إنشاء مصدر صوت صامت لتفعيل Web Audio على iPhone
+    const silentBuffer = pageFlipAudioContext.createBuffer(
+      1,
+      1,
+      pageFlipAudioContext.sampleRate
+    );
+
+    const silentSource = pageFlipAudioContext.createBufferSource();
+
+    silentSource.buffer = silentBuffer;
+    silentSource.connect(pageFlipAudioContext.destination);
+    silentSource.start(0);
+
+    // طلب استئناف السياق أثناء تفاعل المستخدم نفسه
+    const resumePromise = pageFlipAudioContext.resume();
+
+    pageFlipAudioUnlocked = true;
+
+    if (resumePromise) {
+      resumePromise.catch(error => {
+        pageFlipAudioUnlocked = false;
+        console.error("Audio unlock error:", error);
+      });
+    }
+
+  } catch (error) {
+    console.error("Audio unlock error:", error);
+  }
+}
+
+
+
 // تشغيل الصوت عند كل تقليبة
 function playPageFlipSound() {
   if (!pageFlipAudioContext) return;
 
-  // طلب تفعيل الصوت من Safari أثناء تفاعل المستخدم
+  unlockPageFlipSound();
+
   const resumePromise =
     pageFlipAudioContext.state === "suspended"
       ? pageFlipAudioContext.resume()
@@ -518,6 +559,9 @@ bookStage.addEventListener("pointerdown", (e) => {
   if (zoom > 1.01) return;
 
   if (!e.target.closest(".page-sheet")) return;
+
+  // تفعيل الصوت من أول لمسة على الكتاب
+  unlockPageFlipSound();
 
   swipeStart = {
     x: e.clientX,
