@@ -7570,3 +7570,50 @@ textarea:focus-visible {
 .sidebar-bottom {
   margin-top: 24px;
 }
+
+
+
+/* =========================================
+   SUPPORT CHAT - FIXED HEIGHT & INDEPENDENT SCROLL
+========================================= */
+
+#panel-support .support-admin-layout {
+  min-height: 95vh;
+  overflow: hidden;
+}
+
+#panel-support .support-admin-sidebar,
+#panel-support .support-admin-chat {
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+#panel-support .support-admin-sidebar {
+  display: flex;
+  flex-direction: column;
+}
+
+#panel-support .support-admin-conversations {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+#panel-support .support-admin-chat {
+  display: flex;
+  flex-direction: column;
+}
+
+#panel-support .support-chat-header,
+#panel-support .support-chat-composer {
+  flex: 0 0 auto;
+}
+
+#panel-support .support-chat-messages {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
