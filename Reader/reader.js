@@ -52,38 +52,101 @@ async function getPdfUrl(){
 }
 
 
+
+
+let pageFlipAudioContext = null;
+let pageFlipAudioBuffer = null;
+let pageFlipAudioLoading = null;
+let pageFlipSource = null;
+
+// تحميل الصوت وفك تشفيره مرة واحدة فقط
 function preparePageFlipSound() {
-  const sound = $("pageFlipSound");
-  if (!sound) return;
+  if (pageFlipAudioLoading) return pageFlipAudioLoading;
 
-  sound.preload = "auto";
+  const AudioContextClass =
+    window.AudioContext || window.webkitAudioContext;
 
-  sound.addEventListener("error", () => {
-    console.error("Page flip audio loading failed:", sound.error);
-  });
-
-  sound.load();
-}
-
-function playPageFlipSound() {
-  const sound = $("pageFlipSound");
-  if (!sound) return;
-
-  try {
-    sound.pause();
-    sound.currentTime = 0;
-
-    const playPromise = sound.play();
-
-    if (playPromise !== undefined) {
-      playPromise.catch(error => {
-        console.error("Page flip audio error:", error);
-      });
-    }
-  } catch (error) {
-    console.error("Page flip audio error:", error);
+  if (!AudioContextClass) {
+    console.error("Web Audio API is not supported.");
+    return;
   }
+
+  pageFlipAudioContext = new AudioContextClass();
+
+  pageFlipAudioLoading = fetch(
+    new URL("page-flip.mp3", document.baseURI)
+  )
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Failed to load page flip sound");
+      }
+
+      return response.arrayBuffer();
+    })
+    .then(data => pageFlipAudioContext.decodeAudioData(data))
+    .then(buffer => {
+      pageFlipAudioBuffer = buffer;
+      console.log("Page flip sound loaded and ready.");
+      return buffer;
+    })
+    .catch(error => {
+      console.error("Page flip sound loading error:", error);
+      pageFlipAudioLoading = null;
+      return null;
+    });
+
+  return pageFlipAudioLoading;
 }
+
+// تشغيل الصوت عند كل تقليبة
+function playPageFlipSound() {
+  if (!pageFlipAudioContext) return;
+
+  // طلب تفعيل الصوت من Safari أثناء تفاعل المستخدم
+  const resumePromise =
+    pageFlipAudioContext.state === "suspended"
+      ? pageFlipAudioContext.resume()
+      : Promise.resolve();
+
+  resumePromise
+    .then(() => {
+      if (pageFlipAudioBuffer) {
+        return pageFlipAudioBuffer;
+      }
+
+      return pageFlipAudioLoading;
+    })
+    .then(buffer => {
+      if (!buffer) return;
+
+      // إيقاف الصوت السابق لإعادة تشغيله من البداية
+      if (pageFlipSource) {
+        try {
+          pageFlipSource.stop();
+        } catch (_) {}
+      }
+
+      const source = pageFlipAudioContext.createBufferSource();
+
+      source.buffer = buffer;
+      source.connect(pageFlipAudioContext.destination);
+
+      pageFlipSource = source;
+
+      source.onended = () => {
+        if (pageFlipSource === source) {
+          pageFlipSource = null;
+        }
+      };
+
+      source.start(0);
+    })
+    .catch(error => {
+      console.error("Page flip playback error:", error);
+    });
+}
+
+
 
 
 async function initReader(){
