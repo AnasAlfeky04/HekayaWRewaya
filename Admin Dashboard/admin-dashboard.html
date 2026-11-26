@@ -37,6 +37,11 @@
         <b id="navWithdrawals">—</b>
       </button>
 
+      <button class="nav-item" data-tab="support">
+        <span>✉</span> خدمة العملاء
+        <b id="navSupport">—</b>
+      </button>
+
     </nav>
     <div class="sidebar-bottom"><div class="secure-note"><span class="secure-icon">✓</span><div><strong>وصول إداري</strong><small>تُحمّل البيانات من قاعدة البيانات</small></div></div><a class="back-link" href="/Profile/profile.html">← العودة إلى حسابي</a></div>
   </aside>
@@ -428,6 +433,87 @@
   </div>
 
 </section>
+
+
+
+
+
+<!-- =========================================
+     خدمة العملاء - WhatsApp Style
+========================================= -->
+<section class="tab-panel" id="panel-support">
+
+  <div class="support-page-heading">
+    <div>
+      <h2>خدمة العملاء</h2>
+      <p>تواصل مع القراء والزوار وتابع استفساراتهم.</p>
+    </div>
+  </div>
+
+  <div class="support-admin-layout">
+
+    <!-- قائمة المحادثات -->
+    <aside class="support-admin-sidebar">
+
+      <div class="support-sidebar-header">
+        <div>
+          <h3>المحادثات</h3>
+          <span id="supportConversationsCount">0 محادثة</span>
+        </div>
+
+        <button
+          type="button"
+          class="support-refresh-btn"
+          id="supportRefreshBtn"
+          title="تحديث المحادثات والرسائل"
+          aria-label="تحديث المحادثات والرسائل"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20 7v5h-5"></path>
+            <path d="M4 17v-5h5"></path>
+            <path d="M5.6 9a7 7 0 0 1 11.6-2L20 12"></path>
+            <path d="M18.4 15a7 7 0 0 1-11.6 2L4 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div class="support-search-wrapper">
+        <input
+          type="search"
+          id="supportAdminSearch"
+          placeholder="ابحث عن محادثة..."
+          autocomplete="off"
+        >
+      </div>
+
+      <div
+        class="support-admin-conversations"
+        id="supportAdminConversations"
+      >
+        <div class="loading-state">
+          جارٍ تحميل المحادثات…
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- مساحة الرسائل -->
+    <div class="support-admin-chat" id="supportAdminChat">
+
+      <div class="support-admin-empty">
+        <div class="support-empty-icon">✉</div>
+        <h3>خدمة العملاء</h3>
+        <p>
+          اختار محادثة من القائمة لعرض الرسائل والرد عليها.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
 
 
 

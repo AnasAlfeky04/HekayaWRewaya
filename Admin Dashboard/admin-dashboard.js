@@ -62,6 +62,13 @@ db.auth.onAuthStateChange((event, session) => {
       withdrawalProofFile: null,
       withdrawalsView: 'pending',
       purchaseRequestsView: 'pending',
+
+      // خدمة العملاء
+      supportConversations: [],
+      supportActiveConversation: null,
+      supportMessages: [],
+      supportLoading: false,
+      supportSending: false,
     };
   
     const roleLabels = {
@@ -85,7 +92,8 @@ db.auth.onAuthStateChange((event, session) => {
       statistics: 'الإحصائيات',
       purchases: 'طلبات الشراء',
       earnings: 'أرباح المنصة',
-      withdrawals: 'طلبات السحب'
+      withdrawals: 'طلبات السحب',
+      support: 'خدمة العملاء'
     };
   
     // ---------------------------------------------------------
@@ -1950,7 +1958,7 @@ normalizeValue(revision.proposed_file_path);
 
 
 
-    // =========================================
+// =========================================
 // تحميل طلبات الشراء ومبيعات المنصة
 // =========================================
 
@@ -3363,10 +3371,12 @@ function renderAll() {
       $('sidebar').classList.remove('open');
       document.body.classList.remove('menu-open');
   
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
+      window.scrollTo({top: 0, behavior: 'smooth'});
+
+      if (tab === 'support') {
+        loadSupportConversations();
+      }
+
     }
   
     // ---------------------------------------------------------
@@ -3707,6 +3717,441 @@ $('submitRevisionRejection').addEventListener('click', async () => {
   
       toast('تم حذف الرواية وملفاته المرتبطة بنجاح.');
     }
+
+
+
+
+
+// ==========================================
+// CUSTOMER SUPPORT - CONVERSATIONS
+// ==========================================
+
+function supportEscapeHTML(value) {
+  return String(value ?? '').replace(/[&<>"']/g, (char) => {
+    const entities = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    };
+
+    return entities[char];
+  });
+}
+
+async function loadSupportConversations() {
+  const container = $('supportAdminConversations');
+  if (!container) return;
+
+  if (state.supportLoading) return;
+
+  state.supportLoading = true;
+  container.innerHTML = `
+    <div class="loading-state">جارٍ تحميل المحادثات…</div>
+  `;
+
+  try {
+    const { data, error } = await db.rpc('support_admin_get_conversations');
+
+    if (error) throw error;
+
+    state.supportConversations = data || [];
+
+    renderSupportConversations();
+
+  } catch (error) {
+    console.error('Support conversations error:', error);
+
+    container.innerHTML = `
+      <div class="loading-state">
+        تعذر تحميل المحادثات. حاول تحديث القائمة.
+      </div>
+    `;
+
+  } finally {
+    state.supportLoading = false;
+  }
+}
+
+
+
+async function refreshSupportChat() {
+  const refreshBtn = $('supportRefreshBtn');
+
+  if (!refreshBtn || refreshBtn.disabled) return;
+
+  const activeConversationId = state.supportActiveConversation;
+
+  refreshBtn.disabled = true;
+  refreshBtn.classList.add('is-refreshing');
+
+  try {
+    await loadSupportConversations();
+
+    if (activeConversationId) {
+      await openSupportConversation(activeConversationId);
+    }
+  } finally {
+    refreshBtn.disabled = false;
+    refreshBtn.classList.remove('is-refreshing');
+  }
+}
+
+
+
+function renderSupportConversations() {
+  const container = $('supportAdminConversations');
+  if (!container) return;
+
+  const conversations = state.supportConversations || [];
+  const searchInput = $('supportAdminSearch');
+  const searchValue = searchInput
+    ? searchInput.value.trim().toLowerCase()
+    : '';
+
+  const filtered = conversations.filter((conversation) => {
+    const name = conversation.display_name || 'زائر غير معروف';
+    const message = conversation.last_message || '';
+
+    return (
+      name.toLowerCase().includes(searchValue) ||
+      String(message).toLowerCase().includes(searchValue)
+    );
+  });
+
+  const countElement = $('supportConversationsCount');
+
+  if (countElement) {
+    countElement.textContent = `${conversations.length} محادثة`;
+  }
+
+  const navBadge = $('navSupport');
+
+  if (navBadge) {
+    const unreadTotal = conversations.reduce(
+      (total, conversation) =>
+        total + Number(conversation.unread_count || 0),
+      0
+    );
+
+    navBadge.textContent = unreadTotal;
+  }
+
+  if (!filtered.length) {
+    container.innerHTML = `
+      <div class="loading-state">
+        ${searchValue ? 'لا توجد محادثات تطابق البحث.' : 'لا توجد محادثات حتى الآن.'}
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = filtered.map((conversation) => {
+    const name = conversation.display_name || 'زائر غير معروف';
+    const preview = conversation.last_message || 'لا توجد رسائل';
+    const unread = Number(conversation.unread_count || 0);
+    const isActive =
+      String(state.supportActiveConversation) === String(conversation.id);
+
+    const initial = name.trim().charAt(0) || '؟';
+
+    let time = '';
+
+    if (conversation.last_message_at) {
+      const date = new Date(conversation.last_message_at);
+
+      if (!Number.isNaN(date.getTime())) {
+        time = date.toLocaleTimeString('ar-EG', {
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      }
+    }
+
+    return `
+      <button
+        type="button"
+        class="support-conversation-item ${isActive ? 'active' : ''}"
+        data-support-conversation-id="${supportEscapeHTML(String(conversation.id))}"
+      >
+        <div class="support-conversation-avatar">
+          ${supportEscapeHTML(initial)}
+        </div>
+
+        <div class="support-conversation-info">
+          <div class="support-conversation-top">
+            <span class="support-conversation-name">
+              ${supportEscapeHTML(name)}
+            </span>
+
+            <span class="support-conversation-time">
+              ${supportEscapeHTML(time)}
+            </span>
+          </div>
+
+          <div class="support-conversation-bottom">
+            <span class="support-conversation-preview">
+              ${supportEscapeHTML(String(preview))}
+            </span>
+
+            ${
+              unread > 0
+                ? `<span class="support-unread-badge">${unread}</span>`
+                : ''
+            }
+          </div>
+        </div>
+      </button>
+    `;
+  }).join('');
+}
+
+
+
+
+
+
+async function openSupportConversation(conversationId) {
+  state.supportActiveConversation = conversationId;
+
+  renderSupportConversations();
+
+  const chat = $('supportAdminChat');
+  if (!chat) return;
+
+  const conversation = state.supportConversations.find(
+    (item) => String(item.id) === String(conversationId)
+  );
+
+  if (!conversation) return;
+
+  const name = conversation.display_name || 'زائر غير معروف';
+
+  chat.innerHTML = `
+    <div class="support-chat-header">
+      <div class="support-conversation-avatar">
+        ${supportEscapeHTML(name.trim().charAt(0) || '؟')}
+      </div>
+
+      <div class="support-chat-header-info">
+        <h3>${supportEscapeHTML(name)}</h3>
+        <span>${conversation.user_id ? 'مستخدم' : 'زائر'}</span>
+      </div>
+    </div>
+
+    <div class="support-chat-messages" id="supportChatMessages">
+      <div class="loading-state">جارٍ تحميل الرسائل…</div>
+    </div>
+
+    <form class="support-chat-composer" id="supportChatForm">
+      <textarea
+        id="supportChatInput"
+        placeholder="اكتب رسالتك هنا..."
+        rows="1"
+        maxlength="5000"
+        required
+      ></textarea>
+
+      <button type="submit" id="supportChatSendBtn">
+        إرسال
+      </button>
+    </form>
+  `;
+
+  const form = $('supportChatForm');
+
+  if (form) {
+    form.addEventListener('submit', sendSupportAdminMessage);
+  }
+
+
+  const chatInput = $('supportChatInput');
+
+if (chatInput) {
+  chatInput.addEventListener('input', () => {
+    const maxHeight = 78;
+
+    // إعادة ضبط الارتفاع أولًا حتى يسمح للمربع بالانكماش
+    chatInput.style.height = 'auto';
+
+    // حساب الارتفاع المناسب للمحتوى الحالي
+    const contentHeight = chatInput.scrollHeight;
+    const newHeight = Math.max(46, Math.min(contentHeight, maxHeight));
+
+    chatInput.style.height = `${newHeight}px`;
+
+    if (contentHeight > maxHeight) {
+      chatInput.classList.add('has-scroll');
+    } else {
+      chatInput.classList.remove('has-scroll');
+    }
+  });
+}
+
+
+  try {
+    const { data, error } = await db.rpc(
+      'support_admin_get_messages',
+      { p_conversation_id: conversationId }
+    );
+
+    if (error) throw error;
+
+    if (
+      String(state.supportActiveConversation) !== String(conversationId)
+    ) return;
+
+    state.supportMessages = data || [];
+
+    renderSupportMessages();
+
+  } catch (error) {
+    console.error('Support messages error:', error);
+
+    const messagesContainer = $('supportChatMessages');
+
+    if (messagesContainer) {
+      messagesContainer.innerHTML = `
+        <div class="loading-state">
+          تعذر تحميل الرسائل. حاول فتح المحادثة مرة أخرى.
+        </div>
+      `;
+    }
+  }
+}
+
+
+function renderSupportMessages() {
+  const container = $('supportChatMessages');
+  if (!container) return;
+
+  const messages = state.supportMessages || [];
+
+  if (!messages.length) {
+    container.innerHTML = `
+      <div class="support-chat-no-messages">
+        لا توجد رسائل سابقة. ابدأ المحادثة الآن.
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = messages.map((message) => {
+    const isAdmin = message.sender_type === 'admin';
+
+    const date = new Date(message.created_at);
+
+    const time = !Number.isNaN(date.getTime())
+      ? date.toLocaleTimeString('ar-EG', {
+          hour: '2-digit',
+          minute: '2-digit'
+        })
+      : '';
+
+    return `
+      <div class="support-message-row ${isAdmin ? 'admin' : 'customer'}">
+        <div class="support-message-bubble">
+          <div class="support-message-text">${supportEscapeHTML(message.message)}</div>
+          <span class="support-message-time">${supportEscapeHTML(time)}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  container.scrollTop = container.scrollHeight;
+}
+
+
+async function sendSupportAdminMessage(event) {
+  event.preventDefault();
+
+  const input = $('supportChatInput');
+  const button = $('supportChatSendBtn');
+
+  if (!input || !button) return;
+
+  const message = input.value.trim();
+
+  if (!message || state.supportSending) return;
+
+  const conversationId = state.supportActiveConversation;
+
+  if (!conversationId) return;
+
+  state.supportSending = true;
+  button.disabled = true;
+  button.textContent = 'جارٍ الإرسال…';
+
+  try {
+    const { error } = await db.rpc(
+      'support_admin_send_message',
+      {
+        p_conversation_id: conversationId,
+        p_message: message
+      }
+    );
+
+    if (error) throw error;
+
+    input.value = '';
+
+    await openSupportConversation(conversationId);
+    await loadSupportConversations();
+
+  } catch (error) {
+    console.error('Support send message error:', error);
+
+    alert('تعذر إرسال الرسالة. حاول مرة أخرى.');
+
+  } finally {
+    state.supportSending = false;
+
+    const currentButton = $('supportChatSendBtn');
+
+    if (currentButton) {
+      currentButton.disabled = false;
+      currentButton.textContent = 'إرسال';
+    }
+  }
+}
+
+
+
+
+
+
+// ربط الضغط على المحادثات
+const supportConversationsContainer = $('supportAdminConversations');
+
+if (
+  supportConversationsContainer &&
+  !supportConversationsContainer.dataset.clickBound
+) {
+  supportConversationsContainer.dataset.clickBound = 'true';
+
+  supportConversationsContainer.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-support-conversation-id]');
+
+    if (!button) return;
+
+    openSupportConversation(button.dataset.supportConversationId);
+  });
+}
+
+
+const supportRefreshBtn = $('supportRefreshBtn');
+
+if (supportRefreshBtn && !supportRefreshBtn.dataset.clickBound) {
+  supportRefreshBtn.dataset.clickBound = 'true';
+
+  supportRefreshBtn.addEventListener('click', refreshSupportChat);
+}
+
+
+
+
+
   
     // ---------------------------------------------------------
     // 15. ربط أزرار التنقل والبحث
@@ -3729,7 +4174,11 @@ $('submitRevisionRejection').addEventListener('click', async () => {
       $('sidebar').classList.toggle('open');
     });
   
-    $('refreshBtn').addEventListener('click', loadData);
+    $('refreshBtn').addEventListener('click', async () => {
+      await loadData();
+      await loadSupportConversations();
+    });
+
     $('publishedRefresh').addEventListener('click', loadData);
   
     $('publishedSearch').addEventListener('input', renderPublished);
@@ -4307,13 +4756,14 @@ document.addEventListener('keydown', (event) => {
     (async function initDashboard() {
       try {
         const isAdmin = await requireAdmin();
-  
+    
         if (isAdmin) {
           await loadData();
+          await loadSupportConversations();
         }
       } catch (error) {
         console.error('Dashboard initialization failed:', error);
-  
+    
         showNotice(
           'تعذر تشغيل لوحة التحكم. افتح Console لمعرفة تفاصيل الخطأ.',
           'error'

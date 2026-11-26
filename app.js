@@ -1762,10 +1762,6 @@ if (quoteElement) {
 })();
 
 
-
-
-
-
 initFloatingStatsLogos();
 
 startApp();
