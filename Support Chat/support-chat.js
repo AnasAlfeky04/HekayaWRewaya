@@ -22,6 +22,28 @@
     );
   
     const GUEST_TOKEN_KEY = "hekaya_support_guest_token";
+
+
+    const CHAT_OPEN_KEY = "hekaya_support_chat_open";
+const CHAT_COLLAPSED_KEY = "hekaya_support_chat_collapsed";
+
+// حفظ واسترجاع حالة الشات
+function saveChatState(key, value) {
+  try {
+    localStorage.setItem(key, String(value));
+  } catch (error) {
+    console.warn("Support Chat: Could not save state.", error);
+  }
+}
+
+function getChatState(key) {
+  try {
+    return localStorage.getItem(key) === "true";
+  } catch (error) {
+    return false;
+  }
+}
+
   
     let conversationId = null;
     let currentIdentity = null;
@@ -268,6 +290,7 @@ async function updateUnreadBadge() {
       if (isOpen) return;
   
       isOpen = true;
+      saveChatState(CHAT_OPEN_KEY, true);
   
       getElement("supportChatWindow").classList.add("is-open");
       getElement("supportChatWindow").setAttribute("aria-hidden", "false");
