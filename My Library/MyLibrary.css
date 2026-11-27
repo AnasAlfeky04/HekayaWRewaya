@@ -747,9 +747,18 @@
   
   @media (max-width: 760px) {
 
-    .navbar .logo img {
-      width: 155px;
-      height: 70px;
+    .my-library-header .logo {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      margin-right: auto;
+      margin-left: auto;
+    }
+    
+    .my-library-header .logo img {
+      width: 80px;
+      height: auto;
+      display: block;
     }
     
     .my-library-header {
@@ -864,10 +873,6 @@
       font-size: 17px;
     }
   
-    .my-library-footer {
-      flex-direction: column;
-      text-align: center;
-    }
   }
   
   @media (prefers-reduced-motion: reduce) {
@@ -982,6 +987,13 @@
   /* Responsive cards */
   
   @media (max-width: 760px) {
+
+    footer {
+      flex-direction: column;
+      gap: 5px;
+      text-align: center;
+    }
+
     .my-library-grid {
       grid-template-columns: 1fr;
     }

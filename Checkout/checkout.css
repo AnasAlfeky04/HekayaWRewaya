@@ -1099,6 +1099,21 @@
   ========================= */
   
   @media (max-width: 850px) {
+
+    .checkout-brand .logo {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      margin-right: 0;
+      margin-left: auto;
+    }
+    
+    .checkout-brand .logo img {
+      width: 80px;
+      height: auto;
+      display: block;
+    }
+
     .checkout-layout {
       grid-template-columns: 1fr;
     }
@@ -1129,8 +1144,7 @@
     }
   
     .checkout-brand img {
-      width: 36px;
-      height: 36px;
+      width: 80px;
     }
   
     .back-to-library {
