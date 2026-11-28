@@ -83,6 +83,7 @@ const authSubmit = document.getElementById("authSubmit");
 const authStatus = document.getElementById("authStatus");
 
 const resendConfirmationBtn = document.getElementById("resendConfirmationBtn");
+const forgotPasswordBtn = document.getElementById("forgotPasswordBtn");
 
 let mode = "login";
 let submitting = false;
@@ -99,6 +100,7 @@ function setMode(nextMode) {
   const isSignup = mode === "signup";
 
   resendConfirmationBtn.hidden = !isSignup;
+  forgotPasswordBtn.hidden = isSignup;
 
   loginTab.classList.toggle("active", !isSignup);
   signupTab.classList.toggle("active", isSignup);
@@ -228,6 +230,71 @@ resendConfirmationBtn.addEventListener("click", async function () {
   }
 });
 
+
+
+forgotPasswordBtn.addEventListener("click", async function () {
+  const emailValue = email.value.trim();
+
+  if (!emailValue) {
+    setStatus("اكتب بريدك الإلكتروني أولًا لإرسال رابط استعادة كلمة المرور.", "error");
+    email.focus();
+    return;
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
+    setStatus("البريد الإلكتروني غير صحيح. راجعه وحاول مرة أخرى.", "error");
+    email.focus();
+    return;
+  }
+
+  forgotPasswordBtn.disabled = true;
+  forgotPasswordBtn.textContent = "جارٍ إرسال رابط الاستعادة...";
+
+  try {
+    const result = await db.auth.resetPasswordForEmail(emailValue, {
+      redirectTo: `${window.location.origin}/Auth/reset-password.html`
+    });
+
+    if (result.error) throw result.error;
+
+    setStatus(
+      "لو البريد الإلكتروني مسجل لدينا، هتوصلك رسالة فيها رابط استعادة كلمة المرور. راجع صندوق الوارد والرسائل غير المرغوب فيها.",
+      "success"
+    );
+
+  } catch (error) {
+    console.error("Password recovery error:", error);
+
+    const errorMessage = (error.message || "").toLowerCase();
+
+    if (
+      errorMessage.includes("rate limit") ||
+      errorMessage.includes("too many requests")
+    ) {
+      setStatus(
+        "أرسلت طلبات كثيرة خلال وقت قصير. يُرجى الانتظار قليلًا ثم المحاولة مرة أخرى.",
+        "error"
+      );
+    } else if (
+      errorMessage.includes("network") ||
+      errorMessage.includes("fetch")
+    ) {
+      setStatus(
+        "تعذر الاتصال بالخدمة حاليًا. تحقق من اتصال الإنترنت وحاول مرة أخرى.",
+        "error"
+      );
+    } else {
+      setStatus(
+        "تعذر إرسال رابط الاستعادة حاليًا. حاول مرة أخرى بعد قليل.",
+        "error"
+      );
+    }
+
+  } finally {
+    forgotPasswordBtn.disabled = false;
+    forgotPasswordBtn.textContent = "نسيت كلمة المرور؟";
+  }
+});
 
 
 
